@@ -5,7 +5,7 @@ import argparse
 import numpy as np
 import subprocess
 from moviepy.editor import *
-from clause import cut_sent,sub
+from clause import cut_sent,sub,cut_end
 from file_operate import get_file_list
 from get_audio_time import get_duration_wav
 from moviepy.video.tools.drawing import color_gradient
@@ -16,9 +16,11 @@ from moviepy.video.tools.drawing import color_split
 parser = argparse.ArgumentParser(description='manual to this script')
 parser.add_argument('--picture', type=str, default = None)
 parser.add_argument('--music', type=str, default= None)
+parser.add_argument('--dubbing', type=int, default= 0)
 args = parser.parse_args()
 print("接受参数：picture：" + str(args.picture))
 print("接受参数：music：" + str(args.music))
+print("接受参数：dubbing：" + str(args.dubbing))
 
 # 加载text数据
 num = 4
@@ -43,19 +45,18 @@ sents = cut_sent(text)
 
 # 调用tts生成语音：
 # 命令格式：aspeak -t "你好，世界！" -l zh-CN -o ouput.wav -v zh-CN-XiaoqiuNeural -r -0.06
-# for inx,val in enumerate(sents):
-#     print(inx,val)
-#     if inx >= 0:
-#         subprocess.call(["aspeak -t "
-#                          +val+
-#                          " -l zh-CN -o "
-#                          +DATA_ROOT+
-#                          "dubbing/clip_out_"
-#                          +str(inx)+
-#                          ".wav -v zh-CN-XiaoqiuNeural -r -0.06"], shell=True)
-#     time.sleep(5)
-
-# "02 - Rainbow River.mp3"
+if args.dubbing > 0:
+    for inx,val in enumerate(sents):
+        print(inx,val)
+        if inx >= 0:
+            subprocess.call(["aspeak -t "
+                             +val+
+                             " -l zh-CN -o "
+                             +DATA_ROOT+
+                             "dubbing/clip_out_"
+                             +str(inx)+
+                             ".wav -v zh-CN-XiaoqiuNeural -r -0.06"], shell=True)
+        time.sleep(5)
 
 # 生成一个背景图片
 picture_file_name = ""
@@ -69,6 +70,7 @@ print("picture_file_name：" + picture_file_name)
 
 # 调用背景图像生成一个基本的clip
 my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
+# my_clip = ImageClip(DATA_ROOT+"picture/picture3.jpg")
 w,h = my_clip.size
 my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
 # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
@@ -122,7 +124,7 @@ for inx,val in enumerate(sents):
     all_time = all_time + duration
 
 # 设置结尾
-txt_clip = TextClip(end, fontsize=start_end_font_size, color='white', font=font)
+txt_clip = TextClip(cut_end(end), fontsize=start_end_font_size, color='white', font=font)
 txt_clip = txt_clip.set_pos('center').set_duration(end_time).set_start(text_clip_start)
 all_clip_list.append(txt_clip)
 text_clip_start = text_clip_start + end_time
@@ -156,4 +158,4 @@ video.set_duration(all_time).set_fps(25).write_videofile(DATA_ROOT+"flower.mp4",
 
 # 生成封面
 video.save_frame(DATA_ROOT+"cover.png",t=1)
-# my_clip.ipython_display()
+# video.ipython_display()
