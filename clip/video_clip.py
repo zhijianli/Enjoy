@@ -152,7 +152,7 @@ print("all_time " +str(all_time))
 print("video.size = " + str(video.size))
 
 # 生成最终的视频
-video.set_duration(all_time).set_fps(25).write_videofile(DATA_ROOT+"flower.avi",codec='mpeg4') # works
+video.set_duration(all_time).set_fps(25).write_videofile(DATA_ROOT+"flower.mp4",codec='mpeg4') # works
 
 # 生成封面
 video.save_frame(DATA_ROOT+"cover.png",t=1)
