@@ -2,12 +2,14 @@ import pandas as pd
 import sys
 import time
 import argparse
+import random
 import numpy as np
-import subprocess
+
 from moviepy.editor import *
 from clause import cut_sent,sub,cut_end
-from file_operate import get_file_list
+from file_operate import get_file_list,make_zip
 from get_audio_time import get_duration_wav
+from clip_tools import add_mask,ai_dubbing
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 
@@ -17,15 +19,23 @@ parser = argparse.ArgumentParser(description='manual to this script')
 parser.add_argument('--picture', type=str, default = None)
 parser.add_argument('--music', type=str, default= None)
 parser.add_argument('--dubbing', type=int, default= 0)
+parser.add_argument('--num', type=int, default= 0)
 args = parser.parse_args()
 print("接受参数：picture：" + str(args.picture))
 print("接受参数：music：" + str(args.music))
 print("接受参数：dubbing：" + str(args.dubbing))
+print("接受参数：num：" + str(args.num))
+
+num = 0
+if args.num == 0: # 如果传的参数是0，就随机取一个整数
+    num = random.randint(0,16)
+else: # 如果有传参数，就用传的参数
+    num = args.num
+print("num：" + str(num))
 
 # 加载text数据
-num = 4
-# DATA_ROOT = "/home/mocuili/data/enjoy/"
-DATA_ROOT = "/data/"
+DATA_ROOT = "/home/mocuili/data/enjoy/"
+# DATA_ROOT = "/data/"
 # font = DATA_ROOT+'fonts/SIMFANG.TTF'
 # font = DATA_ROOT+'fonts/STXIHEI.TTF'
 font='AR-PL-UKai-CN'
@@ -33,30 +43,18 @@ excel_content = pd.read_excel(DATA_ROOT+'text/text.xlsx')
 title_list = excel_content["title"]
 text_list = excel_content["text"]
 end_list = excel_content["end"]
-title = title_list[num]
+title = title_list[num] #标题是５－９个字长度最合适
 text = text_list[num]
 end = end_list[num]
-print("标题：" + title)
-print("内容：" + text)
-print("结尾：" + end)
+print("标题：" + str(title))
+print("内容：" + str(text))
+print("结尾：" + str(end))
 
 # 断句
 sents = cut_sent(text)
 
 # 调用tts生成语音：
-# 命令格式：aspeak -t "你好，世界！" -l zh-CN -o ouput.wav -v zh-CN-XiaoqiuNeural -r -0.06
-if args.dubbing > 0:
-    for inx,val in enumerate(sents):
-        print(inx,val)
-        if inx >= 0:
-            subprocess.call(["aspeak -t "
-                             +val+
-                             " -l zh-CN -o "
-                             +DATA_ROOT+
-                             "dubbing/clip_out_"
-                             +str(inx)+
-                             ".wav -v zh-CN-XiaoqiuNeural -r -0.06"], shell=True)
-        time.sleep(5)
+ai_dubbing(args.dubbing,sents,DATA_ROOT)
 
 # 生成一个背景图片
 picture_file_name = ""
@@ -70,7 +68,7 @@ print("picture_file_name：" + picture_file_name)
 
 # 调用背景图像生成一个基本的clip
 my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
-# my_clip = ImageClip(DATA_ROOT+"picture/picture3.jpg")
+# my_clip = ImageClip(DATA_ROOT+"picture/cover3.jpg")
 w,h = my_clip.size
 my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
 # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
@@ -87,6 +85,9 @@ end_time = 5
 # 设置开头标题
 txt_clip = TextClip(title, fontsize=start_end_font_size, color='white', font=font)
 txt_clip = txt_clip.set_pos('center').set_duration(title_time).set_start(text_clip_start)
+
+colorclip = add_mask(txt_clip,title_time,text_clip_start)
+all_clip_list.append(colorclip)
 all_clip_list.append(txt_clip)
 text_clip_start = text_clip_start + title_time
 all_time = all_time + title_time
@@ -101,31 +102,27 @@ for inx,val in enumerate(sents):
     text_str = sents[inx]
     text_str = sub(text_str)
     txt_clip = TextClip(text_str,fontsize=text_font_size,color='white',font=font)
-
-    # 增加遮罩
-    # txt_w,txt_h = txt_clip.size
-    # mask = color_split((2 * w // 3, h),
-    #                    p1=(2, h), p2=(w // 3 + 2, 0),
-    #                    col1=[255,0,0], col2=[0,255,0],
-    #                    grad_width=2)
-    # mask_clip = ImageClip(mask, ismask=True)
-    # mask_clip = ImageClip(DATA_ROOT + "picture/meng.png", ismask=True)
-    # txt_clip = txt_clip.set_pos('center').set_duration(duration).set_start(text_clip_start).set_mask(mask_clip)
-
     txt_clip = txt_clip.set_pos('center').set_duration(duration).set_start(text_clip_start)
 
-
+    # 增加遮罩
+    colorclip = add_mask(txt_clip,duration,text_clip_start)
 
     audioclip = AudioFileClip(audio_file_path).set_duration(duration).set_start(text_clip_start).volumex(2)
-    text_clip_start = text_clip_start + duration
 
+    all_clip_list.append(colorclip)
     all_clip_list.append(txt_clip)
     audio_clip_list.append(audioclip)
+    text_clip_start = text_clip_start + duration
     all_time = all_time + duration
 
 # 设置结尾
 txt_clip = TextClip(cut_end(end), fontsize=start_end_font_size, color='white', font=font)
 txt_clip = txt_clip.set_pos('center').set_duration(end_time).set_start(text_clip_start)
+
+# 增加结尾遮罩
+colorclip = add_mask(txt_clip,end_time,text_clip_start)
+
+all_clip_list.append(colorclip)
 all_clip_list.append(txt_clip)
 text_clip_start = text_clip_start + end_time
 all_time = all_time + end_time
@@ -144,7 +141,7 @@ else: # 如果有传数据，就用传的音乐路径
 print("music_file_name：" + music_file_name)
 
 # 叠加上背景音乐
-back_music_clip = AudioFileClip(DATA_ROOT+"music/" + music_file_name).subclip(t_start=0, t_end=all_time).volumex(0.5).audio_fadeout(end_time/2)
+back_music_clip = AudioFileClip(DATA_ROOT+"music/" + music_file_name).subclip(t_start=0, t_end=all_time).volumex(0.3).audio_fadeout(end_time/2)
 audio_clip_list.append(back_music_clip)
 all_audio_clip = CompositeAudioClip(audio_clip_list)
 
@@ -153,9 +150,38 @@ video = video.set_audio(all_audio_clip)
 print("all_time " +str(all_time))
 print("video.size = " + str(video.size))
 
-# 生成最终的视频
-video.set_duration(all_time).set_fps(25).write_videofile(DATA_ROOT+"flower.mp4",codec='mpeg4') # works
 
-# 生成封面
-video.save_frame(DATA_ROOT+"cover.png",t=1)
-# video.ipython_display()
+# 生成横的封面
+# video.save_frame(DATA_ROOT+"cover.png",t=1)
+cover_clip_list = []
+cover_pitcure_clip = my_clip
+cover_w, cover_h = cover_pitcure_clip.size
+cover_pitcure_clip = cover_pitcure_clip.fx(vfx.crop, x1=0, y1=0, x2=cover_w, y2=cover_w / 1.88)
+txt_clip = TextClip(title, fontsize=cover_w * 50 / 512, color='white', font=font)
+txt_clip = txt_clip.set_pos('center').set_duration(1).set_start(1)
+txt_w, txt_h = txt_clip.size
+colorclip = ColorClip(size=(txt_w * 6 // 5, txt_h * 6 // 5), color=[00, 00, 00], duration=10).set_opacity(0.3).set_pos(
+    'center')
+cover_clip_list.append(cover_pitcure_clip)
+cover_clip_list.append(colorclip)
+cover_clip_list.append(txt_clip)
+cover_clip = CompositeVideoClip(cover_clip_list)
+
+# 弄一个竖封面
+
+# 生成简介
+current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+RESULT_DIR = DATA_ROOT + "video/" + current_time + "/"
+
+# 保存最后的结果
+os.mkdir(RESULT_DIR);
+with open(RESULT_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
+    f.write(title + "\n")
+    f.write(text + "\n")
+    f.write(end + "\n")
+cover_clip.save_frame(RESULT_DIR + "cover.png", t=1)
+video.set_duration(all_time).set_fps(25).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4') # works
+
+# 将结果放到zip压缩文件中
+make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
+

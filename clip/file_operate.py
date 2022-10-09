@@ -1,5 +1,5 @@
-import os
 import random
+import os, zipfile
 
 def get_file_list(dir):
     file_list = []
@@ -10,7 +10,20 @@ def get_file_list(dir):
     return file_name
 
 
-if __name__ == "__main__":
+#打包目录为zip文件（未压缩）
+def make_zip(source_dir, output_filename):
+    zipf = zipfile.ZipFile(output_filename, 'w')
+    pre_len = len(os.path.dirname(source_dir))
+    for parent, dirnames, filenames in os.walk(source_dir):
+        for filename in filenames:
+            pathfile = os.path.join(parent, filename)
+            arcname = pathfile[pre_len:].strip(os.path.sep)     #相对路径
+            zipf.write(pathfile, arcname)
+    zipf.close()
 
+
+if __name__ == "__main__":
+    title = "你好"
     DATA_ROOT = "/home/mocuili/data/enjoy/"
-    file_name = get_file_list(DATA_ROOT+"/music")
+    # file_name = get_file_list(DATA_ROOT+"/music")
+    make_zip("/home/mocuili/data/enjoy/video/121/","/home/mocuili/data/enjoy/video/121.zip")
