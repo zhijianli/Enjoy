@@ -26,11 +26,19 @@ def ai_dubbing(is_dubbing,sents,DATA_ROOT):
 
             time.sleep(5)
 
-
-def add_mask(txt_clip,duration,text_clip_start):
+def optimi_txt_clip(txt_clip,w,h,duration,text_clip_start):
     txt_w, txt_h = txt_clip.size
-    colorclip = ColorClip(size=(txt_w * 6 // 5, txt_h * 6 // 5), color=[00, 00, 00]).set_opacity(
-        0.3).set_pos('center').set_duration(duration).set_start(text_clip_start)
+    position = ((w - txt_w) // 2, (h - txt_h)//2 * 9//10)
+    txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start)
+
+    # 增加遮罩
+    colorclip = add_txt_mask(txt_clip,duration,text_clip_start,w,h)
+    return txt_clip,colorclip
+
+def add_txt_mask(txt_clip,duration,text_clip_start,w,h):
+    txt_w, txt_h = txt_clip.size
+    colorclip = ColorClip(size=(txt_w*6//5, txt_h+h*3//20), color=[00, 00, 00]).set_opacity(
+        0.3).set_position(((w - txt_w)//2 - txt_w//10, ((h - txt_h)//2 - h*3//40) * 9//10)).set_duration(duration).set_start(text_clip_start)
     return colorclip
 
 if __name__ == "__main__":

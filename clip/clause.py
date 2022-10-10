@@ -11,7 +11,7 @@ def cut_sent(para):
     return para.split("\n")
 
 def sub(str):
-    str = re.sub(r"(.{15})", "\\1\r\n", str)
+    str = re.sub(r"(.{15})", "\\1\r\n\n", str)
     return str
 
 def cut_end(str):
@@ -31,8 +31,9 @@ if __name__ == "__main__":
 
     s = "如果我们不花时间去思考自己想要什么样的成功，以及自己的成功版本，那么，我们就很容易陷入一种基于他人期待的生活之中。"
     s = sub(s)
-    s = "《爱的艺术》－－弗洛姆"
     print(s)
-    s = cut_end(s)
-    print(s)
+    # s = "《爱的艺术》－－弗洛姆"
+    # print(s)
+    # s = cut_end(s)
+
 
