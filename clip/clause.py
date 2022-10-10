@@ -11,7 +11,7 @@ def cut_sent(para):
     return para.split("\n")
 
 def sub(str):
-    str = re.sub(r"(.{15})", "\\1\r\n\n", str)
+    str = re.sub(r"(.{18})", "\\1\r\n\n", str)
     return str
 
 def cut_end(str):
