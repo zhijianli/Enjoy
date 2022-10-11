@@ -15,7 +15,7 @@ def sub(str):
     return str
 
 def cut_end(str):
-    str = re.sub('([》\?])([^”’])', r"\1\n     \2", str)
+    str = re.sub('([》\?])([^”’])', r"\1\n\n     \2", str)
     return str
 
 if __name__ == "__main__":
@@ -29,11 +29,12 @@ if __name__ == "__main__":
     # print("\n".join(sents))
 
 
-    s = "如果我们不花时间去思考自己想要什么样的成功，以及自己的成功版本，那么，我们就很容易陷入一种基于他人期待的生活之中。"
-    s = sub(s)
-    print(s)
-    # s = "《爱的艺术》－－弗洛姆"
+    # s = "如果我们不花时间去思考自己想要什么样的成功，以及自己的成功版本，那么，我们就很容易陷入一种基于他人期待的生活之中。"
+    # s = sub(s)
     # print(s)
-    # s = cut_end(s)
+    s = "《爱的艺术》－－弗洛姆"
+
+    s = cut_end(s)
+    print(s)
 
 

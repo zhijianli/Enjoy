@@ -1,5 +1,6 @@
 import random
 import os, zipfile
+import shutil
 
 def get_file_list(dir):
     file_list = []
@@ -20,6 +21,9 @@ def make_zip(source_dir, output_filename):
             arcname = pathfile[pre_len:].strip(os.path.sep)     #相对路径
             zipf.write(pathfile, arcname)
     zipf.close()
+
+def copy_file():
+    shutil.copyfile("/home/mocuili/data/enjoy/", "/home/mocuili/data/enjoy-oss")
 
 
 if __name__ == "__main__":

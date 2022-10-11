@@ -9,7 +9,7 @@ from moviepy.editor import *
 from clause import cut_sent,sub,cut_end
 from file_operate import get_file_list,make_zip
 from get_audio_time import get_duration_wav
-from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip
+from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,generate_cover
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 
@@ -24,8 +24,8 @@ def generate_video(args):
     print("num：" + str(num))
 
     # 加载text数据
-    # DATA_ROOT = "/home/mocuili/data/enjoy/"
-    DATA_ROOT = "/data/"
+    DATA_ROOT = "/home/mocuili/data/enjoy/"
+    # DATA_ROOT = "/data/enjoy/"
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
     # font = DATA_ROOT+'fonts/STXIHEI.TTF'
     # font='AR-PL-UKai-CN'
@@ -139,19 +139,8 @@ def generate_video(args):
 
     # 生成横的封面
     # video.save_frame(DATA_ROOT+"cover.png",t=1)
-    cover_clip_list = []
-    cover_pitcure_clip = my_clip
-    cover_w, cover_h = cover_pitcure_clip.size
-    cover_pitcure_clip = cover_pitcure_clip.fx(vfx.crop, x1=0, y1=0, x2=cover_w, y2=cover_w / 1.88)
-    txt_clip = TextClip(title, fontsize=cover_w/20, color='white', font=font)
-    txt_clip = txt_clip.set_pos('center').set_duration(1).set_start(1)
-    txt_w, txt_h = txt_clip.size
-    colorclip = ColorClip(size=(txt_w * 6 // 5, txt_h * 7 // 5), color=[00, 00, 00], duration=10).set_opacity(0.3).set_pos(
-        'center')
-    cover_clip_list.append(cover_pitcure_clip)
-    cover_clip_list.append(colorclip)
-    cover_clip_list.append(txt_clip)
-    cover_clip = CompositeVideoClip(cover_clip_list)
+    author_name = "赫尔曼.黑塞"
+    cover_clip = generate_cover(my_clip, DATA_ROOT, font, author_name, title)
 
     # 弄一个竖封面
 
