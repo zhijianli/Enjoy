@@ -8,7 +8,7 @@ import numpy as np
 
 from moviepy.editor import *
 from clause import cut_sent,sub,cut_end,sentence_break
-from file_operate import get_file_list,make_zip
+from file_operate import get_file_list,make_zip,copy_file
 from get_audio_time import get_duration_wav
 from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,generate_cover
 from moviepy.video.tools.drawing import color_gradient
@@ -25,8 +25,10 @@ def generate_video(args):
     print("num：" + str(num))
 
     # 加载text数据
-    DATA_ROOT = "/home/mocuili/data/enjoy/"
-    # DATA_ROOT = "/data/enjoy/"
+    # ROOT = "/home/mocuili/data/"
+    ROOT = "/data/"
+    DATA_ROOT = ROOT+"enjoy/"
+    DATA_OSS_ROOT = ROOT+"enjoy-oss/"
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
     # font = DATA_ROOT+'fonts/STXIHEI.TTF'
     # font='AR-PL-UKai-CN'
@@ -173,6 +175,8 @@ def generate_video(args):
     # 将结果放到zip压缩文件中
     make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
 
+    # 拷贝文件
+    copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
 
 if __name__ == "__main__":
 
