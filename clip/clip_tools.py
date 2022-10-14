@@ -4,9 +4,9 @@ import time
 import subprocess
 
 # 命令格式：aspeak -t "你好，世界！" -l zh-CN -o ouput.wav -v zh-CN-XiaoqiuNeural -r -0.06
-def ai_dubbing(is_dubbing,sents,DATA_ROOT):
+def ai_dubbing(is_dubbing,template,sents,DATA_ROOT):
     print("开始AI配音")
-    if is_dubbing > 0:
+    if is_dubbing > 0 and template == 0:
         for inx,val in enumerate(sents):
             print(inx,val)
             if inx >= 0:
@@ -54,7 +54,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     txt_w, txt_h = txt_clip.size
 
     # 作者
-    author_clip = TextClip(author_name+"：", fontsize=cover_w / 30, color='white', font=font)
+    author_clip = TextClip(author_name, fontsize=cover_w / 30, color='white', font=font)
     author_clip = author_clip.set_duration(1).set_start(1)
 
     # 头像

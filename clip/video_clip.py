@@ -6,7 +6,7 @@ import random
 import numpy as np
 
 from moviepy.editor import *
-from clause import cut_sent,sub,cut_end
+from clause import cut_sent,sub,cut_end,sentence_break
 from file_operate import get_file_list,make_zip
 from get_audio_time import get_duration_wav
 from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,generate_cover
@@ -32,19 +32,28 @@ def generate_video(args):
     excel_content = pd.read_excel(DATA_ROOT+'text/text.xlsx')
     title_list = excel_content["title"]
     text_list = excel_content["text"]
+    start_list = excel_content["start"]
     end_list = excel_content["end"]
+    author_list = excel_content["author"]
     title = title_list[num] #标题是５－９个字长度最合适
     text = text_list[num]
+    start = start_list[num]
     end = end_list[num]
+    author = author_list[num]
     print("标题：" + str(title))
+    print("开头：" + str(start))
     print("内容：" + str(text))
     print("结尾：" + str(end))
+    print("作者：" + str(author))
 
     # 断句
-    sents = cut_sent(text)
+    if args.template == 0:
+        sents = cut_sent(text)
+    else:
+        sents = text.split('&')
 
     # 调用tts生成语音：
-    ai_dubbing(args.dubbing,sents,DATA_ROOT)
+    ai_dubbing(args.dubbing,args.template,sents,DATA_ROOT)
 
     # 生成一个背景图片
     picture_file_name = ""
@@ -57,13 +66,13 @@ def generate_video(args):
     print("picture_file_name：" + picture_file_name)
 
     # 调用背景图像生成一个基本的clip
-    my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
-    # my_clip = ImageClip(DATA_ROOT+"picture/picture3.jpg")
+    # my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
+    my_clip = ImageClip(DATA_ROOT+"picture/picture3.jpg")
     w,h = my_clip.size
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
     w,h = my_clip.size
-    text_font_size = w/30
+    text_font_size = w/40
     start_end_font_size = w/20
 
     all_clip_list = [my_clip]
@@ -74,10 +83,8 @@ def generate_video(args):
     end_time = 5
 
     # 设置开头标题
-    txt_clip = TextClip(title, fontsize=start_end_font_size, color='white', font=font)
+    txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
     txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,title_time,text_clip_start)
-
-
     all_clip_list.append(colorclip)
     all_clip_list.append(txt_clip)
     text_clip_start = text_clip_start + title_time
@@ -85,29 +92,34 @@ def generate_video(args):
 
     # 视频叠加上文字和AI配音
     for inx,val in enumerate(sents):
-        audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
-        duration = round(get_duration_wav(audio_file_path),2)
+
+        text_str = sents[inx]
+        if args.template == 0:
+            audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
+            duration = round(get_duration_wav(audio_file_path),2)
+        else:
+            duration = len(text_str)/7
         print("text duration time = " + str(duration))
 
-        # text_clip = TextClip("Hello", fontsize=70, stroke_width=5).resize(height=15)
-        text_str = sents[inx]
-        text_str = sub(text_str)
+        if args.template == 0:
+            text_str = sub(text_str)
+        else:
+            text_str = "\""+sentence_break(text_str)+"\""
         txt_clip = TextClip(text_str,fontsize=text_font_size,color='white',font=font)
 
         txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,duration,text_clip_start)
 
-        audioclip = AudioFileClip(audio_file_path).set_duration(duration).set_start(text_clip_start).volumex(2)
-
+        if args.template == 0:
+            audioclip = AudioFileClip(audio_file_path).set_duration(duration).set_start(text_clip_start).volumex(2)
+            audio_clip_list.append(audioclip)
         all_clip_list.append(colorclip)
         all_clip_list.append(txt_clip)
-        audio_clip_list.append(audioclip)
         text_clip_start = text_clip_start + duration
         all_time = all_time + duration
 
     # 设置结尾
     txt_clip = TextClip(cut_end(end), fontsize=start_end_font_size, color='white', font=font)
     txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,end_time,text_clip_start)
-
     all_clip_list.append(colorclip)
     all_clip_list.append(txt_clip)
     text_clip_start = text_clip_start + end_time
@@ -139,8 +151,7 @@ def generate_video(args):
 
     # 生成横的封面
     # video.save_frame(DATA_ROOT+"cover.png",t=1)
-    author_name = "赫尔曼.黑塞"
-    cover_clip = generate_cover(my_clip, DATA_ROOT, font, author_name, title)
+    cover_clip = generate_cover(my_clip, DATA_ROOT, font, author, title)
 
     # 弄一个竖封面
 
@@ -154,6 +165,7 @@ def generate_video(args):
         f.write(title + "\n")
         f.write(text + "\n")
         f.write(end + "\n")
+        f.write("BGM:"+ music_file_name.split('.')[0] + "\n")
     cover_clip.save_frame(RESULT_DIR + "cover.png", t=1)
     video.set_duration(all_time).set_fps(25).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4') # works
 
@@ -165,15 +177,17 @@ if __name__ == "__main__":
 
     # 接收参数
     parser = argparse.ArgumentParser(description='manual to this script')
-    parser.add_argument('--picture', type=str, default = None)
-    parser.add_argument('--music', type=str, default= None)
-    parser.add_argument('--dubbing', type=int, default= 0)
-    parser.add_argument('--num', type=int, default= 0)
+    parser.add_argument('--picture', type=str, default = None) #背景图片
+    parser.add_argument('--music', type=str, default= None) #背景音乐
+    parser.add_argument('--dubbing', type=int, default= 0) #AI配音
+    parser.add_argument('--num', type=int, default= 0) #文字标号
+    parser.add_argument('--template', type=int, default=0) #视频制作模板
     args = parser.parse_args()
     print("接受参数：picture：" + str(args.picture))
     print("接受参数：music：" + str(args.music))
     print("接受参数：dubbing：" + str(args.dubbing))
     print("接受参数：num：" + str(args.num))
+    print("接受参数：template：" + str(args.template))
 
     generate_video(args)
 
