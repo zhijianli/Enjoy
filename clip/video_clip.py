@@ -25,8 +25,8 @@ def generate_video(args):
     print("num：" + str(num))
 
     # 加载text数据
-    # ROOT = "/home/mocuili/data/"
-    ROOT = "/data/"
+    ROOT = "/home/mocuili/data/"
+    # ROOT = "/data/"
     DATA_ROOT = ROOT+"enjoy/"
     DATA_OSS_ROOT = ROOT+"enjoy-oss/"
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
@@ -176,7 +176,8 @@ def generate_video(args):
     make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
 
     # 拷贝文件
-    copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
+    if args.uploadoss > 0:
+        copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
 
 if __name__ == "__main__":
 
@@ -187,12 +188,14 @@ if __name__ == "__main__":
     parser.add_argument('--dubbing', type=int, default= 0) #AI配音
     parser.add_argument('--num', type=int, default= 0) #文字标号
     parser.add_argument('--template', type=int, default=0) #视频制作模板
+    parser.add_argument('--uploadoss', type=int, default=0)  # 是否上传oss
     args = parser.parse_args()
     print("接受参数：picture：" + str(args.picture))
     print("接受参数：music：" + str(args.music))
     print("接受参数：dubbing：" + str(args.dubbing))
     print("接受参数：num：" + str(args.num))
     print("接受参数：template：" + str(args.template))
+    print("接受参数：uploadoss：" + str(args.uploadoss))
 
     generate_video(args)
 
