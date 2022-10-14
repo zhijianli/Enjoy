@@ -25,8 +25,8 @@ def generate_video(args):
     print("num：" + str(num))
 
     # 加载text数据
-    ROOT = "/home/mocuili/data/"
-    # ROOT = "/data/"
+    # ROOT = "/home/mocuili/data/"
+    ROOT = "/data/"
     DATA_ROOT = ROOT+"enjoy/"
     DATA_OSS_ROOT = ROOT+"enjoy-oss/"
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
