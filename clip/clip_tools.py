@@ -6,18 +6,14 @@ import subprocess
 # 命令格式：aspeak -t "你好，世界！" -l zh-CN -o ouput.wav -v zh-CN-XiaoqiuNeural -r -0.06
 def ai_dubbing(is_dubbing,template,sents,DATA_ROOT):
     print("开始AI配音")
-    if is_dubbing > 0 and template == 0:
+    if is_dubbing > 0:
         for inx,val in enumerate(sents):
             print(inx,val)
             if inx >= 0:
                 while True:
-                    dubbing_result = subprocess.call(["aspeak -t "
-                                     +val+
-                                     " -l zh-CN -o "
-                                     +DATA_ROOT+
-                                     "dubbing/clip_out_"
-                                     +str(inx)+
-                                     ".wav -v zh-CN-XiaoqiuNeural -r -0.06"], shell=True)
+                    dubbing_order = f"aspeak -t '{val}' -l zh-CN -o {DATA_ROOT}dubbing/clip_out_{inx}.wav -v zh-CN-XiaoqiuNeural -r -0.06"
+                    print("dubbing_order：" + dubbing_order)
+                    dubbing_result = subprocess.call([dubbing_order], shell=True)
                     print("dubbing_result: " + str(dubbing_result))
                     if str(dubbing_result) == "0":
                         break

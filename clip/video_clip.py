@@ -25,8 +25,8 @@ def generate_video(args):
     print("num：" + str(num))
 
     # 加载text数据
-    # ROOT = "/home/mocuili/data/"
-    ROOT = "/data/"
+    ROOT = "/home/mocuili/data/"
+    # ROOT = "/data/"
     DATA_ROOT = ROOT+"enjoy/"
     DATA_OSS_ROOT = ROOT+"enjoy-oss/"
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
@@ -38,16 +38,19 @@ def generate_video(args):
     start_list = excel_content["start"]
     end_list = excel_content["end"]
     author_list = excel_content["author"]
+    provenance_list = excel_content["provenance"]
     title = title_list[num] #标题是５－９个字长度最合适
     text = text_list[num]
     start = start_list[num]
     end = end_list[num]
     author = author_list[num]
+    provenance = provenance_list[num]
     print("标题：" + str(title))
     print("开头：" + str(start))
     print("内容：" + str(text))
     print("结尾：" + str(end))
     print("作者：" + str(author))
+    print("出处：" + str(provenance))
 
     # 断句
     if args.template == 0:
@@ -69,8 +72,8 @@ def generate_video(args):
     print("picture_file_name：" + picture_file_name)
 
     # 调用背景图像生成一个基本的clip
-    # my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
-    my_clip = ImageClip(DATA_ROOT+"picture/picture3.jpg")
+    my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
+    # my_clip = ImageClip(DATA_ROOT+"picture/picture3.jpg")
     w,h = my_clip.size
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
@@ -84,6 +87,7 @@ def generate_video(args):
     all_time = 0
     title_time = 3
     end_time = 5
+    dubbing_interval = 1 #多加1秒是因为要每一段语音之后间隔两秒
 
     # 设置开头标题
     txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
@@ -97,9 +101,9 @@ def generate_video(args):
     for inx,val in enumerate(sents):
 
         text_str = sents[inx]
-        if args.template == 0:
+        if args.dubbing > 0:
             audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
-            duration = round(get_duration_wav(audio_file_path),2)
+            duration = round(get_duration_wav(audio_file_path),2)+dubbing_interval
         else:
             duration = len(text_str)/7
         print("text duration time = " + str(duration))
@@ -112,8 +116,8 @@ def generate_video(args):
 
         txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,duration,text_clip_start)
 
-        if args.template == 0:
-            audioclip = AudioFileClip(audio_file_path).set_duration(duration).set_start(text_clip_start).volumex(2)
+        if args.dubbing > 0:
+            audioclip = AudioFileClip(audio_file_path).set_duration(duration-dubbing_interval).set_start(text_clip_start).volumex(2)
             audio_clip_list.append(audioclip)
         all_clip_list.append(colorclip)
         all_clip_list.append(txt_clip)
@@ -168,7 +172,10 @@ def generate_video(args):
         f.write(title + "\n")
         f.write(text + "\n")
         f.write(end + "\n")
+        f.write("出处:" + provenance + "\n")
         f.write("BGM:"+ music_file_name.split('.')[0] + "\n")
+        f.write("作者:" + author + "\n")
+
     cover_clip.save_frame(RESULT_DIR + "cover.png", t=1)
     video.set_duration(all_time).set_fps(25).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4') # works
 
