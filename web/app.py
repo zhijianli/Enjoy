@@ -6,18 +6,24 @@ import xlrd
 from xlutils.copy import copy
 import socket
 
-sys.path.append("../clip")
-from video_clip import generate_video
-
-#创建Flask对象app并初始化
-app = Flask(__name__)
-
 # 判断环境
 hostname = socket.gethostname()
 if hostname == 'mocuili-Lenovo-Legion-R9000K2021H':
     env = "test"
 else:
     env = "prod"
+
+if env == "test":
+    sys.path.append("/home/mocuili/github/Enjoy/clip")
+if env == "prod":
+    sys.path.append("/github/clip")
+
+from video_clip import generate_video
+
+#创建Flask对象app并初始化
+app = Flask(__name__)
+
+
 
 #通过python装饰器的方法定义路由地址
 @app.route("/")
