@@ -192,6 +192,8 @@ def generate_video(args):
     # 将结果放到zip压缩文件中
     make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
 
+    print("视频生成结束！")
+
     # # 拷贝文件
     # if args.uploadoss > 0:
     #     copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
