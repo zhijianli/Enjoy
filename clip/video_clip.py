@@ -32,6 +32,7 @@ def generate_video(args):
         ROOT = "/data/"
         DATA_ROOT = ROOT + "enjoy-oss/"
 
+
     # DATA_OSS_ROOT = ROOT+"enjoy-oss/"
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
     # font = DATA_ROOT+'fonts/STXIHEI.TTF'
