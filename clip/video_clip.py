@@ -27,10 +27,12 @@ def generate_video(args):
     # 加载text数据
     if args.env == "test":
         ROOT = "/home/mocuili/data/"
+        DATA_ROOT = ROOT + "enjoy/"
     else:
         ROOT = "/data/"
-    DATA_ROOT = ROOT+"enjoy/"
-    DATA_OSS_ROOT = ROOT+"enjoy-oss/"
+        DATA_ROOT = ROOT + "enjoy-oss/"
+
+    # DATA_OSS_ROOT = ROOT+"enjoy-oss/"
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
     # font = DATA_ROOT+'fonts/STXIHEI.TTF'
     # font='AR-PL-UKai-CN'
@@ -189,9 +191,9 @@ def generate_video(args):
     # 将结果放到zip压缩文件中
     make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
 
-    # 拷贝文件
-    if args.uploadoss > 0:
-        copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
+    # # 拷贝文件
+    # if args.uploadoss > 0:
+    #     copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
 
 if __name__ == "__main__":
 
