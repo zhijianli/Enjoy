@@ -8,7 +8,7 @@ import numpy as np
 
 from moviepy.editor import *
 from clause import cut_sent,sub,cut_end,sentence_break
-from file_operate import get_file_list,make_zip,copy_file
+from file_operate import get_file_list,make_zip,copy_file,compress_image
 from get_audio_time import get_duration_wav
 from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,generate_cover
 from moviepy.video.tools.drawing import color_gradient
@@ -25,8 +25,10 @@ def generate_video(args):
     print("num：" + str(num))
 
     # 加载text数据
-    ROOT = "/home/mocuili/data/"
-    # ROOT = "/data/"
+    if args.env == "test":
+        ROOT = "/home/mocuili/data/"
+    else:
+        ROOT = "/data/"
     DATA_ROOT = ROOT+"enjoy/"
     DATA_OSS_ROOT = ROOT+"enjoy-oss/"
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
@@ -174,9 +176,14 @@ def generate_video(args):
         f.write(end + "\n")
         f.write("出处:" + provenance + "\n")
         f.write("BGM:"+ music_file_name.split('.')[0] + "\n")
+        f.write("图片名:" + picture_file_name + "\n")
         f.write("作者:" + author + "\n")
 
     cover_clip.save_frame(RESULT_DIR + "cover.png", t=1)
+
+    # 保存压缩图
+    compress_image(RESULT_DIR + "cover.png")
+
     video.set_duration(all_time).set_fps(25).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4') # works
 
     # 将结果放到zip压缩文件中
@@ -196,6 +203,7 @@ if __name__ == "__main__":
     parser.add_argument('--num', type=int, default= 0) #文字标号
     parser.add_argument('--template', type=int, default=0) #视频制作模板
     parser.add_argument('--uploadoss', type=int, default=0)  # 是否上传oss
+    parser.add_argument('--env', type=str, default= "test") #环境
     args = parser.parse_args()
     print("接受参数：picture：" + str(args.picture))
     print("接受参数：music：" + str(args.music))
@@ -203,6 +211,7 @@ if __name__ == "__main__":
     print("接受参数：num：" + str(args.num))
     print("接受参数：template：" + str(args.template))
     print("接受参数：uploadoss：" + str(args.uploadoss))
+    print("接受参数：env：" + str(args.env))
 
     generate_video(args)
 

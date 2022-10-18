@@ -1,6 +1,7 @@
 import random
 import os, zipfile
 import shutil
+from PIL import Image
 
 def get_file_list(dir):
     file_list = []
@@ -26,10 +27,28 @@ def copy_file(source_file,destination_file):
     shutil.copyfile(source_file+".zip",destination_file+".zip")
     shutil.copytree(source_file, destination_file)
 
+def get_outfile(infile, outfile):
+    if outfile:
+        return outfile
+    dir, suffix = os.path.splitext(infile)
+    outfile = '{}-out{}'.format(dir, suffix)
+    return outfile
+
+def compress_image(infile, outfile=''):
+
+    outfile = get_outfile(infile, outfile)
+    img = Image.open(infile)
+    w, h = img.size
+    w, h = round(w * 0.6), round(h * 0.6)
+    img = img.resize((w, h), Image.ANTIALIAS)
+    img.save(outfile, optimize=True, quality=85)
+
 
 if __name__ == "__main__":
     title = "你好"
     DATA_ROOT = "/home/mocuili/data/enjoy/"
     # file_name = get_file_list(DATA_ROOT+"/music")
     # make_zip("/home/mocuili/data/enjoy/video/121/","/home/mocuili/data/enjoy/video/121.zip")
-    copy_file(DATA_ROOT + "video/2022-10-14 15:19:44", "/home/mocuili/data/enjoy-oss/video/2022-10-14 15:19:44.zip")
+    # copy_file(DATA_ROOT + "video/2022-10-14 15:19:44", "/home/mocuili/data/enjoy-oss/video/2022-10-14 15:19:44.zip")
+    compress_image(DATA_ROOT+"video/2022-10-18 09:02:54/cover.png")
+
