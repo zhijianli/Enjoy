@@ -26,4 +26,4 @@ def submit():
         return {'message':"success!",'name':name,'age':age}
 
 #定义app在8080端口运行
-app.run(port=8080)
+app.run(host = '0.0.0.0',port=8088)
