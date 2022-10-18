@@ -177,7 +177,7 @@ def generate_video(args):
         f.write(title + "\n")
         f.write(text + "\n")
         f.write(end + "\n")
-        f.write("出处:" + provenance + "\n")
+        # f.write("出处:" + provenance + "\n")
         f.write("BGM:"+ music_file_name.split('.')[0] + "\n")
         f.write("图片名:" + picture_file_name + "\n")
         f.write("作者:" + author + "\n")
@@ -192,7 +192,7 @@ def generate_video(args):
     # 将结果放到zip压缩文件中
     make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
 
-    print("视频生成结束！")
+    print("=============视频生成结束！=============")
 
     # # 拷贝文件
     # if args.uploadoss > 0:
