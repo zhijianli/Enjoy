@@ -91,6 +91,7 @@ def submit():
     parser.add_argument('--uploadoss', type=int, default=0)  #是否上传oss
     parser.add_argument('--env', type=str, default= "test") #环境
     args = parser.parse_args()
+    args.template = 1
     args.num = num
     args.env = env
     print("接受参数：picture：" + str(args.picture))

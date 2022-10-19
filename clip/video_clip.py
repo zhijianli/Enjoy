@@ -10,7 +10,7 @@ from moviepy.editor import *
 from clause import cut_sent,sub,cut_end,sentence_break
 from file_operate import get_file_list,make_zip,copy_file,compress_image
 from get_audio_time import get_duration_wav
-from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,generate_cover
+from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_txt_source_clip,generate_cover
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 
@@ -33,7 +33,7 @@ def generate_video(args):
         DATA_ROOT = ROOT + "enjoy-oss/"
 
 
-    # DATA_OSS_ROOT = ROOT+"enjoy-oss/"
+
     font = DATA_ROOT+'fonts/SIMFANG.TTF'
     # font = DATA_ROOT+'fonts/STXIHEI.TTF'
     # font='AR-PL-UKai-CN'
@@ -77,8 +77,8 @@ def generate_video(args):
     print("picture_file_name：" + picture_file_name)
 
     # 调用背景图像生成一个基本的clip
-    my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
-    # my_clip = ImageClip(DATA_ROOT+"picture/picture3.jpg")
+    # my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
+    my_clip = ImageClip(DATA_ROOT+"picture/jonatan-pie-h8nxGssjQXs-unsplash.jpg")
     w,h = my_clip.size
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
@@ -113,19 +113,26 @@ def generate_video(args):
             duration = len(text_str)/7
         print("text duration time = " + str(duration))
 
-        if args.template == 0:
-            text_str = sub(text_str)
-        else:
-            text_str = "\""+sentence_break(text_str)+"\""
-        txt_clip = TextClip(text_str,fontsize=text_font_size,color='white',font=font)
+        saying = text_str.split('||')[0] #获取名言
+        source = text_str.split('||')[1] # 获取来源
 
-        txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,duration,text_clip_start)
+        if args.template == 0:
+            saying = sub(saying)
+        else:
+            saying = "\"" + saying + "\""
+            # saying = "\""+sentence_break(saying)+"\""
+        txt_clip = TextClip(saying,fontsize=text_font_size,color='white',font=font)
+        source_clip = TextClip(source, fontsize=text_font_size//1.5, color='white', font=font)
+
+        # 设置文字的剪辑信息
+        txt_clip,colorclip,source_clip = optimi_txt_source_clip(txt_clip,w,h,duration,text_clip_start,source_clip)
 
         if args.dubbing > 0:
             audioclip = AudioFileClip(audio_file_path).set_duration(duration-dubbing_interval).set_start(text_clip_start).volumex(2)
             audio_clip_list.append(audioclip)
         all_clip_list.append(colorclip)
         all_clip_list.append(txt_clip)
+        all_clip_list.append(source_clip)
         text_clip_start = text_clip_start + duration
         all_time = all_time + duration
 
@@ -196,7 +203,8 @@ def generate_video(args):
 
     # # 拷贝文件
     # if args.uploadoss > 0:
-    #     copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
+    # DATA_OSS_ROOT = ROOT+"enjoy-oss/"
+    # copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
 
 if __name__ == "__main__":
 

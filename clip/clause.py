@@ -30,17 +30,22 @@ def cut_end(str):
     return str
 
 if __name__ == "__main__":
-    para = "没有所谓玩笑，所有的玩笑都有认真的成分。&" \
-           "人生就象弈棋， 一步失误， 全盘皆输，这是令人悲哀之事；而且人生还不如弈棋，不可能再来一局，也不能悔棋。"
-    sents = cut_sent(para)
-    # sents = para.split('&')
+    para = "第一段第一行||－－弗洛伊德&第二段第一行||－－黑塞&第二段第一行||－－弗洛姆"
+    # sents = cut_sent(para)
+    sents = para.split('&')
     print(sents)
+    for inx,val in enumerate(sents):
+
+        text_str = sents[inx]
+        saying = text_str.split('||')[0]
+        source = text_str.split('||')[1]
+        print(saying,source)
 
 
-    s = "如果我们不花时间去思考自己想要什么样的成功，以及自己的成功版本。那么，我们就很容易陷入一种基于他人期待的生活之中。"
+    # s = "如果我们不花时间去思考自己想要什么样的成功，以及自己的成功版本。那么，我们就很容易陷入一种基于他人期待的生活之中。"
     # s = sub(s)
-    s = sentence_break(s)
-    print(s)
+    # s = sentence_break(s)
+    # print(s)
     # s = "《爱的艺术》－－弗洛姆"
     #
     # s = cut_end(s)
