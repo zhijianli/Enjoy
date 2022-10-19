@@ -7,12 +7,17 @@
     <br><br>
     <input cols="30" type="text" id="start" name="start" placeholder="开头" style="width:750px;height:100px">
     <br><br>
-<!--    <input type="text" id="text" name="text" placeholder="文本">-->
-    <textarea rows="10" cols="30" type="text" id="text" name="text" placeholder="文本" style="width:750px;height:750px"></textarea>
+
+    <textarea rows="10" cols="30" type="text" id="text" name="text" placeholder="文本,注：使用＂&＂符号来分割句子，使用＂||＂符号来分割名言与出处" style="width:750px;height:750px"></textarea>
+
     <br><br>
     <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px">
     <br><br>
     <input cols="30" type="text" id="author" name="author" placeholder="作者" style="width:750px;height:100px">
+    <br><br>
+    <input cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" style="width:750px;height:100px">
+    <br><br>
+    <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">
     <br><br>
     <!--创建button按钮，点击则激发submit()事件-->
     <button onclick="submit();">生成视频</button>
@@ -26,7 +31,9 @@
                         "start":$("#start").val(),
                         "text":$("#text").val(),
                         "end":$("#end").val(),
-                        "author":$("#author").val()},  /*提交的数据（json格式），从输入框中获取*/
+                        "author":$("#author").val(),
+                        "picture":$("#picture").val(),
+                        "music":$("#music").val()},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
                     if (result.message == "success!") {

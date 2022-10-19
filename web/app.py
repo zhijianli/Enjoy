@@ -65,18 +65,24 @@ def submit():
         text = request.args.get("text")
         end = request.args.get("end")
         author = request.args.get("author")
+        picture = request.args.get("picture")
+        music = request.args.get("music")
     if request.method == "POST":
         title = request.form.get("title")
         start = request.form.get("start")
         text = request.form.get("text")
         end = request.form.get("end")
         author = request.form.get("author")
+        picture = request.form.get("picture")
+        music = request.form.get("music")
 
     print("title:"+str(title))
     print("start:"+str(start))
     print("text:"+str(text))
     print("end:"+str(end))
     print("author:"+str(author))
+    print("picture:"+str(picture))
+    print("music:"+str(music))
 
     num = write_excel(title, start, text, end, author)
 
@@ -94,6 +100,10 @@ def submit():
     args.template = 1
     args.num = num
     args.env = env
+    if music is not None and len(music) > 0:
+        args.music = music
+    if picture is not None and len(picture) > 0:
+        args.picture = picture
     print("接受参数：picture：" + str(args.picture))
     print("接受参数：music：" + str(args.music))
     print("接受参数：dubbing：" + str(args.dubbing))

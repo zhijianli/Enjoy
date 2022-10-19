@@ -77,8 +77,11 @@ def generate_video(args):
     print("picture_file_name：" + picture_file_name)
 
     # 调用背景图像生成一个基本的clip
-    # my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
-    my_clip = ImageClip(DATA_ROOT+"picture/jonatan-pie-h8nxGssjQXs-unsplash.jpg")
+    my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
+    # my_clip = ImageClip(DATA_ROOT+"picture/jonatan-pie-h8nxGssjQXs-unsplash.jpg")
+    # my_clip = VideoFileClip(DATA_ROOT + "picture/9957.gif_wh860.gif")
+    # my_clip = my_clip.loop(duration=my_clip.duration)
+
     w,h = my_clip.size
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
