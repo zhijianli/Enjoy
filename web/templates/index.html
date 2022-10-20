@@ -15,6 +15,8 @@
     <br><br>
     <input cols="30" type="text" id="author" name="author" placeholder="作者" style="width:750px;height:100px">
     <br><br>
+    <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">
+    <br><br>
     <input cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" style="width:750px;height:100px">
     <br><br>
     <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">
@@ -32,6 +34,7 @@
                         "text":$("#text").val(),
                         "end":$("#end").val(),
                         "author":$("#author").val(),
+                        "label":$("#label").val(),
                         "picture":$("#picture").val(),
                         "music":$("#music").val()},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/

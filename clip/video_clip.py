@@ -86,7 +86,7 @@ def generate_video(args):
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
     w,h = my_clip.size
-    text_font_size = w/40
+    text_font_size = w/30
     start_end_font_size = w/20
 
     all_clip_list = [my_clip]
@@ -113,7 +113,7 @@ def generate_video(args):
             audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
             duration = round(get_duration_wav(audio_file_path),2)+dubbing_interval
         else:
-            duration = len(text_str)/7
+            duration = len(text_str)//4.5
         print("text duration time = " + str(duration))
 
         saying = text_str.split('||')[0] #获取名言
@@ -181,6 +181,14 @@ def generate_video(args):
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     RESULT_DIR = DATA_ROOT + "video/" + current_time + "/"
 
+    # 生成标签
+    label_str = args.label
+    convert_label_str = ""
+    if label_str is not None and len(label_str) > 0:
+        label_list = label_str.split('　')
+        for label in label_list:
+            convert_label_str = convert_label_str + "#"+str(label)+"　"
+
     # 保存最后的结果
     os.mkdir(RESULT_DIR);
     with open(RESULT_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
@@ -191,6 +199,7 @@ def generate_video(args):
         f.write("BGM:"+ music_file_name.split('.')[0] + "\n")
         f.write("图片名:" + picture_file_name + "\n")
         f.write("作者:" + author + "\n")
+        f.write("标签:" + str(convert_label_str) + "\n")
 
     cover_clip.save_frame(RESULT_DIR + "cover.png", t=1)
 

@@ -65,6 +65,7 @@ def submit():
         text = request.args.get("text")
         end = request.args.get("end")
         author = request.args.get("author")
+        label = request.args.get("label")
         picture = request.args.get("picture")
         music = request.args.get("music")
     if request.method == "POST":
@@ -75,6 +76,7 @@ def submit():
         author = request.form.get("author")
         picture = request.form.get("picture")
         music = request.form.get("music")
+        label = request.form.get("label")
 
     print("title:"+str(title))
     print("start:"+str(start))
@@ -83,6 +85,7 @@ def submit():
     print("author:"+str(author))
     print("picture:"+str(picture))
     print("music:"+str(music))
+    print("label:"+str(label))
 
     num = write_excel(title, start, text, end, author)
 
@@ -96,10 +99,13 @@ def submit():
     parser.add_argument('--template', type=int, default=0) #视频制作模板
     parser.add_argument('--uploadoss', type=int, default=0)  #是否上传oss
     parser.add_argument('--env', type=str, default= "test") #环境
+    parser.add_argument('--label', type=str, default=None)  # AI配音
     args = parser.parse_args()
     args.template = 1
     args.num = num
     args.env = env
+    if label is not None and len(label) > 0:
+        args.label = label
     if music is not None and len(music) > 0:
         args.music = music
     if picture is not None and len(picture) > 0:
@@ -111,6 +117,7 @@ def submit():
     print("接受参数：template：" + str(args.template))
     print("接受参数：uploadoss：" + str(args.uploadoss))
     print("接受参数：env：" + str(args.env))
+    print("接受参数：label：" + str(args.label))
 
     generate_video(args)
 
