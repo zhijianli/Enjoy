@@ -35,7 +35,7 @@ def write_excel(title,start,text,end,author):
     if env == "test":
         file_path = "/home/mocuili/data/enjoy/text/text.xlsx"
     if env == "prod":
-        file_path = "/data/enjoy-oss/text/text.xlsx"
+        file_path = "/data/enjoy/text/text.xlsx"
     rb = xlrd.open_workbook(file_path, formatting_info=False)
     rows_num = rb.sheets()[0].nrows
 
