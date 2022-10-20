@@ -130,10 +130,12 @@ def generate_video(args):
 
         # 设置文字的剪辑信息
         txt_clip,colorclip,source_clip = optimi_txt_source_clip(txt_clip,w,h,duration,text_clip_start,source_clip)
+        print("设置文字剪辑信息")
 
         if args.dubbing > 0:
             audioclip = AudioFileClip(audio_file_path).set_duration(duration-dubbing_interval).set_start(text_clip_start).volumex(2)
             audio_clip_list.append(audioclip)
+            print("设置背景音乐剪辑信息")
         all_clip_list.append(colorclip)
         all_clip_list.append(txt_clip)
         all_clip_list.append(source_clip)
@@ -218,6 +220,7 @@ def generate_video(args):
     if args.env == "prod":
         DATA_OSS_ROOT = ROOT+"enjoy-oss/"
         copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
+        print("=============视频拷贝结束！=============")
 
 if __name__ == "__main__":
 
