@@ -34,7 +34,8 @@ def generate_video(args):
 
 
 
-    font = DATA_ROOT+'fonts/SIMFANG.TTF'
+    # font = DATA_ROOT+'fonts/SIMFANG.TTF'
+    font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
     # font = DATA_ROOT+'fonts/STXIHEI.TTF'
     # font='AR-PL-UKai-CN'
     excel_content = pd.read_excel(DATA_ROOT+'text/text.xlsx')
