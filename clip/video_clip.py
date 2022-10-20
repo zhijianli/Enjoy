@@ -30,7 +30,7 @@ def generate_video(args):
         DATA_ROOT = ROOT + "enjoy/"
     else:
         ROOT = "/data/"
-        DATA_ROOT = ROOT + "enjoy-oss/"
+        DATA_ROOT = ROOT + "enjoy/"
 
 
 
@@ -214,10 +214,10 @@ def generate_video(args):
 
     print("=============视频生成结束！=============")
 
-    # # 拷贝文件
-    # if args.uploadoss > 0:
-    # DATA_OSS_ROOT = ROOT+"enjoy-oss/"
-    # copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
+    # 拷贝文件
+    if args.env == "prod":
+        DATA_OSS_ROOT = ROOT+"enjoy-oss/"
+        copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
 
 if __name__ == "__main__":
 
