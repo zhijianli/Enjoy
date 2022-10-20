@@ -62,15 +62,18 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     cover_w, cover_h = cover_pitcure_clip.size
     cover_pitcure_clip = cover_pitcure_clip.fx(vfx.crop, x1=0, y1=0, x2=cover_w, y2=cover_w / 1.88)
     cover_w, cover_h = cover_pitcure_clip.size
+    print("生成封面图")
 
     # 标题
     txt_clip = TextClip(title, fontsize=cover_w / 20, color='white', font=font)
     txt_clip = txt_clip.set_duration(1).set_start(1)
     txt_w, txt_h = txt_clip.size
+    print("生成封面标题")
 
     # 作者
     author_clip = TextClip(author_name, fontsize=cover_w / 30, color='white', font=font)
     author_clip = author_clip.set_duration(1).set_start(1)
+    print("生成封面作者")
 
     # 头像
     avatar_clip = ImageClip(DATA_ROOT + "avatar/"+author_name+".jpg")
@@ -81,12 +84,15 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     avatar_x = (cover_w - txt_w - avatar_w) // 2-cover_w//42
     avatar_y = (cover_h-avatar_h)//2*9//10
     avatar_clip = avatar_clip.resize(avatar_resize)
+    print("生成封面头像")
 
     # 遮罩
     colorclip_w = int(cover_w*8//10)
     colorclip_h = int(avatar_h * 9 // 10)
     colorclip = ColorClip(size=(colorclip_w, colorclip_h), color=[00, 00, 00], duration=10).set_opacity(
         0.3)
+    print("生成封面遮罩")
+
 
     # 线框
     line_width = colorclip_h//253
@@ -94,6 +100,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     wireframe_bottom_clip = ColorClip((cover_w*8//10, line_width), (255, 255, 255))
     wireframe_left_clip = ColorClip((line_width, colorclip_h), (255, 255, 255))
     wireframe_right_clip = ColorClip((line_width, colorclip_h + line_width), (255, 255, 255))
+    print("生成封面线框")
 
     # 设置位置
     position = (avatar_x, avatar_y)
@@ -110,6 +117,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     wireframe_bottom_clip = wireframe_bottom_clip.set_position((wireframe_top_clip_x, wireframe_top_clip_y + colorclip_h))
     wireframe_left_clip = wireframe_left_clip.set_position((wireframe_top_clip_x, wireframe_top_clip_y))
     wireframe_right_clip = wireframe_right_clip.set_position((wireframe_top_clip_x+colorclip_w, wireframe_top_clip_y))
+    print("调整封面位置")
 
     cover_clip_list.append(cover_pitcure_clip)
     cover_clip_list.append(wireframe_top_clip)
@@ -121,6 +129,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     cover_clip_list.append(txt_clip)
     cover_clip_list.append(author_clip)
     cover_clip = CompositeVideoClip(cover_clip_list)
+    print("封面剪辑叠加")
 
     return cover_clip
 
