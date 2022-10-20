@@ -36,9 +36,11 @@ def optimi_txt_source_clip(txt_clip,w,h,duration,text_clip_start,source_clip):
     txt_w, txt_h = txt_clip.size
     position = ((w - txt_w) // 2, (h - txt_h)//2 * 9//10)
     txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start)
+    print("设置文本的位置信息")
 
     # 增加遮罩
     colorclip = add_txt_mask(txt_clip,duration,text_clip_start,w,h)
+    print("增加遮罩")
 
     # 设置来源的剪辑信息
     source_w,source_h = source_clip.size
@@ -47,6 +49,7 @@ def optimi_txt_source_clip(txt_clip,w,h,duration,text_clip_start,source_clip):
     source_x = (w - txt_w)//2-txt_w//10 + color_w - source_w
     source_y = ((h - txt_h)//2 - h*3//40) * 9//10 + color_h*6//5
     source_clip = source_clip.set_position((source_x,source_y)).set_duration(duration).set_start(text_clip_start)
+    print("设置来源的剪辑信息")
 
     return txt_clip,colorclip,source_clip
 
