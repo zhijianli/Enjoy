@@ -137,8 +137,11 @@ def generate_video(args):
             audio_clip_list.append(audioclip)
             print("设置背景音乐剪辑信息")
         all_clip_list.append(colorclip)
+        print("增加遮罩clip")
         all_clip_list.append(txt_clip)
+        print("增加文字clip")
         all_clip_list.append(source_clip)
+        print("增加来源clip")
         text_clip_start = text_clip_start + duration
         all_time = all_time + duration
 
