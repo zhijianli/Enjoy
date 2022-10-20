@@ -55,7 +55,7 @@ def optimi_txt_source_clip(txt_clip,w,h,duration,text_clip_start,source_clip):
 
 def add_txt_mask(txt_clip,duration,text_clip_start,w,h):
     txt_w, txt_h = txt_clip.size
-    color_size = (txt_w*6//5, txt_h+h*3//20)
+    color_size = (txt_w*6//5+1, txt_h+h*3//20+1)
     print("生成遮罩size:",color_size)
     colorclip = ColorClip(size=color_size,color=(0, 0, 0))
     print("生成遮罩clip")
