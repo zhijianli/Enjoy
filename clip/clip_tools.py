@@ -32,30 +32,48 @@ def optimi_txt_clip(txt_clip,w,h,duration,text_clip_start):
 
     return txt_clip,colorclip
 
-def optimi_txt_source_clip(txt_clip,w,h,duration,text_clip_start,source_clip):
+def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip):
     txt_w, txt_h = txt_clip.size
-    position = ((w - txt_w) // 2, (h - txt_h)//2 * 9//10)
+    comment_w,comment_h = comment_clip.size
+
+    txt_x = (w - txt_w) // 2
+    txt_y = (h - (txt_h + comment_h))//2 * 9//10
+    position = (txt_x, txt_y)
     txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start)
     print("设置文本的位置信息")
 
+    # 设置评论的剪辑信息
+    comment_clip = comment_clip.set_position(((w - comment_w)//2,txt_y+txt_h)).set_duration(duration).set_start(text_clip_start)
+
+    # 如果评论的长度更长，那就把评论的长度当成整个txt领域的长度
+    if comment_w > txt_w:
+        txt_w = comment_w
+
+    # 金句的高度加上评论的高度，正好是整个txt领域的高度
+    txt_h = txt_h + comment_h
+
     # 增加遮罩
-    colorclip = add_txt_mask(txt_clip,duration,text_clip_start,w,h)
-    print("增加遮罩")
+    color_size = (txt_w*6//5, txt_h+h*3 //20)
+    colorclip = ColorClip(size=color_size,color=(0, 0, 0))
+    position = ((w - txt_w)//2 - txt_w//10, ((h - txt_h)//2 - h*3//40) * 9//10)
+    colorclip = colorclip.set_opacity(0.3).set_position(position).set_duration(duration).set_start(text_clip_start)
 
     # 设置来源的剪辑信息
     source_w,source_h = source_clip.size
     color_w,color_h = colorclip.size
     # 来源的位置：x位置是遮罩的x位置+遮罩的w-来源的w,y位置是遮罩的y+遮罩的h*11/10
     source_x = (w - txt_w)//2-txt_w//10 + color_w - source_w
-    source_y = ((h - txt_h)//2 - h*3//40) * 9//10 + color_h*6//5
+    # source_y = ((h - txt_h)//2 - h*3//40) * 9//10 + color_h*6//5
+    source_y = (h - color_h)//2 + color_h
     source_clip = source_clip.set_position((source_x,source_y)).set_duration(duration).set_start(text_clip_start)
     print("设置来源的剪辑信息")
 
-    return txt_clip,colorclip,source_clip
+    return txt_clip,colorclip,source_clip,comment_clip
+
 
 def add_txt_mask(txt_clip,duration,text_clip_start,w,h):
     txt_w, txt_h = txt_clip.size
-    color_size = (txt_w*6//5+1, txt_h+h*3//20+1)
+    color_size = (txt_w*6//5, txt_h+h*3//20)
     print("生成遮罩size:",color_size)
     colorclip = ColorClip(size=color_size,color=(0, 0, 0))
     print("生成遮罩clip")
@@ -96,7 +114,8 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     print("生成封面头像")
 
     # 遮罩
-    colorclip_w = int(cover_w*8//10)
+    # colorclip_w = int(cover_w*8//10)
+    colorclip_w = int(avatar_w + txt_w)
     colorclip_h = int(avatar_h * 9 // 10)
     colorclip = ColorClip(size=(colorclip_w, colorclip_h), color=[00, 00, 00], duration=10).set_opacity(
         0.3)
@@ -105,8 +124,8 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
 
     # 线框
     line_width = colorclip_h//253
-    wireframe_top_clip = ColorClip((cover_w*8//10, line_width), (255, 255, 255))
-    wireframe_bottom_clip = ColorClip((cover_w*8//10, line_width), (255, 255, 255))
+    wireframe_top_clip = ColorClip((colorclip_w, line_width), (255, 255, 255))
+    wireframe_bottom_clip = ColorClip((colorclip_w, line_width), (255, 255, 255))
     wireframe_left_clip = ColorClip((line_width, colorclip_h), (255, 255, 255))
     wireframe_right_clip = ColorClip((line_width, colorclip_h + line_width), (255, 255, 255))
     print("生成封面线框")

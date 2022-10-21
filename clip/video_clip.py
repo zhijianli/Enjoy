@@ -10,7 +10,7 @@ from moviepy.editor import *
 from clause import cut_sent,sub,cut_end,sentence_break
 from file_operate import get_file_list,make_zip,copy_file,compress_image
 from get_audio_time import get_duration_wav
-from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_txt_source_clip,generate_cover
+from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_saying_clip,generate_cover
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 
@@ -36,8 +36,9 @@ def generate_video(args):
 
     # font = DATA_ROOT+'fonts/SIMFANG.TTF'
     font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
-    # font = DATA_ROOT+'fonts/STXIHEI.TTF'
+    comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
     # font='AR-PL-UKai-CN'
+    # font = DATA_ROOT + 'fonts/STXIHEI.TTF'
     excel_content = pd.read_excel(DATA_ROOT+'text/text.xlsx')
     title_list = excel_content["title"]
     text_list = excel_content["text"]
@@ -117,8 +118,10 @@ def generate_video(args):
             duration = len(text_str)//4.5
         print("text duration time = " + str(duration))
 
-        saying = text_str.split('||')[0] #获取名言
+        saying_comment = text_str.split('||')[0] #获取名言和评论
         source = text_str.split('||')[1] # 获取来源
+        saying = saying_comment.split('++')[0]
+        comment = saying_comment.split('++')[1]
 
         if args.template == 0:
             saying = sub(saying)
@@ -126,10 +129,11 @@ def generate_video(args):
             saying = "\"" + saying + "\""
             # saying = "\""+sentence_break(saying)+"\""
         txt_clip = TextClip(saying,fontsize=text_font_size,color='white',font=font)
-        source_clip = TextClip(source, fontsize=text_font_size//1.5, color='white', font=font)
+        comment_clip = TextClip(comment, fontsize=text_font_size // 1.5, color='white', font=comment_font)
+        source_clip = TextClip(source, fontsize=text_font_size//1.5, color='white', font=comment_font)
 
         # 设置文字的剪辑信息
-        txt_clip,colorclip,source_clip = optimi_txt_source_clip(txt_clip,w,h,duration,text_clip_start,source_clip)
+        txt_clip,colorclip,source_clip,comment_clip = optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip)
         print("设置文字剪辑信息")
 
         if args.dubbing > 0:
@@ -137,11 +141,9 @@ def generate_video(args):
             audio_clip_list.append(audioclip)
             print("设置背景音乐剪辑信息")
         all_clip_list.append(colorclip)
-        print("增加遮罩clip")
         all_clip_list.append(txt_clip)
-        print("增加文字clip")
+        all_clip_list.append(comment_clip)
         all_clip_list.append(source_clip)
-        print("增加来源clip")
         text_clip_start = text_clip_start + duration
         all_time = all_time + duration
 
@@ -202,7 +204,7 @@ def generate_video(args):
         f.write(text + "\n")
         f.write(end + "\n")
         # f.write("出处:" + provenance + "\n")
-        f.write("BGM:"+ music_file_name.split('.')[0] + "\n")
+        f.write("BGM:"+ music_file_name + "\n")
         f.write("图片名:" + picture_file_name + "\n")
         f.write("作者:" + author + "\n")
         f.write("标签:" + str(convert_label_str) + "\n")
@@ -210,7 +212,7 @@ def generate_video(args):
     cover_clip.save_frame(RESULT_DIR + "cover.png", t=1)
 
     # 保存压缩图
-    compress_image(RESULT_DIR + "cover.png")
+    # compress_image(RESULT_DIR + "cover.png")
 
     video.set_duration(all_time).set_fps(25).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4') # works
 
