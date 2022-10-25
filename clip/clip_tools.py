@@ -114,8 +114,8 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     print("生成封面头像")
 
     # 遮罩
-    # colorclip_w = int(cover_w*8//10)
-    colorclip_w = int(avatar_w + txt_w)
+    colorclip_w = int(cover_w*8//10)
+    # colorclip_w = int(avatar_w + txt_w)
     colorclip_h = int(avatar_h * 9 // 10)
     colorclip = ColorClip(size=(colorclip_w, colorclip_h), color=[00, 00, 00], duration=10).set_opacity(
         0.3)
