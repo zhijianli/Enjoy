@@ -21,6 +21,12 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineProfile
+import os
+
+def get_develop_env():
+    develop_env = os.environ["DEVELOP_ENV"]
+    return develop_env
+
 
 # 设置header
 HEADERS = {
@@ -133,9 +139,14 @@ if __name__=='__main__':
     window.show() # 显示窗口
     app.exec_() # 运行应用，并监听事件
 
-
     # 创建目录
-    data_dir = './导出资料/'
+    BASE_ROOT = ''
+    env = get_develop_env()
+    if env == "test":
+        BASE_ROOT = '/home/mocuili/data/enjoy/'
+    if env == "prod":
+        BASE_ROOT = '/data/enjoy/'
+    data_dir = BASE_ROOT+'wechat_export/'
     note_dir = data_dir + '我的笔记/'
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
@@ -174,6 +185,14 @@ if __name__=='__main__':
                 notes = get_bookmarklist(book[0], HEADERS)
                 with open(note_dir + book_name + '.txt', 'w', encoding='utf-8') as f:
                     f.write(notes)
+
+                best_notes = get_bestbookmarks(book[0], HEADERS)
+                with open(note_dir + book_name + '-best.txt', 'w', encoding='utf-8') as f:
+                    f.write(best_notes)
+
+                mythought_notes = get_mythought(book[0])
+                with open(note_dir + book_name + '-mythought.txt', 'w', encoding='utf-8') as f:
+                    f.write(mythought_notes)
 
                 # 写入成功后跳出循环，防止重复写入
                 break

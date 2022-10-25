@@ -39,7 +39,7 @@ def compress_image(infile, outfile=''):
     outfile = get_outfile(infile, outfile)
     img = Image.open(infile)
     w, h = img.size
-    w, h = round(w * 0.2), round(h * 0.2)
+    w, h = round(w * 0.5), round(h * 0.5)
     img = img.resize((w, h), Image.ANTIALIAS)
     img.save(outfile, optimize=True, quality=85)
 

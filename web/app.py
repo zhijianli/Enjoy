@@ -5,14 +5,14 @@ import pandas as pd
 import xlrd
 from xlutils.copy import copy
 import socket
+import os
 
 # 判断环境
-hostname = socket.gethostname()
-if hostname == 'mocuili-Lenovo-Legion-R9000K2021H':
-    env = "test"
-else:
-    env = "prod"
+def get_develop_env():
+    develop_env = os.environ["DEVELOP_ENV"]
+    return develop_env
 
+env = get_develop_env()
 if env == "test":
     sys.path.append("/home/mocuili/github/Enjoy/clip")
 if env == "prod":
