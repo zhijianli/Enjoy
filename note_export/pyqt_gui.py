@@ -190,14 +190,15 @@ if __name__=='__main__':
                 with open(note_dir + book_name + '-best.txt', 'w', encoding='utf-8') as f:
                     f.write(best_notes)
 
-                mythought_notes = get_mythought(book[0])
-                with open(note_dir + book_name + '-mythought.txt', 'w', encoding='utf-8') as f:
-                    f.write(mythought_notes)
+                # mythought_notes = get_mythought(book[0],HEADERS)
+                # with open(note_dir + book_name + '-mythought.txt', 'w', encoding='utf-8') as f:
+                #     f.write(mythought_notes)
 
                 # 写入成功后跳出循环，防止重复写入
                 break
-            except:
+            except Exception as e:
                 # 忽略异常，直接重试
+                print(e)
                 pbar.set_description("获取笔记【{}】失败，开始第{}次重试".format(book_name, try_count + 1))
 
                 # 等待3秒后再重试
