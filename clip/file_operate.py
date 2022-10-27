@@ -2,6 +2,8 @@ import random
 import os, zipfile
 import shutil
 from PIL import Image
+import librosa
+import soundfile as sf
 
 def get_file_list(dir):
     file_list = []
@@ -50,5 +52,15 @@ if __name__ == "__main__":
     # file_name = get_file_list(DATA_ROOT+"/music")
     # make_zip("/home/mocuili/data/enjoy/video/121/","/home/mocuili/data/enjoy/video/121.zip")
     # copy_file(DATA_ROOT + "video/2022-10-14 15:19:44", "/home/mocuili/data/enjoy-oss/video/2022-10-14 15:19:44.zip")
-    compress_image(DATA_ROOT+"cover.png")
+    # compress_image(DATA_ROOT+"cover.png")
+    music_name = "whatsup"
+    file_name = music_name+".mp3"
+    new_file_name = music_name+"-16k.mp3"
+    y,sr = librosa.load(DATA_ROOT+file_name,sr=44100)
+    y_16k = librosa.resample(y,sr,16000)
+    librosa.output.write_wav(DATA_ROOT+new_file_name,y_16k,16000)
+
+    # data,samplerate = sf.read(DATA_ROOT+file_name)
+    # sf.write(DATA_ROOT+new_file_name,data,16000)
+
 

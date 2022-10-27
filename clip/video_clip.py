@@ -4,6 +4,8 @@ import time
 import argparse
 import random
 import numpy as np
+import line_profiler
+profile = line_profiler.LineProfiler()
 
 
 from moviepy.editor import *
@@ -14,6 +16,7 @@ from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_saying_cli
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 
+@profile
 def generate_video(args):
 
 
@@ -134,16 +137,18 @@ def generate_video(args):
 
         # 设置文字的剪辑信息
         txt_clip,colorclip,source_clip,comment_clip = optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip)
-        print("设置文字剪辑信息")
 
         if args.dubbing > 0:
             audioclip = AudioFileClip(audio_file_path).set_duration(duration-dubbing_interval).set_start(text_clip_start).volumex(2)
             audio_clip_list.append(audioclip)
-            print("设置背景音乐剪辑信息")
         all_clip_list.append(colorclip)
         all_clip_list.append(txt_clip)
         all_clip_list.append(comment_clip)
         all_clip_list.append(source_clip)
+        # colorclip.close()
+        # txt_clip.close()
+        # comment_clip.close()
+        # source_clip.close()
         text_clip_start = text_clip_start + duration
         all_time = all_time + duration
 
@@ -190,12 +195,12 @@ def generate_video(args):
     RESULT_DIR = DATA_ROOT + "video/" + current_time + "/"
 
     # 生成标签
-    label_str = args.label
-    convert_label_str = ""
-    if label_str is not None and len(label_str) > 0:
-        label_list = label_str.split('　')
-        for label in label_list:
-            convert_label_str = convert_label_str + "#"+str(label)+"　"
+    # label_str = args.label
+    # convert_label_str = ""
+    # if label_str is not None and len(label_str) > 0:
+    #     label_list = label_str.split('　')
+    #     for label in label_list:
+    #         convert_label_str = convert_label_str + "#"+str(label)+"　"
 
     # 保存最后的结果
     os.mkdir(RESULT_DIR);
@@ -207,14 +212,14 @@ def generate_video(args):
         f.write("BGM:"+ music_file_name + "\n")
         f.write("图片名:" + picture_file_name + "\n")
         f.write("作者:" + author + "\n")
-        f.write("标签:" + str(convert_label_str) + "\n")
+        # f.write("标签:" + str(convert_label_str) + "\n")
 
     cover_clip.save_frame(RESULT_DIR + "cover.png", t=1)
 
     # 保存压缩图
     # compress_image(RESULT_DIR + "cover.png")
-
-    video.set_duration(all_time).set_fps(25).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4') # works
+    print("all_clip_list的size：" + str(sys.getsizeof(all_clip_list)/1024/1024) +"MB")
+    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4') # works
 
     # 将结果放到zip压缩文件中
     make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")

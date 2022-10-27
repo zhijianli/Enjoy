@@ -40,7 +40,6 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
     txt_y = (h - (txt_h + comment_h))//2 * 9//10
     position = (txt_x, txt_y)
     txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start)
-    print("设置文本的位置信息")
 
     # 设置评论的剪辑信息
     comment_clip = comment_clip.set_position(((w - comment_w)//2,txt_y+txt_h)).set_duration(duration).set_start(text_clip_start)
@@ -66,7 +65,6 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
     # source_y = ((h - txt_h)//2 - h*3//40) * 9//10 + color_h*6//5
     source_y = (h - color_h)//2 + color_h
     source_clip = source_clip.set_position((source_x,source_y)).set_duration(duration).set_start(text_clip_start)
-    print("设置来源的剪辑信息")
 
     return txt_clip,colorclip,source_clip,comment_clip
 
@@ -74,13 +72,12 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
 def add_txt_mask(txt_clip,duration,text_clip_start,w,h):
     txt_w, txt_h = txt_clip.size
     color_size = (txt_w*6//5, txt_h+h*3//20)
-    print("生成遮罩size:",color_size)
     colorclip = ColorClip(size=color_size,color=(0, 0, 0))
-    print("生成遮罩clip")
+
     position = ((w - txt_w)//2 - txt_w//10, ((h - txt_h)//2 - h*3//40) * 9//10)
-    print("计算遮罩position")
+
     colorclip = colorclip.set_opacity(0.3).set_position(position).set_duration(duration).set_start(text_clip_start)
-    print("设置遮罩属性")
+
     return colorclip
 
 def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
