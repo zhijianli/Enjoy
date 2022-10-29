@@ -34,7 +34,7 @@ def optimi_txt_clip(txt_clip,w,h,duration,text_clip_start):
 
     return txt_clip,colorclip
 
-# @profile
+@profile
 def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip):
     txt_w, txt_h = txt_clip.size
     comment_w,comment_h = comment_clip.size

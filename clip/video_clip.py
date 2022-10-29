@@ -21,7 +21,7 @@ from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 from guppy import hpy
 
-# @profile
+@profile
 def generate_video(args):
 
     num = 0
