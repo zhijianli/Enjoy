@@ -1,11 +1,15 @@
 import pandas as pd
 import sys
+import psutil
+import os
+import gc
 import time
 import argparse
 import random
 import numpy as np
-import line_profiler
-profile = line_profiler.LineProfiler()
+# import line_profiler
+# profile = line_profiler.LineProfiler()
+from memory_profiler import profile
 
 
 from moviepy.editor import *
@@ -15,10 +19,10 @@ from get_audio_time import get_duration_wav
 from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_saying_clip,generate_cover
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
+from guppy import hpy
 
-@profile
+# @profile
 def generate_video(args):
-
 
     num = 0
     if args.num == 0: # 如果传的参数是0，就随机取一个整数
@@ -61,6 +65,12 @@ def generate_video(args):
     print("结尾：" + str(end))
     print("作者：" + str(author))
     print("出处：" + str(provenance))
+    print("命令是： python3 video_clip.py --num="+str(num)+
+          " --picture="+str(args.picture)+
+          " --music="+str(args.music)+
+          " --dubbing="+str(args.dubbing)+
+          " --env="+str(args.env)+
+          " --template="+str(args.template))
 
     # 断句
     if args.template == 0:
@@ -82,7 +92,8 @@ def generate_video(args):
     print("picture_file_name：" + picture_file_name)
 
     # 调用背景图像生成一个基本的clip
-    my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)# has infinite duration
+    # my_clip = ImageSequenceClip(DATA_ROOT + "picture/" + picture_file_name,fps=5)
+    my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)
     # my_clip = ImageClip(DATA_ROOT+"picture/jonatan-pie-h8nxGssjQXs-unsplash.jpg")
     # my_clip = VideoFileClip(DATA_ROOT + "picture/9957.gif_wh860.gif")
     # my_clip = my_clip.loop(duration=my_clip.duration)
@@ -109,6 +120,7 @@ def generate_video(args):
     all_clip_list.append(txt_clip)
     text_clip_start = text_clip_start + title_time
     all_time = all_time + title_time
+    colorclip_ori_list = []
 
     # 视频叠加上文字和AI配音
     for inx,val in enumerate(sents):
@@ -136,7 +148,7 @@ def generate_video(args):
         source_clip = TextClip(source, fontsize=text_font_size//1.5, color='white', font=comment_font)
 
         # 设置文字的剪辑信息
-        txt_clip,colorclip,source_clip,comment_clip = optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip)
+        txt_clip,colorclip,source_clip,comment_clip,colorclip_ori = optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip)
 
         if args.dubbing > 0:
             audioclip = AudioFileClip(audio_file_path).set_duration(duration-dubbing_interval).set_start(text_clip_start).volumex(2)
@@ -145,22 +157,18 @@ def generate_video(args):
         all_clip_list.append(txt_clip)
         all_clip_list.append(comment_clip)
         all_clip_list.append(source_clip)
-        # colorclip.close()
-        # txt_clip.close()
-        # comment_clip.close()
-        # source_clip.close()
+        colorclip_ori_list.append(colorclip_ori)
         text_clip_start = text_clip_start + duration
         all_time = all_time + duration
 
     # 设置结尾
     txt_clip = TextClip(cut_end(end), fontsize=start_end_font_size, color='white', font=font)
     txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,end_time,text_clip_start)
+
     all_clip_list.append(colorclip)
     all_clip_list.append(txt_clip)
     text_clip_start = text_clip_start + end_time
     all_time = all_time + end_time
-
-
     video = CompositeVideoClip(all_clip_list)
 
     # 生成一个背景音乐
@@ -182,7 +190,6 @@ def generate_video(args):
 
     print("all_time " +str(all_time))
     print("video.size = " + str(video.size))
-
 
     # 生成横的封面
     # video.save_frame(DATA_ROOT+"cover.png",t=1)
@@ -218,8 +225,21 @@ def generate_video(args):
 
     # 保存压缩图
     # compress_image(RESULT_DIR + "cover.png")
-    print("all_clip_list的size：" + str(sys.getsizeof(all_clip_list)/1024/1024) +"MB")
-    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4') # works
+
+    # 视频写入文件
+    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4')
+
+    # 每次编辑完视频之后都要主动释放内存，进行垃圾回收
+    del cover_clip
+    del video
+    all_clip_len = len(all_clip_list)
+    colorclip_ori_len = len(colorclip_ori_list)
+    for index in range(all_clip_len):
+        del all_clip_list[all_clip_len-1-index]
+    for index in range(colorclip_ori_len):
+        del colorclip_ori_list[colorclip_ori_len-1-index]
+
+    gc.collect()
 
     # 将结果放到zip压缩文件中
     make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
