@@ -13,12 +13,16 @@ def get_develop_env():
     return develop_env
 
 env = get_develop_env()
+book_path = ""
 if env == "test":
     sys.path.append("/home/mocuili/github/Enjoy/clip")
+    book_path = "/home/mocuili/data/enjoy/wechat_export/我的笔记/"
 if env == "prod":
     sys.path.append("/github/clip")
+    book_path = "/data/enjoy/wechat_export/我的笔记/"
 
 from video_clip import generate_video
+from file_operate import get_file_name_list
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
@@ -126,6 +130,22 @@ def submit():
     #     return {'message':"error!"}
     # else:
     return {'message':"视频生成完毕"}
+
+@app.route("/get_books",methods=["GET"])
+def get_books():
+    file_name_list = get_file_name_list(book_path)
+    return {'message': file_name_list}
+
+@app.route("/get_content_by_book",methods=["GET"])
+def get_content_by_book():
+    book_name = request.args.get("book_name")
+    file_object = open(book_path+book_name)
+    try:
+        book_content = file_object.read()
+    finally:
+        file_object.close()
+    return {'message': book_content}
+
 
 #定义app在8080端口运行
 app.run(host = '0.0.0.0',port=8088)

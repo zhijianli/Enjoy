@@ -13,6 +13,11 @@ def get_file_list(dir):
     print(file_name)
     return file_name
 
+def get_file_name_list(dir):
+    file_list = []
+    for root, dirs, files in os.walk(dir, topdown=False):
+        file_list = files
+    return file_list
 
 #打包目录为zip文件（未压缩）
 def make_zip(source_dir, output_filename):

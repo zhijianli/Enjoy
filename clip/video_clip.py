@@ -21,7 +21,7 @@ from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 from guppy import hpy
 
-@profile
+# @profile
 def generate_video(args):
 
     num = 0
@@ -182,7 +182,7 @@ def generate_video(args):
     print("music_file_name：" + music_file_name)
 
     # 叠加上背景音乐
-    back_music_clip = AudioFileClip(DATA_ROOT+"music/" + music_file_name).subclip(t_start=0, t_end=all_time).volumex(0.3).audio_fadeout(end_time/2)
+    back_music_clip = AudioFileClip(DATA_ROOT+"music/" + music_file_name).subclip(t_start=0, t_end=all_time).volumex(0.3).audio_fadeout(end_time*0.7)
     audio_clip_list.append(back_music_clip)
     all_audio_clip = CompositeAudioClip(audio_clip_list)
 
