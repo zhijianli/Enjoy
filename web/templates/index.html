@@ -1,11 +1,18 @@
 <html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+    </head>
+
     <!--引入jQuery包用于使用ajax-->
     <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
 
     <body onload="get_books()">
     <h2>请输入生成视频相关信息</h2>
     <!--创建两个input输入框，定义id分别为name,age-->
-    <select id="book_list" style="width:250px">
+    <select id="book_list" class="singleSelect"  style="width:350px">
+        <option value="">--请选择--</option>
     </select>
     &nbsp; &nbsp; &nbsp; <input type="text" class="search" placeholder="输入你想到的词">
     &nbsp; &nbsp; &nbsp; <button>搜索</button>
@@ -43,6 +50,9 @@
     </div>
     </body>
     <script>
+        $(document).ready(function () {//加载页面时执行select2
+            $('.singleSelect').select2();
+        });
         /*在这里编写submit()事件*/
         function submit() {
             $.ajax({
@@ -88,7 +98,7 @@
                 }
             });
         }
-        $('#book_list').click(function(){
+        $('select#book_list').change(function(){
                 $.ajax({
                     url: "get_content_by_book",
                     type: "GET",
