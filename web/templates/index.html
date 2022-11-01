@@ -14,8 +14,8 @@
     <select id="book_list" class="singleSelect"  style="width:350px">
         <option value="">--请选择--</option>
     </select>
-    &nbsp; &nbsp; &nbsp; <input type="text" class="search" placeholder="输入你想到的词">
-    &nbsp; &nbsp; &nbsp; <button>搜索</button>
+    &nbsp; &nbsp; &nbsp; <input id="key_words" type="text" class="search" placeholder="输入你想到的词">
+    &nbsp; &nbsp; &nbsp; <button id="book_search" >搜索</button>
     <br><br>
 
     <div >
@@ -104,6 +104,18 @@
                     url: "get_content_by_book",
                     type: "GET",
                     data: {"wechar_book_id":$(this).val()},
+                    success: function (result) {
+                        book_content = result.message
+                        document.getElementById('book_content').innerHTML=book_content;
+                    }
+                 });
+        });
+
+        $('button#book_search').click(function(){
+                $.ajax({
+                    url: "book_search",
+                    type: "GET",
+                    data: {"key_words":$("#key_words").val()},
                     success: function (result) {
                         book_content = result.message
                         document.getElementById('book_content').innerHTML=book_content;

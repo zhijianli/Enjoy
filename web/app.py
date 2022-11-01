@@ -23,7 +23,7 @@ sys.path.append("..")
 from clip.video_clip import generate_video
 from clip.file_operate import get_file_name_list
 
-from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id
+from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id,select_book_sentence_by_key_words
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
@@ -154,7 +154,20 @@ def get_content_by_book():
     book_sentence_list = select_book_sentence_by_wechat_id(wechar_book_id)
     book_content = ''
     for book_sentence in book_sentence_list:
-        book_content = book_content + book_sentence.sentence + '\n\n'
+        book_content = book_content + book_sentence.sentence + "－－《" + book_sentence.book_name + "》" + '\n\n'
+    return {'message': book_content}
+
+
+
+@app.route("/book_search",methods=["GET"])
+def book_search():
+    key_words = request.args.get("key_words")
+    if key_words == '':
+        key_words = '***' #防止搜索出全部数据
+    book_sentence_list = select_book_sentence_by_key_words(key_words)
+    book_content = ''
+    for book_sentence in book_sentence_list:
+        book_content = book_content + book_sentence.sentence + "－－《" + book_sentence.book_name + "》" + '\n\n'
     return {'message': book_content}
 
 

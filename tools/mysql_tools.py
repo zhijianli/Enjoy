@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+# 引入多条件查询
+from sqlalchemy import and_
 import pymysql
 
 pymysql.install_as_MySQLdb()
@@ -108,6 +110,14 @@ def select_book_sentence(sentence,wechat_book_id):
 def select_book_sentence_by_wechat_id(wechat_book_id):
     with app.app_context():
         book_sentence_list = BookSentence.query.filter_by(wechat_book_id=wechat_book_id).all()
+
+    return book_sentence_list
+
+def select_book_sentence_by_key_words(key_words):
+    with app.app_context():
+        book_sentence_list = BookSentence.query.filter(
+                                                    and_(BookSentence.sentence.like("%" + key_words + "%") if key_words is not None else '')
+                                                ).all()
 
     return book_sentence_list
 
