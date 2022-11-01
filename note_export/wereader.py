@@ -82,7 +82,9 @@ def get_bestbookmarks(bookId, headers):
         return ''
 
     chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
+
     contents = defaultdict(list)
+
     for item in data['items']:
         chapter = item['chapterUid']
         text = item['markText']
@@ -97,7 +99,7 @@ def get_bestbookmarks(bookId, headers):
         for text in contents[c]:
             res += '> ' + text.strip() + '\n\n'
         res += '\n'
-    return res
+    return res,data['items']
 
 def set_hotmarks_number(number):
     global hotmarks_number

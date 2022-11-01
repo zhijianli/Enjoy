@@ -84,14 +84,15 @@
                 type: "GET",
                 data: { },
                 success: function (result) {
-                   book_list = result.message
-                   for (let i = 0; i < book_list.length; ++i) {
+                   book_name_list = result.book_name_list
+                   book_wechar_id_list = result.book_wechar_id_list
+                   for (let i = 0; i < book_name_list.length; ++i) {
                         //先创建好select里面的option元素
                         var option = document.createElement("option");
                         //转换DOM对象为JQ对象,好用JQ里面提供的方法 给option的value赋值
-                        $(option).val(book_list[i]);
+                        $(option).val(book_wechar_id_list[i]);
                         //给option的text赋值,这就是你点开下拉框能够看到的东西
-                        $(option).text(book_list[i]);
+                        $(option).text(book_name_list[i]);
                         //获取select 下拉框对象,并将option添加进select
                         $('#book_list').append(option);
                    }
@@ -102,7 +103,7 @@
                 $.ajax({
                     url: "get_content_by_book",
                     type: "GET",
-                    data: {"book_name":$(this).val()},
+                    data: {"wechar_book_id":$(this).val()},
                     success: function (result) {
                         book_content = result.message
                         document.getElementById('book_content').innerHTML=book_content;

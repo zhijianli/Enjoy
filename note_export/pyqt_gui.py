@@ -22,6 +22,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineProfile
 import os
+sys.path.append("../tools")
+from mysql_tools import insert_book,select_book,select_book_sentence,insert_book_sentence,select_book_by_wechat_book_id
 
 def get_develop_env():
     develop_env = os.environ["DEVELOP_ENV"]
@@ -175,21 +177,41 @@ if __name__=='__main__':
     # 请自行更改books_finish_read为books_all
     pbar = tqdm(books_all)
     for book in pbar:
-        book_id = book[0]
+        wechat_book_id = book[0]
         book_name = book[1]
+
+        # 先判断书籍表中有没有同名的数据，如果没有，就插入到书籍表中
+        book_list = select_book(wechat_book_id,book_name)
+        if len(book_list) == 0:
+            insert_book(wechat_book_id,book_name)
 
         # 失败重试，最大重试次数为4
         for try_count in range(4):
             try:
                 pbar.set_description("正在导出笔记【{}】".format(book_name))
-                notes = get_bookmarklist(book[0], HEADERS)
-                with open(note_dir + book_name + '.txt', 'w', encoding='utf-8') as f:
-                    f.write(notes)
 
-                best_notes = get_bestbookmarks(book[0], HEADERS)
+                # 获取最热划线句子
+                best_notes,item_list = get_bestbookmarks(book[0], HEADERS)
                 with open(note_dir + book_name + '-best.txt', 'w', encoding='utf-8') as f:
                     f.write(best_notes)
 
+                for item in item_list:
+                    wechat_book_id = item['bookId']
+                    underline_num = item['totalCount']
+                    sentence = item['markText']
+                    book_sentence_list = select_book_sentence(sentence,wechat_book_id)
+                    if len(book_sentence_list) == 0:
+                        book_list = select_book_by_wechat_book_id(wechat_book_id)
+                        book_id = book_list[0].id
+                        book_name = book_list[0].name
+                        insert_book_sentence(sentence,book_id,wechat_book_id,book_name,underline_num, 1)
+
+                # # 获取自己划线句子
+                # notes = get_bookmarklist(book[0], HEADERS)
+                # with open(note_dir + book_name + '.txt', 'w', encoding='utf-8') as f:
+                #     f.write(notes)
+
+                # 获取自己的想法
                 # mythought_notes = get_mythought(book[0],HEADERS)
                 # with open(note_dir + book_name + '-mythought.txt', 'w', encoding='utf-8') as f:
                 #     f.write(mythought_notes)

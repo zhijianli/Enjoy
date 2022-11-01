@@ -15,14 +15,15 @@ def get_develop_env():
 env = get_develop_env()
 book_path = ""
 if env == "test":
-    sys.path.append("/home/mocuili/github/Enjoy/clip")
     book_path = "/home/mocuili/data/enjoy/wechat_export/我的笔记/"
 if env == "prod":
-    sys.path.append("/github/clip")
     book_path = "/data/enjoy/wechat_export/我的笔记/"
 
-from video_clip import generate_video
-from file_operate import get_file_name_list
+sys.path.append("..")
+from clip.video_clip import generate_video
+from clip.file_operate import get_file_name_list
+
+from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
@@ -133,17 +134,27 @@ def submit():
 
 @app.route("/get_books",methods=["GET"])
 def get_books():
-    file_name_list = get_file_name_list(book_path)
-    return {'message': file_name_list}
+    # file_name_list = get_file_name_list(book_path)
+    book_list = select_book_list()
+    book_name_list = []
+    book_wechar_id_list = []
+    for book in book_list:
+        book_name_list.append(book.name)
+        book_wechar_id_list.append(book.wechat_book_id)
+    return {'book_name_list': book_name_list,'book_wechar_id_list':book_wechar_id_list}
 
 @app.route("/get_content_by_book",methods=["GET"])
 def get_content_by_book():
-    book_name = request.args.get("book_name")
-    file_object = open(book_path+book_name)
-    try:
-        book_content = file_object.read()
-    finally:
-        file_object.close()
+    # file_object = open(book_path+book_name)
+    # try:
+    #     book_content = file_object.read()
+    # finally:
+    #     file_object.close()
+    wechar_book_id = request.args.get("wechar_book_id")
+    book_sentence_list = select_book_sentence_by_wechat_id(wechar_book_id)
+    book_content = ''
+    for book_sentence in book_sentence_list:
+        book_content = book_content + book_sentence.sentence + '\n\n'
     return {'message': book_content}
 
 

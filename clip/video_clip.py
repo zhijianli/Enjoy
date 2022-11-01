@@ -13,10 +13,10 @@ from memory_profiler import profile
 
 
 from moviepy.editor import *
-from clause import cut_sent,sub,cut_end,sentence_break
-from file_operate import get_file_list,make_zip,copy_file,compress_image
-from get_audio_time import get_duration_wav
-from clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_saying_clip,generate_cover
+from clip.clause import cut_sent,sub,cut_end,sentence_break
+from clip.file_operate import get_file_list,make_zip,copy_file,compress_image
+from clip.get_audio_time import get_duration_wav
+from clip.clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_saying_clip,generate_cover
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 from guppy import hpy
@@ -93,9 +93,9 @@ def generate_video(args):
 
     # 调用背景图像生成一个基本的clip
     # my_clip = ImageSequenceClip(DATA_ROOT + "picture/" + picture_file_name,fps=5)
-    my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)
+    # my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)
     # my_clip = ImageClip(DATA_ROOT+"picture/jonatan-pie-h8nxGssjQXs-unsplash.jpg")
-    # my_clip = VideoFileClip(DATA_ROOT + "picture/9957.gif_wh860.gif")
+    my_clip = VideoFileClip(DATA_ROOT+"picture/"+picture_file_name)
     # my_clip = my_clip.loop(duration=my_clip.duration)
 
     w,h = my_clip.size
@@ -227,7 +227,7 @@ def generate_video(args):
     # compress_image(RESULT_DIR + "cover.png")
 
     # 视频写入文件
-    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4')
+    video.set_duration(all_time).set_fps(25).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4')
 
     # 每次编辑完视频之后都要主动释放内存，进行垃圾回收
     del cover_clip
