@@ -113,10 +113,11 @@ def select_book_sentence_by_wechat_id(wechat_book_id):
 
     return book_sentence_list
 
-def select_book_sentence_by_key_words(key_words):
+def select_book_sentence_by_condition(key_words,wechat_book_id):
     with app.app_context():
         book_sentence_list = BookSentence.query.filter(
-                                                    and_(BookSentence.sentence.like("%" + key_words + "%") if key_words is not None else '')
+                                                    BookSentence.sentence.like("%" + key_words + "%" if key_words else '%%'),
+                                                    (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1
                                                 ).all()
 
     return book_sentence_list

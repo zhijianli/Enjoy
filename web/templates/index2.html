@@ -1,0 +1,281 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/dragslot.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	<!--[if IE]>
+		<script src="http://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	<![endif]-->
+    </head>
+
+    <!--引入jQuery包用于使用ajax-->
+<!--    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>-->
+    <script src="/static/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+	<script type="text/javascript" src="/static/js/dragslot.js"></script>
+
+    <body onload="get_books()">
+    <h2>请输入生成视频相关信息</h2>
+        <!--创建两个input输入框，定义id分别为name,age-->
+        <select id="book_list" class="singleSelect"  style="width:350px">
+            <option value="">--请选择--</option>
+        </select>
+        &nbsp; &nbsp; &nbsp; <input id="key_words" type="text" class="search" placeholder="输入你想到的词">
+        &nbsp; &nbsp; &nbsp; <button id="book_search_list" >搜索</button>
+        <br><br>
+
+    	<section class="demo clearfix" >
+            <div id="dragslot" class="container">
+                <div class="slot border-red">
+                    <ul class="slot-list" id="book_content_list" style="overflow:auto;height:750px;" >
+
+                    </ul>
+                </div>
+<!--                    <textarea rows="10" cols="30" type="text" id="text" name="text"-->
+<!--                      placeholder="文本,注：使用＂&＂符号来分割句子，使用＂++＂符号来分割原话和评论，使用＂||＂符号来分割名言与出处"-->
+<!--                      style="float:right;width:750px;height:750px"></textarea>-->
+                <div class="slot border-green"  >
+                            <ul class="slot-list" id="text" style="height:750px;">
+                                <li class="slot-item">
+                                    <div class="slot-handler">
+                                        <div class="slot-handler clearfix">
+                                            <div class="avator">
+                                                <img src="/static/img/avatar4.jpg"/>
+                                            </div>
+                                            <div class="content">
+                                                <div class="item-title"></div>
+
+                                                <p></p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+            </div>
+	    </section>
+
+       <div style="float:right;margin-right:650px">
+                    <input cols="30" type="text" id="title" name="title" placeholder="标题" style="width:750px;height:100px">
+                    <br><br>
+                    <textarea cols="30" type="text" id="start" name="start" placeholder="开头" style="width:750px;height:200px"></textarea>
+                    <br><br>
+
+                    <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px">
+                    <br><br>
+                    <input cols="30" type="text" id="author" name="author" placeholder="作者" style="width:750px;height:100px">
+                    <br><br>
+                    <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">
+                    <br><br>
+                    <input cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" style="width:750px;height:100px">
+                    <br><br>
+                    <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">
+                    <br><br>
+                    <!--创建button按钮，点击则激发submit()事件-->
+                    <button onclick="submit_text();">生成视频</button>
+
+         </div>
+
+
+<!--    <div >-->
+<!--        <textarea id="book_content" style="height:2000px;width:750px;overflow:auto;background:#EEEEEE;">-->
+
+<!--        </textarea>-->
+
+<!--        <div style="float:right;margin-right:300px">-->
+<!--            <input cols="30" type="text" id="title" name="title" placeholder="标题" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <textarea cols="30" type="text" id="start" name="start" placeholder="开头" style="width:750px;height:200px"></textarea>-->
+<!--            <br><br>-->
+
+<!--            <textarea rows="10" cols="30" type="text" id="text" name="text"-->
+<!--                      placeholder="文本,注：使用＂&＂符号来分割句子，使用＂++＂符号来分割原话和评论，使用＂||＂符号来分割名言与出处"-->
+<!--                      style="float:right;width:750px;height:750px"></textarea>-->
+
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="author" name="author" placeholder="作者" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            &lt;!&ndash;创建button按钮，点击则激发submit()事件&ndash;&gt;-->
+<!--            <button onclick="submit();">生成视频</button>-->
+<!--         </div>-->
+<!--    </div>-->
+    </body>
+    <script>
+        $(document).ready(function () {//加载页面时执行select2
+            $('.singleSelect').select2();
+        });
+        /*在这里编写submit()事件*/
+        function submit() {
+            $.ajax({
+                url: "submit", /*数据提交到submit处*/
+                type: "POST",  /*采用POST方法提交*/
+                data: { "title": $("#title").val(),
+                        "start":$("#start").val(),
+                        "text":$("#text").val(),
+                        "end":$("#end").val(),
+                        "author":$("#author").val(),
+                        "label":$("#label").val(),
+                        "picture":$("#picture").val(),
+                        "music":$("#music").val()},  /*提交的数据（json格式），从输入框中获取*/
+                /*result为后端函数返回的json*/
+                success: function (result) {
+                    if (result.message == "success!") {
+                        /* alert(result.message) */
+                    }
+                    else {
+                       /* alert(result.message) */
+                    }
+                }
+            });
+        }
+
+         /*在这里编写submit()事件*/
+        function submit_text() {
+            sentence_list = document.getElementById('text').getElementsByClassName("item-title")
+            source_list = document.getElementById('text').querySelectorAll("p")
+            text = ""
+            for (let i = 1; i < sentence_list.length; ++i) {
+                if(i > 1){
+                  text = text+"&"
+                }
+                text = text + sentence_list[i].textContent + "++ ||"+source_list[i].textContent + "\n"
+            }
+
+            $.ajax({
+                url: "submit", /*数据提交到submit处*/
+                type: "POST",  /*采用POST方法提交*/
+                data: { "title": $("#title").val(),
+                        "start":$("#start").val(),
+                        "text":text,
+                        "end":$("#end").val(),
+                        "author":$("#author").val(),
+                        "label":$("#label").val(),
+                        "picture":$("#picture").val(),
+                        "music":$("#music").val()},  /*提交的数据（json格式），从输入框中获取*/
+                /*result为后端函数返回的json*/
+                success: function (result) {
+                    if (result.message == "success!") {
+                        /* alert(result.message) */
+                    }
+                    else {
+                       /* alert(result.message) */
+                    }
+                }
+            });
+        }
+
+        /*获取书籍列表*/
+        function get_books(){
+             $.ajax({
+                url: "get_books",
+                type: "GET",
+                data: { },
+                success: function (result) {
+                   book_name_list = result.book_name_list
+                   book_wechar_id_list = result.book_wechar_id_list
+                   for (let i = 0; i < book_name_list.length; ++i) {
+                        //先创建好select里面的option元素
+                        var option = document.createElement("option");
+                        //转换DOM对象为JQ对象,好用JQ里面提供的方法 给option的value赋值
+                        $(option).val(book_wechar_id_list[i]);
+                        //给option的text赋值,这就是你点开下拉框能够看到的东西
+                        $(option).text(book_name_list[i]);
+                        //获取select 下拉框对象,并将option添加进select
+                        $('#book_list').append(option);
+                   }
+                }
+            });
+        }
+        /*获取书籍内容
+        $('select#book_list').change(function(){
+                $.ajax({
+                    url: "get_content_by_book",
+                    type: "GET",
+                    data: {"wechar_book_id":$(this).val()},
+                    success: function (result) {
+                        book_content = result.message
+                        document.getElementById('book_content').innerHTML=book_content;
+                    }
+                 });
+        });*/
+
+        $('button#book_search').click(function(){
+                $.ajax({
+                    url: "book_search",
+                    type: "GET",
+                    data: {"key_words":$("#key_words").val()},
+                    success: function (result) {
+                        book_content = result.message
+                        document.getElementById('book_content').innerHTML=book_content;
+                    }
+                 });
+        });
+
+        /*根据关键词+书籍名字获取书籍内容*/
+        $('button#book_search_list').click(function(){
+                $.ajax({
+                    url: "book_search_list",
+                    type: "GET",
+                    data: {"key_words":$("#key_words").val(),
+                           "wechat_book_id":$('select#book_list').val()},
+                    success: function (result) {
+                        book_sentence_str_list = result.book_sentence_str_list
+                        book_name_list = result.book_name_list
+                        document.getElementById('book_content_list').innerHTML="";
+
+                        for (let i = 0; i < book_sentence_str_list.length; ++i) {
+                                var li = document.createElement("li");
+                                var div1 = document.createElement("div");
+                                var div2 = document.createElement("div");
+                                var div3 = document.createElement("div");
+                                var div4 = document.createElement("div");
+                                var div5 = document.createElement("div");
+                                var img = document.createElement("img");
+                                var p = document.createElement("p");
+                                $('#book_content_list').append(li);
+                                li.append(div1);
+                                div1.append(div2);
+                                div2.append(div3);
+                                div2.append(div4);
+                                div3.append(img);
+                                div4.append(div5);
+                                div4.append(p);
+
+                                li.setAttribute("class", "slot-item");
+                                div1.setAttribute("class", "slot-handler");
+                                div2.setAttribute("class", "slot-handler clearfix");
+                                div3.setAttribute("class", "avator");
+                                div4.setAttribute("class", "content");
+                                div5.setAttribute("class", "item-title");
+                                img.setAttribute("src", "/static/img/avatar4.jpg");
+                                $(div5).text(book_sentence_str_list[i]);
+                                $(p).text(book_name_list[i]);
+
+                       }
+                    }
+                 });
+        });
+
+        jQuery(function($){
+			$('#dragslot').dragslot({
+				dropCallback: function(el){
+				//	alert(el);
+				}
+			});
+		});
+
+    </script>
+</html>

@@ -23,7 +23,7 @@ sys.path.append("..")
 from clip.video_clip import generate_video
 from clip.file_operate import get_file_name_list
 
-from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id,select_book_sentence_by_key_words
+from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id,select_book_sentence_by_condition
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
@@ -34,7 +34,7 @@ app = Flask(__name__)
 @app.route("/")
 #定义方法 用jinjia2引擎来渲染页面，并返回一个index.html页面
 def root():
-    return render_template("index.html")
+    return render_template("index2.html")
 
 def write_excel(title,start,text,end,author):
     if env == "test":
@@ -154,21 +154,31 @@ def get_content_by_book():
     book_sentence_list = select_book_sentence_by_wechat_id(wechar_book_id)
     book_content = ''
     for book_sentence in book_sentence_list:
-        book_content = book_content + book_sentence.sentence + "－－《" + book_sentence.book_name + "》" + '\n\n'
+        book_content = book_content + book_sentence.sentence + "－－《" + book_sentence.book_name + "》" + "划线数：" + str(book_sentence.underline_num) + '\n\n'
     return {'message': book_content}
-
 
 
 @app.route("/book_search",methods=["GET"])
 def book_search():
     key_words = request.args.get("key_words")
-    if key_words == '':
-        key_words = '***' #防止搜索出全部数据
-    book_sentence_list = select_book_sentence_by_key_words(key_words)
+    wechat_book_id = request.args.get("wechat_book_id")
+    book_sentence_list = select_book_sentence_by_condition(key_words,wechat_book_id)
     book_content = ''
     for book_sentence in book_sentence_list:
-        book_content = book_content + book_sentence.sentence + "－－《" + book_sentence.book_name + "》" + '\n\n'
+        book_content = book_content + book_sentence.sentence + "－－《" + book_sentence.book_name + "》" + "划线数：" + str(book_sentence.underline_num) + '\n\n'
     return {'message': book_content}
+
+@app.route("/book_search_list",methods=["GET"])
+def book_search_list():
+    key_words = request.args.get("key_words")
+    wechat_book_id = request.args.get("wechat_book_id")
+    book_sentence_list = select_book_sentence_by_condition(key_words,wechat_book_id)
+    book_sentence_str_list = []
+    book_name_list = []
+    for book_sentence in book_sentence_list:
+        book_sentence_str_list.append(book_sentence.sentence)
+        book_name_list.append("－－《" + str(book_sentence.book_name) + "》")
+    return {'book_sentence_str_list': book_sentence_str_list,'book_name_list': book_name_list}
 
 
 #定义app在8080端口运行

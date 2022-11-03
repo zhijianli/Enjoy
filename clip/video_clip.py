@@ -93,16 +93,16 @@ def generate_video(args):
 
     # 调用背景图像生成一个基本的clip
     # my_clip = ImageSequenceClip(DATA_ROOT + "picture/" + picture_file_name,fps=5)
-    # my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)
+    my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)
     # my_clip = ImageClip(DATA_ROOT+"picture/jonatan-pie-h8nxGssjQXs-unsplash.jpg")
-    my_clip = VideoFileClip(DATA_ROOT+"picture/"+picture_file_name)
+    # my_clip = VideoFileClip(DATA_ROOT+"picture/"+picture_file_name)
     # my_clip = my_clip.loop(duration=my_clip.duration)
 
     w,h = my_clip.size
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
     w,h = my_clip.size
-    text_font_size = w/30
+    text_font_size = w/40
     start_end_font_size = w/20
 
     all_clip_list = [my_clip]
@@ -123,6 +123,7 @@ def generate_video(args):
     colorclip_ori_list = []
 
     # 视频叠加上文字和AI配音
+    print("sents", sents)
     for inx,val in enumerate(sents):
 
         text_str = sents[inx]
@@ -134,6 +135,7 @@ def generate_video(args):
         print("text duration time = " + str(duration))
 
         saying_comment = text_str.split('||')[0] #获取名言和评论
+
         source = text_str.split('||')[1] # 获取来源
         saying = saying_comment.split('++')[0]
         comment = saying_comment.split('++')[1]
@@ -141,8 +143,8 @@ def generate_video(args):
         if args.template == 0:
             saying = sub(saying)
         else:
-            saying = "\"" + saying + "\""
-            # saying = "\""+sentence_break(saying)+"\""
+            # saying = "\"" + saying + "\""
+            saying = "\""+sentence_break(saying)+"\""
         txt_clip = TextClip(saying,fontsize=text_font_size,color='white',font=font)
         comment_clip = TextClip(comment, fontsize=text_font_size // 1.5, color='white', font=comment_font)
         source_clip = TextClip(source, fontsize=text_font_size//1.5, color='white', font=comment_font)
@@ -227,7 +229,7 @@ def generate_video(args):
     # compress_image(RESULT_DIR + "cover.png")
 
     # 视频写入文件
-    video.set_duration(all_time).set_fps(25).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4')
+    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4')
 
     # 每次编辑完视频之后都要主动释放内存，进行垃圾回收
     del cover_clip
