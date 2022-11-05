@@ -18,7 +18,9 @@
 	<script type="text/javascript" src="/static/js/dragslot.js"></script>
 
     <body onload="get_books()">
-            <br><br><br>
+            <br>
+
+            <br><br>
             <!--创建两个input输入框，定义id分别为name,age-->
             <select id="book_list" class="singleSelect"  style="width:270px">
                 <option value="">--请选择--</option>
@@ -27,6 +29,7 @@
             <input id="key_words" type="text" class="search" placeholder="输入你想到的词" style="width:270px">
              &nbsp;  &nbsp;  &nbsp;
             <button id="book_search_list" >搜索</button>
+
 
         <br><br>
         <div style="float:left;">
@@ -38,13 +41,13 @@
 <!--                    <div class="slot-title bg-red border-red">Todo</div>-->
 <!--		            <div class="slot-title bg-green border-green">Done</div>-->
 
-                    <div class="slot border-red"  id="book_content_list" style="width:420px;">
+                    <div class="slot border-red"  id="book_content_list" style="width:420px;height:820px;">
 <!--                        <ul class="slot-list" style="overflow:auto;height:750px;" >-->
 
 <!--                        </ul>-->
                     </div>
-                    <div class="slot border-green" style="width:420px;" >
-                                <ul class="slot-list" id="text" style="height:750px;">
+                    <div class="slot border-green" style="width:420px;height:820px;overflow:auto;" >
+                                <ul class="slot-list" id="text" style="">
                                     <li class="slot-item">
                                         <div class="slot-handler">
                                             <div class="slot-handler clearfix">
@@ -76,7 +79,9 @@
                     <datalist id="typelist" width="100%">
                     　　<option>《雪中悍刀行》那些经典致郁的句子</option>
                     　　<option>那些让人一眼泪目的话</option>
-                       <option>生命是什么，这是佛陀的答案</option>
+                       <option>生命是什么，这是佛陀的答案</option>　
+                       <option>建议通篇对照</option>
+                       <option>这是最佳答案</option>
                     </datalist>
                     <br><br>
                     <textarea cols="30" type="text" id="start" name="start" placeholder="开头" style="width:750px;height:200px"></textarea>
@@ -96,6 +101,21 @@
                     <button onclick="submit_text();">生成视频</button>
 
          </div>
+<!---->
+            <div style="float:left;">
+
+             <font color="grey">灵感： </font>   &nbsp;<a href="https://studio.ixigua.com/activities" target="_blank" style="color:#7DE267;">西瓜视频选题灵感</a>
+             &nbsp;<a href="https://member.bilibili.com/york/up-inspiration/today?navhide=1&tab_id=2&from=10&page_from=home_10" target="_blank" style="color:#7DE267;">B站选题灵感</a>
+             <br>
+             <font color="grey">创作中心： </font>&nbsp;<a href="https://studio.ixigua.com/content" target="_blank" style="color:#33BDFF;">西瓜视频创作中心</a>
+                <a href="https://member.bilibili.com/platform/upload-manager/article" target="_blank" style="color:#33BDFF;">B站创作中心</a>
+            　<br>
+            <font color="grey">学习对象： </font>&nbsp;<a href="https://space.bilibili.com/60509716/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">一个爱吃的猪</a>
+            　<a href="https://space.bilibili.com/179444595/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">佳人温文</a>
+            　<a href="https://space.bilibili.com/181508854/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">文字铺</a>
+
+
+            </div>
 
 
 <!--    <div >-->
