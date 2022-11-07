@@ -34,6 +34,9 @@ def copy_file(source_file,destination_file):
     shutil.copyfile(source_file+".zip",destination_file+".zip")
     shutil.copytree(source_file, destination_file)
 
+def copy_preview(source_file,destination_file):
+    shutil.copytree(source_file, destination_file)
+
 def get_outfile(infile, outfile):
     if outfile:
         return outfile

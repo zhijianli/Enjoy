@@ -20,7 +20,7 @@ if env == "prod":
     book_path = "/data/enjoy/wechat_export/我的笔记/"
 
 sys.path.append("..")
-from clip.video_clip import generate_video
+from clip.video_clip import generate_video,preview
 from clip.file_operate import get_file_name_list
 
 from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id,select_book_sentence_by_condition
@@ -34,7 +34,7 @@ app = Flask(__name__)
 @app.route("/")
 #定义方法 用jinjia2引擎来渲染页面，并返回一个index.html页面
 def root():
-    return render_template("index.html")
+    return render_template("index2.html")
 
 def write_excel(title,start,text,end,author):
     if env == "test":
@@ -82,6 +82,7 @@ def submit():
         picture = request.form.get("picture")
         music = request.form.get("music")
         label = request.form.get("label")
+        operate = request.form.get("operate")
 
     print("title:"+str(title))
     print("start:"+str(start))
@@ -91,10 +92,10 @@ def submit():
     print("picture:"+str(picture))
     print("music:"+str(music))
     print("label:"+str(label))
+    print("operate:" + str(operate))
 
     num = write_excel(title, start, text, end, author)
 
-    print("＝＝＝＝＝＝＝开始生成视频＝＝＝＝＝＝＝")
     # 接收参数
     parser = argparse.ArgumentParser(description='manual to this script')
     parser.add_argument('--picture', type=str, default = None) #背景图片
@@ -124,13 +125,15 @@ def submit():
     print("接受参数：env：" + str(args.env))
     print("接受参数：label：" + str(args.label))
 
-    generate_video(args)
+    result_message = ""
+    if operate == "generateVideo":
+        generate_video(args)
+        result_message = {'message': "视频生成完毕"}
+    elif operate == "preview":
+        frame_list = preview(args)
+        result_message = {'frame_list': frame_list}
 
-    #如果获取的数据为空
-    # if len(name) == 0 or len(age) ==0:
-    #     return {'message':"error!"}
-    # else:
-    return {'message':"视频生成完毕"}
+    return result_message
 
 @app.route("/get_books",methods=["GET"])
 def get_books():

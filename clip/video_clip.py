@@ -14,7 +14,7 @@ from memory_profiler import profile
 
 from moviepy.editor import *
 from clip.clause import cut_sent,sub,cut_end,sentence_break
-from clip.file_operate import get_file_list,make_zip,copy_file,compress_image
+from clip.file_operate import get_file_list,make_zip,copy_file,compress_image,copy_preview
 from clip.get_audio_time import get_duration_wav
 from clip.clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_saying_clip,generate_cover
 from moviepy.video.tools.drawing import color_gradient
@@ -38,8 +38,6 @@ def generate_video(args):
     else:
         ROOT = "/data/"
         DATA_ROOT = ROOT + "enjoy/"
-
-
 
     # font = DATA_ROOT+'fonts/SIMFANG.TTF'
     font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
@@ -253,6 +251,188 @@ def generate_video(args):
         DATA_OSS_ROOT = ROOT+"enjoy-oss/"
         copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
         print("=============视频拷贝结束！=============")
+
+
+def preview(args):
+    num = 0
+    if args.num == 0:  # 如果传的参数是0，就随机取一个整数
+        num = random.randint(0, 16)
+    else:  # 如果有传参数，就用传的参数
+        num = args.num
+    print("num：" + str(num))
+
+    # 加载text数据
+    if args.env == "test":
+        ROOT = "/home/mocuili/data/"
+        DATA_ROOT = ROOT + "enjoy/"
+    else:
+        ROOT = "/data/"
+        DATA_ROOT = ROOT + "enjoy/"
+
+    font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
+    comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
+    excel_content = pd.read_excel(DATA_ROOT + 'text/text.xlsx')
+    title_list = excel_content["title"]
+    text_list = excel_content["text"]
+    start_list = excel_content["start"]
+    end_list = excel_content["end"]
+    author_list = excel_content["author"]
+    provenance_list = excel_content["provenance"]
+    title = title_list[num]  # 标题是５－９个字长度最合适
+    text = text_list[num]
+    start = start_list[num]
+    end = end_list[num]
+    author = author_list[num]
+    provenance = provenance_list[num]
+    print("标题：" + str(title))
+    print("开头：" + str(start))
+    print("内容：" + str(text))
+    print("结尾：" + str(end))
+    print("作者：" + str(author))
+    print("出处：" + str(provenance))
+    print("命令是： python3 video_clip.py --num=" + str(num) +
+          " --picture=" + str(args.picture) +
+          " --music=" + str(args.music) +
+          " --dubbing=" + str(args.dubbing) +
+          " --env=" + str(args.env) +
+          " --template=" + str(args.template))
+
+    # 断句
+    if args.template == 0:
+        sents = cut_sent(text)
+    else:
+        sents = text.split('&')
+
+    # 调用tts生成语音：
+    ai_dubbing(args.dubbing, args.template, sents, DATA_ROOT)
+
+    # 生成一个背景图片
+    picture_file_name = ""
+    if args.picture is None:  # 如果传的参数是None，就随机取一张图片
+        picture_file_name = get_file_list(DATA_ROOT + "/picture")
+    elif args.picture == "1":  # 如果传的参数是１，就用默认的图片
+        picture_file_name = "blues-lee-zUsvn51N2Ro-unsplash.jpg"
+    else:  # 如果有传数据，就用传的图片路径
+        picture_file_name = args.picture
+
+    # 调用背景图像生成一个基本的clip
+    my_clip = ImageClip(DATA_ROOT + "picture/" + picture_file_name)
+
+    w, h = my_clip.size
+    my_clip = my_clip.fx(vfx.crop, x1=0, y1=0, x2=w, y2=w / 1.88)
+    w, h = my_clip.size
+    text_font_size = w / 40
+    start_end_font_size = w / 20
+    text_clip_start = 0
+    title_time = 3
+    end_time = 5
+
+    # 创建预览结果的文件夹
+    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    PREVIEW_DIR = DATA_ROOT + "preview/" + current_time + "/"
+    os.mkdir(PREVIEW_DIR);
+
+    # 生成开头标题的图片帧
+    start_clip_list = [my_clip]
+    txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
+    txt_clip, colorclip = optimi_txt_clip(txt_clip, w, h, title_time, text_clip_start)
+    start_clip_list.append(colorclip)
+    start_clip_list.append(txt_clip)
+    start_clip = CompositeVideoClip(start_clip_list)
+    start_clip.save_frame(PREVIEW_DIR + "start_clip.png", t=1)
+    saying_clip_frame_list = []
+
+    # 视频叠加上文字，生成中间的文字帧
+    for inx, val in enumerate(sents):
+
+        saying_clip_list = [my_clip]
+
+        text_str = sents[inx]
+        saying_comment = text_str.split('||')[0]  # 获取名言和评论
+        source = text_str.split('||')[1]  # 获取来源
+        saying = saying_comment.split('++')[0]
+        comment = saying_comment.split('++')[1]
+
+        if args.template == 0:
+            saying = sub(saying)
+        else:
+            saying = "\"" + sentence_break(saying) + "\""
+        txt_clip = TextClip(saying, fontsize=text_font_size, color='white', font=font)
+        comment_clip = TextClip(comment, fontsize=text_font_size // 1.5, color='white', font=comment_font)
+        source_clip = TextClip(source, fontsize=text_font_size // 1.5, color='white', font=comment_font)
+
+        # 设置文字的剪辑信息
+        txt_clip, colorclip, source_clip, comment_clip, colorclip_ori = optimi_saying_clip(txt_clip, w, h, 2,
+                                                                                           text_clip_start, source_clip,
+                                                                                           comment_clip)
+
+        saying_clip_list.append(colorclip)
+        saying_clip_list.append(txt_clip)
+        saying_clip_list.append(comment_clip)
+        saying_clip_list.append(source_clip)
+        saying_clip = CompositeVideoClip(saying_clip_list)
+        saying_clip.save_frame(PREVIEW_DIR + "saying_clip_"+str(inx)+".png", t=1)
+        saying_clip_frame_list.append("saying_clip_"+str(inx)+".png")
+
+    # 生成结尾帧
+    end_clip_list = [my_clip]
+    txt_clip = TextClip(cut_end(end), fontsize=start_end_font_size, color='white', font=font)
+    txt_clip, colorclip = optimi_txt_clip(txt_clip, w, h, end_time, text_clip_start)
+
+    end_clip_list.append(colorclip)
+    end_clip_list.append(txt_clip)
+    end_clip = CompositeVideoClip(end_clip_list)
+    end_clip.save_frame(PREVIEW_DIR + "end_clip.png", t=1)
+
+    # 生成横的封面帧
+    cover_clip = generate_cover(my_clip, DATA_ROOT, font, author, title)
+    cover_clip.save_frame(PREVIEW_DIR + "cover.png", t=1)
+
+    # 生成一个背景音乐
+    music_file_name = ""
+    if args.music is None: # 如果传的参数是None，就随机取一首音乐
+        music_file_name = get_file_list(DATA_ROOT + "/music")
+    elif args.music == "1": # 如果传的参数是１，就用默认的音乐
+        music_file_name = "02 - Rainbow River.mp3"
+    else: # 如果有传数据，就用传的音乐路径
+        music_file_name = args.music
+
+    # 生成标签
+    # label_str = args.label
+    # convert_label_str = ""
+    # if label_str is not None and len(label_str) > 0:
+    #     label_list = label_str.split('　')
+    #     for label in label_list:
+    #         convert_label_str = convert_label_str + "#"+str(label)+"　"
+
+    # 生成简介
+    with open(PREVIEW_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
+        f.write(title + "\n")
+        f.write(text + "\n")
+        f.write(end + "\n")
+        # f.write("出处:" + provenance + "\n")
+        f.write("BGM:" + music_file_name + "\n")
+        f.write("图片名:" + picture_file_name + "\n")
+        f.write("作者:" + author + "\n")
+        # f.write("标签:" + str(convert_label_str) + "\n")
+
+    # 拷贝文件
+    if args.env == "test":
+        DATA_OSS_ROOT = ROOT + "enjoy-oss/"
+        copy_preview(DATA_ROOT + "preview/" + current_time, DATA_OSS_ROOT + "preview/" + current_time)
+        print("=============预览拷贝结束！=============")
+
+    frame_list = []
+    frame_list.append("https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/preview/"+current_time+"/cover.png")
+    frame_list.append("https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/preview/" + current_time + "/start_clip.png")
+    for saving_clip_frame in saying_clip_frame_list:
+        frame_list.append("https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/preview/" + current_time + "/" + saving_clip_frame)
+
+    frame_list.append("https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/preview/" + current_time + "/end_clip.png")
+    return frame_list
+
+
+
 
 if __name__ == "__main__":
 
