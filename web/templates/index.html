@@ -1,147 +1,415 @@
-<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/dragslot.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+        <link type="text/css" rel="stylesheet" href="/static/css/preview_style.css">
+	<!--[if IE]>
+		<script src="http://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	<![endif]-->
+    </head>
 
-<!--[if lt IE 7 ]><html class="no-js ie ie6" lang="en"><![endif]-->
-<!--[if IE 7 ]><html class="no-js ie ie7" lang="en"><![endif]-->
-<!--[if IE 8 ]><html class="no-js ie ie8" lang="en"><![endif]-->
-<!--[if IE 9 ]><html class="no-js ie ie9" lang="en"><![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+    <!--引入jQuery包用于使用ajax-->
+<!--    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>-->
+    <script src="/static/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+	<script src="/static/js/dragslot.js" type="text/javascript"></script>
+    <body onload="get_books()">
+            <br>
 
-<head>
-	<!-- Meta Data -->
-		<title></title>
+            <br><br>
+            <!--创建两个input输入框，定义id分别为name,age-->
+            <select id="book_list" class="singleSelect"  style="width:270px">
+                <option value="">--请选择--</option>
+            </select>
+             &nbsp;  &nbsp;  &nbsp;
+            <input id="key_words" type="text" class="search" placeholder="输入你想到的词" style="width:270px">
+             &nbsp;  &nbsp;  &nbsp;
+            <button id="book_search_list" >搜索</button>
 
-		<meta charset="gb2312">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-	<!-- Stylesheets -->
-		<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css" media="all" />
-		<link href="/static/css/normalize.css" rel="stylesheet" type="text/css" media="all" />
-		<link href="/static/css/litebox.css" rel="stylesheet" type="text/css" media="all" />
-		<link href="/static/css/style.min.css" rel="stylesheet" type="text/css" media="all" />
+        <br><br>
+        <div style="float:left;">
+            <section class="demo clearfix" >
 
-	<!-- HTML5 SHIV -->
-		<!--[if lt IE 9]>
-			<script src="http://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-			<script src="http://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-		<![endif]-->
+                <div id="dragslot" class="container" style="width:900px;">
 
-</head>
 
-<body itemscope itemtype="http://51qianduan.com">
+<!--                    <div class="slot-title bg-red border-red">Todo</div>-->
+<!--		            <div class="slot-title bg-green border-green">Done</div>-->
 
-	<!-- No JavaScript -->
-		<noscript>
-			<div class="container text-center">
-				<div id="no-script">
-					<p class="bm-smaller"><strong>JavaScript Disabled</strong></p>
-					<p class="bm-smaller">Certain features of this site may not function correctly without JavaScript enabled</p>
-					<p class="bm-remove">Find out how to enable JavaScript in your browser</p>
-				</div>
-			</div>
-		</noscript>
+                    <div class="slot border-red"  id="book_content_list" style="width:420px;height:820px;">
+<!--                        <ul class="slot-list" style="overflow:auto;height:750px;" >-->
 
-	<!-- Content -->
-		<div class="container">
-			<div class="one-whole text-center">
-				<h3>Single Images</h3>
+<!--                        </ul>-->
+                    </div>
+                    <div class="slot border-green" style="width:420px;height:820px;overflow:auto;" >
+                                <ul class="slot-list" id="text" style="">
+                                    <li class="slot-item">
+                                        <div class="slot-handler">
+                                            <div class="slot-handler clearfix">
+                                                <div class="avator">
+                                                    <img src="/static/img/avatar4.jpg"/>
+                                                </div>
+                                                <div class="content">
+                                                    <div class="item-title"></div>
 
-				<p>
-					<a href="/static/img/001.jpg" target="_self" class="inline-block litebox"><img src="assets/imgs/001-thumb.jpg" class="inline-block" /></a>
-					<a href="/static/img/002.jpg" target="_self" class="inline-block litebox"><img src="assets/imgs/002-thumb.jpg" class="inline-block" /></a>
-					<a href="/static/img/003.jpg" target="_self" class="inline-block litebox"><img src="assets/imgs/003-thumb.jpg" class="inline-block" /></a>
-					<a href="/static/img/004.jpg" target="_self" class="inline-block litebox"><img src="assets/imgs/004-thumb.jpg" class="inline-block" /></a>
-				</p>
+                                                    <p></p>
+                                                </div>
 
-				<p><small>Image Credits: Little Visuals</small></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
 
-				<hr class="bm-larger tm-large" />
+                </div>
 
-				<h3>Gallery Images</h3>
 
-				<p>
-					<a href="/static/img/004.jpg" target="_self" class="inline-block litebox" data-litebox-group="group-1"><img src="assets/imgs/004-thumb.jpg" class="inline-block" /></a>
-					<a href="/static/img/003.jpg" target="_self" class="inline-block litebox" data-litebox-group="group-1"><img src="assets/imgs/003-thumb.jpg" class="inline-block" /></a>
-					<a href="/static/img/002.jpg" target="_self" class="inline-block litebox" data-litebox-group="group-1"><img src="assets/imgs/002-thumb.jpg" class="inline-block" /></a>
-					<a href="/static/img/001.jpg" target="_self" class="inline-block litebox" data-litebox-group="group-1"><img src="assets/imgs/001-thumb.jpg" class="inline-block" /></a>
-				</p>
 
-				<p><small>Image Credits: Unsplash</small></p>
+            </section>
+        </div>
+       <div style="float:right;margin-right:520px">
+                    <br><br>
+<!--                    <input cols="30" type="text" id="title" name="title" placeholder="标题" style="width:750px;height:100px">-->
+                    <input id="title" type="text" list="typelist" placeholder="标题" style="width:750px;height:70px" >
+                    <datalist id="typelist" width="100%">
+                    　　<option>《雪中悍刀行》那些经典致郁的句子</option>
+                    　　<option>那些让人一眼泪目的话</option>
+                       <option>生命是什么，这是佛陀的答案</option>　
+                       <option>建议通篇对照</option>
+                       <option>这是最佳答案</option>
+                    </datalist>
+                    <br><br>
+                    <textarea cols="30" type="text" id="start" name="start" placeholder="开头" style="width:750px;height:200px"></textarea>
+                    <br><br>
 
-				<hr class="bm-larger tm-large" />
+                    <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px" value="感谢观看，欢迎关注">
+                    <br><br>
+                    <input cols="30" type="text" id="author" name="author" placeholder="作者" style="width:750px;height:100px">
+                    <br><br>
+                    <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">
+                    <br><br>
+                    <input cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" style="width:750px;height:100px" value="cai-carney-deaqEVtdSgk-unsplash.jpg">
+                    <br><br>
+                    <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">
+                    <br><br>
+                    <!--创建button按钮，点击则激发submit()事件-->
+                    <button onclick="submit_text();">生成视频</button>&nbsp;&nbsp;&nbsp;
+<!--                    <button onclick="preview();" href="#popup-article" class="card__link card__readmore">预览</button>-->
+                    <a href="#popup-article"  onclick="preview();">预览</a>
 
-				<h3>Embedded Content</h3>
+<!--           class="card__link card__readmore"-->
 
-				<a href="http://www.51qianduan.com//watch?v=gOLY7bjCTTE" target="_self" class="button litebox" data-litebox-group="group-2">YouTube</a>
-				<a href="http://vimeo.com/45427826" target="_self" class="button litebox" data-litebox-group="group-2">Vimeo</a>
-				<a href="http://www.51qianduan.com//video/x15wmv4_alexander-rusinov-extreme-workout_sport" target="_self" class="button litebox" data-litebox-group="group-2">Daily Motion</a>
-				<a href="http://www.51qianduan.com//projects/1523379957/oculus-rift-step-into-the-game/" target="_self" class="button litebox" data-litebox-group="group-2">KickStarter</a>
 
-				<hr class="bm-larger tm-large" />
 
-				<h3>Others</h3>
+         </div>
+<!---->
+            <div style="float:left;">
 
-				<a href="http://51qianduan.com" target="_self" class="button litebox" data-litebox-group="group-3">Iframe</a>
-				<a href="http://51qianduan.com" target="_self" class="button litebox" data-litebox-group="group-3">Iframe2</a>
-				<a href="#inline-html-1" target="_self" class="button litebox" data-litebox-group="group-3">Inline HTML 1</a>
-				<a href="#inline-html-2" target="_self" class="button litebox" data-litebox-group="group-3">Inline HTML 2</a>
+             <font color="grey">灵感： </font>   &nbsp;<a href="https://studio.ixigua.com/activities" target="_blank" style="color:#7DE267;">西瓜视频选题灵感</a>
+             &nbsp;<a href="https://member.bilibili.com/york/up-inspiration/today?navhide=1&tab_id=2&from=10&page_from=home_10" target="_blank" style="color:#7DE267;">B站选题灵感</a>
+             <br>
+             <font color="grey">创作中心： </font>&nbsp;<a href="https://studio.ixigua.com/content" target="_blank" style="color:#33BDFF;">西瓜视频创作中心</a>
+                <a href="https://member.bilibili.com/platform/upload-manager/article" target="_blank" style="color:#33BDFF;">B站创作中心</a>
+            　<br>
+            <font color="grey">学习对象： </font>&nbsp;<a href="https://space.bilibili.com/60509716/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">一个爱吃的猪</a>
+            　<a href="https://space.bilibili.com/179444595/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">佳人温文</a>
+            　<a href="https://space.bilibili.com/181508854/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">文字铺</a>
+      　　　　<br>
+            <a href="http://47.98.124.127:8080/" target="_blank" style="color:grey;">mysql数据库</a>
+            </div>
 
-				<div class="no-display">
-					<div id="inline-html-1">
-						<h1 class="bm-large tm-large">Inline HTML Example</h1>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-					</div>
+<div id="popup-article" class="popup">
+  <div id="popup_block" class="popup__block">
+<!--    <h1 class="popup__title">标题:标题标题标题标题标题标题</h1>-->
+<!--&lt;!&ndash;    <p>标题:标题标题标题标题标题标题</p>&ndash;&gt;-->
+<!--    <img src="" class="popup__media popup__media_right" alt="The foto of nature">-->
+<!--    <p>内容：李宝莉想，人生是自己的，不管是儿孙满堂还是孤家寡人，我总得要走完它。++ ||－－《万箭穿心》</p>-->
+<!--    <p>结尾：感谢观看，欢迎关注</p>-->
+<!--    <p>BGM:「雨がくる虹がたつ」_増田俊郎.mp3</p>-->
+<!--    <p>图片名:cai-carney-deaqEVtdSgk-unsplash.jpg</p>-->
+<!--    <p>作者:弗洛伊德</p>-->
+<!--     <a href="#" class="popup__close">关闭</a>-->
 
-					<div id="inline-html-2">
-						<h1 class="bm-large tm-large">Scrollable Inline HTML Example</h1>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-						<p class="bm-large">In here you can pull any elements from the page to display in the Litebox</p>
-					</div>
-				</div>
-			</div>
 
-			<hr class="bm-larger" />
-		</div>
 
-	<!-- Footer -->
-		<div class="container text-right">
-		
-			
-			<p><a href="#" target="_self" class="scroll-to-top">SCROLL TO TOP</a></p>
-		</div>
-			
-	<!-- JavaScript -->
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-		<script src="/static/js/smoothscroll.js" type="text/javascript"></script>
-		<script src="/static/js/images-loaded.min.js" type="text/javascript"></script>
-		<script src="/static/js/litebox.js" type="text/javascript"></script>
-		<script src="/static/js/backbone.js" type="text/javascript"></script>
-
-		<script type="text/javascript">
-			$('.litebox').liteBox();
-		</script>
-
-<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+  </div>
 </div>
 
-</body>
+<!--    <div >-->
+<!--        <textarea id="book_content" style="height:2000px;width:750px;overflow:auto;background:#EEEEEE;">-->
+
+<!--        </textarea>-->
+
+<!--        <div style="float:right;margin-right:300px">-->
+<!--            <input cols="30" type="text" id="title" name="title" placeholder="标题" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <textarea cols="30" type="text" id="start" name="start" placeholder="开头" style="width:750px;height:200px"></textarea>-->
+<!--            <br><br>-->
+
+<!--            <textarea rows="10" cols="30" type="text" id="text" name="text"-->
+<!--                      placeholder="文本,注：使用＂&＂符号来分割句子，使用＂++＂符号来分割原话和评论，使用＂||＂符号来分割名言与出处"-->
+<!--                      style="float:right;width:750px;height:750px"></textarea>-->
+
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="author" name="author" placeholder="作者" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">-->
+<!--            <br><br>-->
+<!--            &lt;!&ndash;创建button按钮，点击则激发submit()事件&ndash;&gt;-->
+<!--            <button onclick="submit();">生成视频</button>-->
+<!--         </div>-->
+<!--    </div>-->
+    </body>
+    <script>
+        $(document).ready(function () {//加载页面时执行select2
+            $('.singleSelect').select2();
+        });
+        /*在这里编写submit()事件*/
+        function submit() {
+            $.ajax({
+                url: "submit", /*数据提交到submit处*/
+                type: "POST",  /*采用POST方法提交*/
+                data: { "title": $("#title").val(),
+                        "start":$("#start").val(),
+                        "text":$("#text").val(),
+                        "end":$("#end").val(),
+                        "author":$("#author").val(),
+                        "label":$("#label").val(),
+                        "picture":$("#picture").val(),
+                        "music":$("#music").val()},  /*提交的数据（json格式），从输入框中获取*/
+                /*result为后端函数返回的json*/
+                success: function (result) {
+                    if (result.message == "success!") {
+                        /* alert(result.message) */
+                    }
+                    else {
+                       /* alert(result.message) */
+                    }
+                }
+            });
+        }
+
+         /*在这里编写submit()事件*/
+        function submit_text() {
+            sentence_list = document.getElementById('text').getElementsByClassName("item-title")
+            source_list = document.getElementById('text').querySelectorAll("p")
+            text = ""
+            for (let i = 1; i < sentence_list.length; ++i) {
+                if(i > 1){
+                  text = text+"&"
+                }
+                text = text + sentence_list[i].textContent + "++ ||"+source_list[i].textContent + "\n"
+            }
+
+            $.ajax({
+                url: "submit", /*数据提交到submit处*/
+                type: "POST",  /*采用POST方法提交*/
+                data: { "title": $("#title").val(),
+                        "start":$("#start").val(),
+                        "text":text,
+                        "end":$("#end").val(),
+                        "author":$("#author").val(),
+                        "label":$("#label").val(),
+                        "picture":$("#picture").val(),
+                        "music":$("#music").val(),
+                        "operate":"generateVideo"},  /*提交的数据（json格式），从输入框中获取*/
+                /*result为后端函数返回的json*/
+                success: function (result) {
+                    if (result.message == "success!") {
+                        /* alert(result.message) */
+                    }
+                    else {
+                       /* alert(result.message) */
+                    }
+                }
+            });
+        }
+
+        /*在这里编写preview()事件*/
+        function preview() {
+
+            document.getElementById('popup_block').innerHTML="";
+            sentence_list = document.getElementById('text').getElementsByClassName("item-title")
+            source_list = document.getElementById('text').querySelectorAll("p")
+            text = ""
+            for (let i = 1; i < sentence_list.length; ++i) {
+                if(i > 1){
+                  text = text+"&"
+                }
+                text = text + sentence_list[i].textContent + "++ ||"+source_list[i].textContent + "\n"
+            }
+
+            $.ajax({
+                url: "submit", /*数据提交到submit处*/
+                type: "POST",  /*采用POST方法提交*/
+                data: { "title": $("#title").val(),
+                        "start":$("#start").val(),
+                        "text":text,
+                        "end":$("#end").val(),
+                        "author":$("#author").val(),
+                        "label":$("#label").val(),
+                        "picture":$("#picture").val(),
+                        "music":$("#music").val(),
+                        "operate":"preview"},  /*提交的数据（json格式），从输入框中获取*/
+                /*result为后端函数返回的json*/
+                success: function (result) {
+
+                    var h1 = document.createElement("h1");
+                    h1.setAttribute("class", "popup__title");
+                    h1.innerHTML="标题:标题标题标题标题标题标题";
+                    $('#popup_block').append(h1)
+
+                    frame_list = result.frame_list
+                    for (let i = 0; i < frame_list.length; ++i) {
+                        var img = document.createElement("img");
+                        img.setAttribute("class", "popup__media popup__media_right");
+                        img.setAttribute("alt", "The foto of nature");
+                        img.setAttribute("src", frame_list[i]);
+                        console.log(frame_list[i])
+                        $('#popup_block').append(img);
+                    }
+
+                    var p1 = document.createElement("p");
+                    var p2 = document.createElement("p");
+                    var p3 = document.createElement("p");
+                    var p4 = document.createElement("p");
+                    var p5 = document.createElement("p");
+                    p1.innerHTML="内容：李宝莉想，人生是自己的，不管是儿孙满堂还是孤家寡人，我总得要走完它。++ ||－－《万箭穿心》";
+                    p2.innerHTML="结尾：感谢观看，欢迎关注";
+                    p3.innerHTML="BGM:「雨がくる虹がたつ」_増田俊郎.mp3";
+                    p4.innerHTML="图片名:cai-carney-deaqEVtdSgk-unsplash.jpg";
+                    p5.innerHTML="作者:弗洛伊德";
+                    $('#popup_block').append(p1)
+                    $('#popup_block').append(p2)
+                    $('#popup_block').append(p3)
+                    $('#popup_block').append(p4)
+                    $('#popup_block').append(p5)
+
+                    var a = document.createElement("a");
+                    a.setAttribute("href", "#");
+                    a.setAttribute("class", "popup__close");
+                    a.innerHTML="关闭";
+                    $('#popup_block').append(a)
+
+
+                }
+            });
+        }
+
+        /*获取书籍列表*/
+        function get_books(){
+             $.ajax({
+                url: "get_books",
+                type: "GET",
+                data: { },
+                success: function (result) {
+                   book_name_list = result.book_name_list
+                   book_wechar_id_list = result.book_wechar_id_list
+                   for (let i = 0; i < book_name_list.length; ++i) {
+                        //先创建好select里面的option元素
+                        var option = document.createElement("option");
+                        //转换DOM对象为JQ对象,好用JQ里面提供的方法 给option的value赋值
+                        $(option).val(book_wechar_id_list[i]);
+                        //给option的text赋值,这就是你点开下拉框能够看到的东西
+                        $(option).text(book_name_list[i]);
+                        //获取select 下拉框对象,并将option添加进select
+                        $('#book_list').append(option);
+                   }
+                }
+            });
+        }
+        /*获取书籍内容
+        $('select#book_list').change(function(){
+                $.ajax({
+                    url: "get_content_by_book",
+                    type: "GET",
+                    data: {"wechar_book_id":$(this).val()},
+                    success: function (result) {
+                        book_content = result.message
+                        document.getElementById('book_content').innerHTML=book_content;
+                    }
+                 });
+        });*/
+
+        $('button#book_search').click(function(){
+                $.ajax({
+                    url: "book_search",
+                    type: "GET",
+                    data: {"key_words":$("#key_words").val()},
+                    success: function (result) {
+                        book_content = result.message
+                        document.getElementById('book_content').innerHTML=book_content;
+                    }
+                 });
+        });
+
+        /*根据关键词+书籍名字获取书籍内容*/
+        $('button#book_search_list').click(function(){
+                $.ajax({
+                    url: "book_search_list",
+                    type: "GET",
+                    data: {"key_words":$("#key_words").val(),
+                           "wechat_book_id":$('select#book_list').val()},
+                    success: function (result) {
+                        book_sentence_str_list = result.book_sentence_str_list
+                        book_name_list = result.book_name_list
+                        document.getElementById('book_content_list').innerHTML="";
+                        console.log("获取element")
+                        var ul = document.createElement("ul");
+                        ul.setAttribute("class", "slot-list");
+                        ul.setAttribute("style", "overflow:auto;height:750px;");
+                        $('#book_content_list').append(ul);
+                        for (let i = 0; i < book_sentence_str_list.length; ++i) {
+                                var li = document.createElement("li");
+                                var div1 = document.createElement("div");
+                                var div2 = document.createElement("div");
+                                var div3 = document.createElement("div");
+                                var div4 = document.createElement("div");
+                                var div5 = document.createElement("div");
+                                var img = document.createElement("img");
+                                var p = document.createElement("p");
+                                ul.append(li);
+                                li.append(div1);
+                                div1.append(div2);
+                                div2.append(div3);
+                                div2.append(div4);
+                                div3.append(img);
+                                div4.append(div5);
+                                div4.append(p);
+
+                                li.setAttribute("class", "slot-item");
+                                div1.setAttribute("class", "slot-handler");
+                                div2.setAttribute("class", "slot-handler clearfix");
+                                div3.setAttribute("class", "avator");
+                                div4.setAttribute("class", "content");
+                                div5.setAttribute("class", "item-title");
+                                img.setAttribute("src", "/static/img/avatar4.jpg");
+                                $(div5).text(book_sentence_str_list[i]);
+                                $(p).text(book_name_list[i]);
+
+                       }
+                    }
+                 });
+        });
+
+        jQuery(function($){
+			$('#dragslot').dragslot({
+				dropCallback: function(el){
+				//	alert(el);
+				}
+			});
+		});
+
+    </script>
 </html>

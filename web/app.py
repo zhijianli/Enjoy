@@ -34,7 +34,7 @@ app = Flask(__name__)
 @app.route("/")
 #定义方法 用jinjia2引擎来渲染页面，并返回一个index.html页面
 def root():
-    return render_template("index2.html")
+    return render_template("index.html")
 
 def write_excel(title,start,text,end,author):
     if env == "test":
