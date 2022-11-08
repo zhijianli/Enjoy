@@ -305,7 +305,7 @@
   }
   
   .popup__media{
-    max-width: 35%;
+    max-width: 100%;
   }
 
   .popup__media_left{

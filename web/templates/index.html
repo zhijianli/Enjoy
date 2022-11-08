@@ -7,6 +7,8 @@
         <link rel="stylesheet" type="text/css" href="/static/css/dragslot.css">
         <link rel="stylesheet" type="text/css" href="/static/css/style.css">
         <link type="text/css" rel="stylesheet" href="/static/css/preview_style.css">
+
+
 	<!--[if IE]>
 		<script src="http://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 	<![endif]-->
@@ -120,7 +122,10 @@
             　<a href="https://space.bilibili.com/179444595/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">佳人温文</a>
             　<a href="https://space.bilibili.com/181508854/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">文字铺</a>
       　　　　<br>
-            <a href="http://47.98.124.127:8080/" target="_blank" style="color:grey;">mysql数据库</a>
+
+            <font color="grey">工具： </font>&nbsp;<a href="http://47.98.124.127:8080/" target="_blank" style="color:grey;">mysql数据库</a>
+            <a href="https://vision.aliyun.com/experience/detail?tagName=imageseg&children=SegmentHDBody" target="_blank" style="color:grey;">阿里云扣图</a>
+
             </div>
 
 <div id="popup-article" class="popup">
@@ -267,13 +272,13 @@
 
                     var h1 = document.createElement("h1");
                     h1.setAttribute("class", "popup__title");
-                    h1.innerHTML="标题:标题标题标题标题标题标题";
+                    h1.innerHTML= result.title;
                     $('#popup_block').append(h1)
 
                     frame_list = result.frame_list
                     for (let i = 0; i < frame_list.length; ++i) {
                         var img = document.createElement("img");
-                        img.setAttribute("class", "popup__media popup__media_right");
+                        img.setAttribute("class", "popup__media");
                         img.setAttribute("alt", "The foto of nature");
                         img.setAttribute("src", frame_list[i]);
                         console.log(frame_list[i])
@@ -285,16 +290,14 @@
                     var p3 = document.createElement("p");
                     var p4 = document.createElement("p");
                     var p5 = document.createElement("p");
-                    p1.innerHTML="内容：李宝莉想，人生是自己的，不管是儿孙满堂还是孤家寡人，我总得要走完它。++ ||－－《万箭穿心》";
-                    p2.innerHTML="结尾：感谢观看，欢迎关注";
-                    p3.innerHTML="BGM:「雨がくる虹がたつ」_増田俊郎.mp3";
-                    p4.innerHTML="图片名:cai-carney-deaqEVtdSgk-unsplash.jpg";
-                    p5.innerHTML="作者:弗洛伊德";
+                    p1.innerHTML="BGM:" + result.music_file_name;
+                    p2.innerHTML="图片名:" + result.picture_file_name;
+                    p3.innerHTML="作者:" + result.author;
+                    p4.innerHTML="视频时长：" + result.all_time;
                     $('#popup_block').append(p1)
                     $('#popup_block').append(p2)
                     $('#popup_block').append(p3)
                     $('#popup_block').append(p4)
-                    $('#popup_block').append(p5)
 
                     var a = document.createElement("a");
                     a.setAttribute("href", "#");

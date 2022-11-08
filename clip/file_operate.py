@@ -44,12 +44,12 @@ def get_outfile(infile, outfile):
     outfile = '{}-out{}'.format(dir, suffix)
     return outfile
 
-def compress_image(infile, outfile=''):
+def compress_image(infile,scaleDown,outfile=''):
 
     outfile = get_outfile(infile, outfile)
     img = Image.open(infile)
     w, h = img.size
-    w, h = round(w * 0.5), round(h * 0.5)
+    w, h = round(w * scaleDown), round(h * scaleDown)
     img = img.resize((w, h), Image.ANTIALIAS)
     img.save(outfile, optimize=True, quality=85)
 
@@ -60,13 +60,13 @@ if __name__ == "__main__":
     # file_name = get_file_list(DATA_ROOT+"/music")
     # make_zip("/home/mocuili/data/enjoy/video/121/","/home/mocuili/data/enjoy/video/121.zip")
     # copy_file(DATA_ROOT + "video/2022-10-14 15:19:44", "/home/mocuili/data/enjoy-oss/video/2022-10-14 15:19:44.zip")
-    # compress_image(DATA_ROOT+"cover.png")
-    music_name = "whatsup"
-    file_name = music_name+".mp3"
-    new_file_name = music_name+"-16k.mp3"
-    y,sr = librosa.load(DATA_ROOT+file_name,sr=44100)
-    y_16k = librosa.resample(y,sr,16000)
-    librosa.output.write_wav(DATA_ROOT+new_file_name,y_16k,16000)
+    compress_image(DATA_ROOT+"cover.png",0.5)
+    # music_name = "whatsup"
+    # file_name = music_name+".mp3"
+    # new_file_name = music_name+"-16k.mp3"
+    # y,sr = librosa.load(DATA_ROOT+file_name,sr=44100)
+    # y_16k = librosa.resample(y,sr,16000)
+    # librosa.output.write_wav(DATA_ROOT+new_file_name,y_16k,16000)
 
     # data,samplerate = sf.read(DATA_ROOT+file_name)
     # sf.write(DATA_ROOT+new_file_name,data,16000)

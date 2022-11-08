@@ -130,8 +130,13 @@ def submit():
         generate_video(args)
         result_message = {'message': "视频生成完毕"}
     elif operate == "preview":
-        frame_list = preview(args)
-        result_message = {'frame_list': frame_list}
+        frame_list,title,music_file_name,picture_file_name,author,all_time = preview(args)
+        result_message = {'frame_list': frame_list,
+                          'title':title,
+                          'music_file_name':music_file_name,
+                          'picture_file_name':picture_file_name,
+                          'author':author,
+                          'all_time':all_time}
 
     return result_message
 

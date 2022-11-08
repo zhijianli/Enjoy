@@ -17,6 +17,7 @@ from clip.clause import cut_sent,sub,cut_end,sentence_break
 from clip.file_operate import get_file_list,make_zip,copy_file,compress_image,copy_preview
 from clip.get_audio_time import get_duration_wav
 from clip.clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_saying_clip,generate_cover
+from tools.aliyun_oss import put_object_from_file
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 from guppy import hpy
@@ -326,6 +327,12 @@ def preview(args):
     text_clip_start = 0
     title_time = 3
     end_time = 5
+    preview_size = 1000
+    all_time = 0
+    title_time = 3
+    end_time = 5
+    duration = 0
+    dubbing_interval = 1  # 多加1秒是因为要每一段语音之后间隔两秒
 
     # 创建预览结果的文件夹
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -339,11 +346,22 @@ def preview(args):
     start_clip_list.append(colorclip)
     start_clip_list.append(txt_clip)
     start_clip = CompositeVideoClip(start_clip_list)
-    start_clip.save_frame(PREVIEW_DIR + "start_clip.png", t=1)
+    start_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "start_clip.png", t=1)
+    all_time = all_time + title_time
+
     saying_clip_frame_list = []
 
     # 视频叠加上文字，生成中间的文字帧
     for inx, val in enumerate(sents):
+
+        text_str = sents[inx]
+        if args.dubbing > 0:
+            audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
+            duration = round(get_duration_wav(audio_file_path), 2) + dubbing_interval
+        else:
+            duration = len(text_str) // 4.5
+        print("text duration time = " + str(duration))
+        all_time = all_time + duration
 
         saying_clip_list = [my_clip]
 
@@ -371,7 +389,7 @@ def preview(args):
         saying_clip_list.append(comment_clip)
         saying_clip_list.append(source_clip)
         saying_clip = CompositeVideoClip(saying_clip_list)
-        saying_clip.save_frame(PREVIEW_DIR + "saying_clip_"+str(inx)+".png", t=1)
+        saying_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "saying_clip_"+str(inx)+".png", t=1)
         saying_clip_frame_list.append("saying_clip_"+str(inx)+".png")
 
     # 生成结尾帧
@@ -382,11 +400,12 @@ def preview(args):
     end_clip_list.append(colorclip)
     end_clip_list.append(txt_clip)
     end_clip = CompositeVideoClip(end_clip_list)
-    end_clip.save_frame(PREVIEW_DIR + "end_clip.png", t=1)
+    end_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "end_clip.png", t=1)
+    all_time = all_time + end_time
 
     # 生成横的封面帧
     cover_clip = generate_cover(my_clip, DATA_ROOT, font, author, title)
-    cover_clip.save_frame(PREVIEW_DIR + "cover.png", t=1)
+    cover_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "cover.png", t=1)
 
     # 生成一个背景音乐
     music_file_name = ""
@@ -416,20 +435,33 @@ def preview(args):
         f.write("作者:" + author + "\n")
         # f.write("标签:" + str(convert_label_str) + "\n")
 
-    # 拷贝文件
-    if args.env == "test":
-        DATA_OSS_ROOT = ROOT + "enjoy-oss/"
-        copy_preview(DATA_ROOT + "preview/" + current_time, DATA_OSS_ROOT + "preview/" + current_time)
-        print("=============预览拷贝结束！=============")
-
+    # 上次文件到阿里云oss
+    print("=============预览拷贝开始！=============", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     frame_list = []
-    frame_list.append("https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/preview/"+current_time+"/cover.png")
-    frame_list.append("https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/preview/" + current_time + "/start_clip.png")
-    for saving_clip_frame in saying_clip_frame_list:
-        frame_list.append("https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/preview/" + current_time + "/" + saving_clip_frame)
+    cover_url = put_object_from_file("preview/" + current_time + "/cover.png",
+                                   DATA_ROOT + "preview/" + current_time + "/cover.png")
+    frame_list.append(cover_url)
 
-    frame_list.append("https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/preview/" + current_time + "/end_clip.png")
-    return frame_list
+    start_clip_url = put_object_from_file("preview/" + current_time + "/start_clip.png",
+                                   DATA_ROOT + "preview/" + current_time + "/start_clip.png")
+    frame_list.append(start_clip_url)
+
+    for saving_clip_frame in saying_clip_frame_list:
+        saving_clip_url = put_object_from_file("preview/" + current_time + "/"+saving_clip_frame,
+                                              DATA_ROOT + "preview/" + current_time + "/"+saving_clip_frame)
+        frame_list.append(saving_clip_url)
+
+    end_clip_url = put_object_from_file("preview/" + current_time + "/end_clip.png",
+                                          DATA_ROOT + "preview/" + current_time + "/end_clip.png")
+
+    put_object_from_file("preview/" + current_time + "/introduction.txt",
+                                          DATA_ROOT + "preview/" + current_time + "/introduction.txt")
+
+    print("=============预览拷贝结束！=============", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+    print("all_time:",all_time)
+    frame_list.append(end_clip_url)
+
+    return frame_list,title,music_file_name,picture_file_name,author,all_time
 
 
 
