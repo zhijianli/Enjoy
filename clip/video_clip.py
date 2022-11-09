@@ -458,10 +458,13 @@ def preview(args):
                                           DATA_ROOT + "preview/" + current_time + "/introduction.txt")
 
     print("=============预览拷贝结束！=============", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-    print("all_time:",all_time)
+
+    m, s = divmod(all_time, 60)
+    video_time = str(int(m)) + "分" + str(int(s)) + "秒"
+    print("video_time:",video_time)
     frame_list.append(end_clip_url)
 
-    return frame_list,title,music_file_name,picture_file_name,author,all_time
+    return frame_list,title,music_file_name,picture_file_name,author,video_time
 
 
 

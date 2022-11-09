@@ -97,7 +97,14 @@
                     <br><br>
                     <input cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" style="width:750px;height:100px" value="cai-carney-deaqEVtdSgk-unsplash.jpg">
                     <br><br>
-                    <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">
+<!--                    <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">-->
+<!--                    <input type="file" id="music" name="music" accept="audio/*"   style="" />-->
+                    <form name="form1">
+                        <input type="button" value="选择背景音乐" onclick="document.form1.file.click()">
+                        <input type="file" name="file" id="file" style="display:none;" >
+                        <input name="music" style="display:none;" id="music" readonly>
+                    </form>
+                    <audio id="audio" controls style="width: calc(100%);"></audio>
                     <br><br>
                     <!--创建button按钮，点击则激发submit()事件-->
                     <button onclick="submit_text();">生成视频</button>&nbsp;&nbsp;&nbsp;
@@ -112,8 +119,11 @@
 <!---->
             <div style="float:left;">
 
-             <font color="grey">灵感： </font>   &nbsp;<a href="https://studio.ixigua.com/activities" target="_blank" style="color:#7DE267;">西瓜视频选题灵感</a>
+             <font color="grey">灵感： </font>   &nbsp;
+             　<a href="https://mubu.com/app/edit/home/dEqQgWnG3w" target="_blank" style="color:#7DE267;">内容灵感储备</a>
+             　<a href="https://studio.ixigua.com/activities" target="_blank" style="color:#7DE267;">西瓜视频选题灵感</a>
              &nbsp;<a href="https://member.bilibili.com/york/up-inspiration/today?navhide=1&tab_id=2&from=10&page_from=home_10" target="_blank" style="color:#7DE267;">B站选题灵感</a>
+            　　
              <br>
              <font color="grey">创作中心： </font>&nbsp;<a href="https://studio.ixigua.com/content" target="_blank" style="color:#33BDFF;">西瓜视频创作中心</a>
                 <a href="https://member.bilibili.com/platform/upload-manager/article" target="_blank" style="color:#33BDFF;">B站创作中心</a>
@@ -125,6 +135,8 @@
 
             <font color="grey">工具： </font>&nbsp;<a href="http://47.98.124.127:8080/" target="_blank" style="color:grey;">mysql数据库</a>
             <a href="https://vision.aliyun.com/experience/detail?tagName=imageseg&children=SegmentHDBody" target="_blank" style="color:grey;">阿里云扣图</a>
+
+
 
             </div>
 
@@ -180,6 +192,24 @@
         $(document).ready(function () {//加载页面时执行select2
             $('.singleSelect').select2();
         });
+
+        /*选择音乐*/
+        $('input#file').change(function(){
+
+           console.log("choose")
+
+           //加载音频
+           var files = this.files;//声音文件
+           audio.src = URL.createObjectURL(files[0]);
+           audio.load();
+
+           //播放音频
+           audio.play();
+
+           $("#music").val($("#file").val())
+
+        });
+
         /*在这里编写submit()事件*/
         function submit() {
             $.ajax({
@@ -293,7 +323,7 @@
                     p1.innerHTML="BGM:" + result.music_file_name;
                     p2.innerHTML="图片名:" + result.picture_file_name;
                     p3.innerHTML="作者:" + result.author;
-                    p4.innerHTML="视频时长：" + result.all_time;
+                    p4.innerHTML="视频时长：" + result.video_time;
                     $('#popup_block').append(p1)
                     $('#popup_block').append(p2)
                     $('#popup_block').append(p3)

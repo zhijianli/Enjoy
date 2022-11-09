@@ -64,15 +64,15 @@ def write_excel(title,start,text,end,author):
 #从这里定义具体的函数 返回值均为json格式
 def submit():
     #由于POST、GET获取数据的方式不同，需要使用if语句进行判断
-    if request.method == "GET":
-        title = request.args.get("title")
-        start = request.args.get("start")
-        text = request.args.get("text")
-        end = request.args.get("end")
-        author = request.args.get("author")
-        label = request.args.get("label")
-        picture = request.args.get("picture")
-        music = request.args.get("music")
+    # if request.method == "GET":
+    #     title = request.args.get("title")
+    #     start = request.args.get("start")
+    #     text = request.args.get("text")
+    #     end = request.args.get("end")
+    #     author = request.args.get("author")
+    #     label = request.args.get("label")
+    #     picture = request.args.get("picture")
+    #     music = request.args.get("music")
     if request.method == "POST":
         title = request.form.get("title")
         start = request.form.get("start")
@@ -81,6 +81,7 @@ def submit():
         author = request.form.get("author")
         picture = request.form.get("picture")
         music = request.form.get("music")
+        music = music.split("\\")[-1]
         label = request.form.get("label")
         operate = request.form.get("operate")
 
@@ -130,13 +131,13 @@ def submit():
         generate_video(args)
         result_message = {'message': "视频生成完毕"}
     elif operate == "preview":
-        frame_list,title,music_file_name,picture_file_name,author,all_time = preview(args)
+        frame_list,title,music_file_name,picture_file_name,author,video_time = preview(args)
         result_message = {'frame_list': frame_list,
                           'title':title,
                           'music_file_name':music_file_name,
                           'picture_file_name':picture_file_name,
                           'author':author,
-                          'all_time':all_time}
+                          'video_time':video_time}
 
     return result_message
 
