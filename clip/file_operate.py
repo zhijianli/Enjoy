@@ -4,6 +4,7 @@ import shutil
 from PIL import Image
 import librosa
 import soundfile as sf
+from urllib.request import urlretrieve
 
 def get_file_list(dir):
     file_list = []
@@ -53,14 +54,17 @@ def compress_image(infile,scaleDown,outfile=''):
     img = img.resize((w, h), Image.ANTIALIAS)
     img.save(outfile, optimize=True, quality=85)
 
+def urllib_download(image_url,local_path):
+    urlretrieve(image_url, local_path)
 
 if __name__ == "__main__":
     title = "你好"
     DATA_ROOT = "/home/mocuili/data/enjoy/"
+    urllib_download("http://viapi-cn-shanghai-dha-segmenter.oss-cn-shanghai.aliyuncs.com/upload/result_humansegmenter/2022-11-10/invi_humansegmenter_016680706097581328967_YT1oTe.png?Expires=1668072409&OSSAccessKeyId=LTAI4FoLmvQ9urWXgSRpDvh1&Signature=rHErvgq4N0fgrONKF%2FUNq3yNdCM%3D",DATA_ROOT+"avatar/111.png")
     # file_name = get_file_list(DATA_ROOT+"/music")
     # make_zip("/home/mocuili/data/enjoy/video/121/","/home/mocuili/data/enjoy/video/121.zip")
     # copy_file(DATA_ROOT + "video/2022-10-14 15:19:44", "/home/mocuili/data/enjoy-oss/video/2022-10-14 15:19:44.zip")
-    compress_image(DATA_ROOT+"cover.png",0.5)
+    # compress_image(DATA_ROOT+"cover.png",0.5)
     # music_name = "whatsup"
     # file_name = music_name+".mp3"
     # new_file_name = music_name+"-16k.mp3"

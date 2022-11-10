@@ -16,14 +16,16 @@ env = get_develop_env()
 book_path = ""
 if env == "test":
     book_path = "/home/mocuili/data/enjoy/wechat_export/我的笔记/"
+    DATA_ROOT = "/home/mocuili/data/enjoy/"
 if env == "prod":
     book_path = "/data/enjoy/wechat_export/我的笔记/"
+    DATA_ROOT = "/data/enjoy/"
 
 sys.path.append("..")
 from clip.video_clip import generate_video,preview
-from clip.file_operate import get_file_name_list
-from tools.aliyun_cutout import cutout
-
+from clip.file_operate import get_file_name_list,urllib_download
+import tools.aliyun_cutout as aliyun_cutout
+from tools.aliyun_oss import put_object_from_file
 from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id,select_book_sentence_by_condition
 
 #创建Flask对象app并初始化
@@ -193,7 +195,16 @@ def book_search_list():
 @app.route("/cutout",methods=["GET"])
 def cutout():
     avatarUrl = request.args.get("avatarUrl")
-    result_url = cutout(avatarUrl)
+    author = request.args.get("author")
+
+    result_url = aliyun_cutout.cutout(avatarUrl)
+    local_path = DATA_ROOT+"avatar/"+author+".jpg"
+    # 下载到本地
+    urllib_download(result_url,local_path)
+
+    # 上传到阿里云
+    put_object_from_file("avatar/" + author+".jpg",local_path)
+
     return {'result_url': result_url}
 
 
