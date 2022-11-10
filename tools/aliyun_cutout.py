@@ -3,7 +3,7 @@
 import sys
 
 from typing import List
-
+from viapi.fileutils import FileUtils
 from alibabacloud_imageseg20191230.client import Client as imageseg20191230Client
 from alibabacloud_tea_openapi import models as open_api_models
 from alibabacloud_imageseg20191230 import models as imageseg_20191230_models
@@ -40,38 +40,49 @@ class Sample:
 
     @staticmethod
     def main(
-        args: List[str],
+        args: List[str],image_url
     ) -> None:
+        print("image_url",image_url)
+        file_utils = FileUtils("LTAI5tSb4MDsMSxgQSzAYEDt", "LegWcAIgnqSIndlJUlYDnbhm9xKiVM")
+        image_url = file_utils.get_oss_url(image_url, "jpg", False)
+        print(image_url)
         client = Sample.create_client("LTAI5tSb4MDsMSxgQSzAYEDt", "LegWcAIgnqSIndlJUlYDnbhm9xKiVM")
         segment_hdbody_request = imageseg_20191230_models.SegmentHDBodyRequest(
-            # image_url='http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageseg/SegmentHDBody/SegmentHDBody1.jpg'
-            image_url='https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/avatar/1651.jpg'
+            image_url=image_url
         )
         runtime = util_models.RuntimeOptions()
         try:
             # 复制代码运行请自行打印 API 的返回值
             result = client.segment_hdbody_with_options(segment_hdbody_request, runtime)
-            print(result.body.data.image_url)
+            return result.body.data.image_url
         except Exception as error:
             # 如有需要，请打印 error
             UtilClient.assert_as_string(error.message)
 
-    @staticmethod
-    async def main_async(
-        args: List[str],
-    ) -> None:
-        client = Sample.create_client("LTAI5tSb4MDsMSxgQSzAYEDt", "LegWcAIgnqSIndlJUlYDnbhm9xKiVM")
-        segment_hdbody_request = imageseg_20191230_models.SegmentHDBodyRequest(
-            image_url='http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageseg/SegmentHDBody/SegmentHDBody1.jpg'
-        )
-        runtime = util_models.RuntimeOptions()
-        try:
-            # 复制代码运行请自行打印 API 的返回值
-            await client.segment_hdbody_with_options_async(segment_hdbody_request, runtime)
-        except Exception as error:
-            # 如有需要，请打印 error
-            UtilClient.assert_as_string(error.message)
+    # @staticmethod
+    # async def main_async(
+    #     args: List[str],
+    # ) -> None:
+    #     client = Sample.create_client("LTAI5tSb4MDsMSxgQSzAYEDt", "LegWcAIgnqSIndlJUlYDnbhm9xKiVM")
+    #     segment_hdbody_request = imageseg_20191230_models.SegmentHDBodyRequest(
+    #         image_url='http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageseg/SegmentHDBody/SegmentHDBody1.jpg'
+    #     )
+    #     runtime = util_models.RuntimeOptions()
+    #     try:
+    #         # 复制代码运行请自行打印 API 的返回值
+    #         await client.segment_hdbody_with_options_async(segment_hdbody_request, runtime)
+    #     except Exception as error:
+    #         # 如有需要，请打印 error
+    #         UtilClient.assert_as_string(error.message)
 
+
+def cutout(image_url):
+    result_url = Sample.main(sys.argv[1:], image_url)
+    return result_url
 
 if __name__ == '__main__':
-    Sample.main(sys.argv[1:])
+    result_url = Sample.main(sys.argv[1:],"http://upload.lifeweek.com.cn/2014/0211/1392085433154.jpg")
+    print("result_url",result_url)
+
+
+

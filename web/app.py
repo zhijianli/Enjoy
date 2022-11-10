@@ -22,6 +22,7 @@ if env == "prod":
 sys.path.append("..")
 from clip.video_clip import generate_video,preview
 from clip.file_operate import get_file_name_list
+from tools.aliyun_cutout import cutout
 
 from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id,select_book_sentence_by_condition
 
@@ -188,6 +189,12 @@ def book_search_list():
         book_sentence_str_list.append(book_sentence.sentence)
         book_name_list.append("－－《" + str(book_sentence.book_name) + "》")
     return {'book_sentence_str_list': book_sentence_str_list,'book_name_list': book_name_list}
+
+@app.route("/cutout",methods=["GET"])
+def cutout():
+    avatarUrl = request.args.get("avatarUrl")
+    result_url = cutout(avatarUrl)
+    return {'result_url': result_url}
 
 
 #定义app在8080端口运行
