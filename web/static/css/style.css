@@ -67,7 +67,9 @@ li.slot-item:not(:last-child){
 
 .item-title{
 	font-size: 20px;
-	line-height: 48px;
+	line-height: 30px;
+	height: 150px;
+	width: 300px;
 }
 .slot-handler p{
 	margin: 0;

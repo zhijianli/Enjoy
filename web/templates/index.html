@@ -132,16 +132,24 @@
              &nbsp;<a href="https://member.bilibili.com/york/up-inspiration/today?navhide=1&tab_id=2&from=10&page_from=home_10" target="_blank" style="color:#7DE267;">B站选题灵感</a>
             　　
              <br>
-             <font color="grey">创作中心： </font>&nbsp;<a href="https://studio.ixigua.com/content" target="_blank" style="color:#33BDFF;">西瓜视频创作中心</a>
+             <font color="grey">创作中心： </font>&nbsp;
                 <a href="https://member.bilibili.com/platform/upload-manager/article" target="_blank" style="color:#33BDFF;">B站创作中心</a>
-            　<br>
+            　  <a href="https://studio.ixigua.com/content" target="_blank" style="color:#33BDFF;">西瓜视频创作中心</a>
+             <br>
             <font color="grey">学习对象： </font>&nbsp;<a href="https://space.bilibili.com/60509716/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">一个爱吃的猪</a>
-            　<a href="https://space.bilibili.com/179444595/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">佳人温文</a>
+            　<a href="https://www.ixigua.com/home/2093104668353164" target="_blank" style="color:#F68B33;">烟雨读书</a>
+              <a href="https://space.bilibili.com/179444595/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">佳人温文</a>
             　<a href="https://space.bilibili.com/181508854/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">文字铺</a>
-      　　　　<br>
+      　　　　
+
+
+            <br>
 
             <font color="grey">工具： </font>&nbsp;<a href="http://47.98.124.127:8080/" target="_blank" style="color:grey;">mysql数据库</a>
             <a href="https://vision.aliyun.com/experience/detail?tagName=imageseg&children=SegmentHDBody" target="_blank" style="color:grey;">阿里云扣图</a>
+             <a href="https://oss.console.aliyun.com/bucket/oss-cn-hangzhou/enjoy-mocuili/object" target="_blank" style="color:grey;">阿里云oss</a>
+             <a href="https://unsplash.com/" target="_blank" style="color:grey;">背景图下载１</a>
+             <a href="https://wallhaven.cc/" target="_blank" style="color:grey;">背景图下载２</a>
 
 
 
@@ -149,18 +157,6 @@
 
 <div id="popup-article" class="popup">
   <div id="popup_block" class="popup__block">
-<!--    <h1 class="popup__title">标题:标题标题标题标题标题标题</h1>-->
-<!--&lt;!&ndash;    <p>标题:标题标题标题标题标题标题</p>&ndash;&gt;-->
-<!--    <img src="" class="popup__media popup__media_right" alt="The foto of nature">-->
-<!--    <p>内容：李宝莉想，人生是自己的，不管是儿孙满堂还是孤家寡人，我总得要走完它。++ ||－－《万箭穿心》</p>-->
-<!--    <p>结尾：感谢观看，欢迎关注</p>-->
-<!--    <p>BGM:「雨がくる虹がたつ」_増田俊郎.mp3</p>-->
-<!--    <p>图片名:cai-carney-deaqEVtdSgk-unsplash.jpg</p>-->
-<!--    <p>作者:弗洛伊德</p>-->
-<!--     <a href="#" class="popup__close">关闭</a>-->
-
-
-
   </div>
 </div>
 
@@ -202,8 +198,6 @@
 
         /*选择音乐*/
         $('input#file').change(function(){
-
-           console.log("choose")
 
            //加载音频
            var files = this.files;//声音文件
@@ -343,7 +337,6 @@
                     var p2 = document.createElement("p");
                     var p3 = document.createElement("p");
                     var p4 = document.createElement("p");
-                    var p5 = document.createElement("p");
                     p1.innerHTML="BGM:" + result.music_file_name;
                     p2.innerHTML="图片名:" + result.picture_file_name;
                     p3.innerHTML="作者:" + result.author;
@@ -352,14 +345,18 @@
                     $('#popup_block').append(p2)
                     $('#popup_block').append(p3)
                     $('#popup_block').append(p4)
+                    var audio = document.createElement("audio");
+                    audio.setAttribute("style", "width: calc(50%);");
+                    audio.setAttribute("src", "https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/music/"+result.music_file_name);
+                    audio.controls = true
+                    audio.play();
+                    $('#popup_block').append(audio)
 
                     var a = document.createElement("a");
                     a.setAttribute("href", "#");
                     a.setAttribute("class", "popup__close");
                     a.innerHTML="关闭";
                     $('#popup_block').append(a)
-
-
                 }
             });
         }
@@ -433,7 +430,7 @@
                                 var div2 = document.createElement("div");
                                 var div3 = document.createElement("div");
                                 var div4 = document.createElement("div");
-                                var div5 = document.createElement("div");
+                                var div5 = document.createElement("textarea");
                                 var img = document.createElement("img");
                                 var p = document.createElement("p");
                                 ul.append(li);
@@ -451,14 +448,20 @@
                                 div3.setAttribute("class", "avator");
                                 div4.setAttribute("class", "content");
                                 div5.setAttribute("class", "item-title");
-                                img.setAttribute("src", "/static/img/avatar4.jpg");
+                               /* div5.setAttribute("contenteditable", "true"); */
                                 $(div5).text(book_sentence_str_list[i]);
+                                img.setAttribute("src", "/static/img/avatar4.jpg");
                                 $(p).text(book_name_list[i]);
 
                        }
                     }
                  });
         });
+
+ /*
+        $('textarea#saying11111').dblclick(function(){
+
+        });*/
 
         jQuery(function($){
 			$('#dragslot').dragslot({
