@@ -408,6 +408,13 @@ def preview(args):
         saying_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "saying_clip_"+str(inx)+".png", t=1)
         saying_clip_frame_list.append("saying_clip_"+str(inx)+".png")
 
+        del colorclip_ori
+        del colorclip
+        del txt_clip
+        del comment_clip
+        del source_clip
+        del saying_clip
+
     # 生成结尾帧
     end_clip_list = [my_clip]
     txt_clip = TextClip(cut_end(end), fontsize=start_end_font_size, color='white', font=font)
@@ -450,6 +457,14 @@ def preview(args):
         f.write("图片名:" + picture_file_name + "\n")
         f.write("作者:" + author + "\n")
         # f.write("标签:" + str(convert_label_str) + "\n")
+
+    # 删除内存
+    del my_clip
+    del cover_clip
+    del start_clip
+    del end_clip
+
+    gc.collect()
 
     # 上次文件到阿里云oss
     print("=============预览拷贝开始！=============", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
