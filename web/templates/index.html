@@ -8,12 +8,84 @@
         <link rel="stylesheet" type="text/css" href="/static/css/style.css">
         <link type="text/css" rel="stylesheet" href="/static/css/preview_style.css">
         <link type="text/css" rel="stylesheet" href="/static/css/cutout-style.css" />
-
-
-
-	<!--[if IE]>
 		<script src="http://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<![endif]-->
+
+        <style>
+			body{
+				margin: 0;
+				padding: 0;
+			}
+		    *{
+		    	text-decoration: none;
+		    }
+			.box{
+				text-align: center;
+			}
+			.t_img{
+
+			}
+			.s_box{
+				border-radius: 10px;
+				width: 1250px;
+				height: auto;
+				border: 1px #c2c2d6 solid;
+				margin-left: 430px;
+				background-color: #CFC31B;
+			    position:fixed;
+				display: none;
+			}
+			.s_box img{
+				width: 200px;
+				height: auto;
+				margin: 5px;
+				border:1px solid #ccc;
+				display: inline-block;
+
+			}
+			.s_box img:hover{
+				border-color:red ;
+				transform: scale(1.25);
+				transition: .5s;
+			}
+			.header{
+			  width: 100%;
+			  text-align: center;
+			  font-size: 14px;
+			  margin-top: 30px;
+			}
+			.close{
+				color:#000;
+			    font-size: 21px;
+			    opacity: .7;
+			    position:absolute;
+			    right:8px;
+			    top:1px;
+			    cursor: pointer;
+			}
+			.bt_box .gb{
+				display:inline-block;
+				width:80px;
+				height:35px;
+				border-radius: 10px;
+				background:#f3f3f3;
+				color:#444;
+				line-height: 35px;
+				margin: 10px;
+			}
+			.bt_box .queren{
+				display:inline-block;
+				width:180px;
+				height:35px;
+				border-radius: 10px;
+				background:#1a53ff;
+				color:white;
+				line-height: 35px;
+			}
+			.bt_box .gb:hover,.bt_box .queren:hover{
+				box-shadow: 0 6px 10px 0 rgba(0,0,0,0.24),0 9px 25px 0 rgba(0,0,0,0.19);
+			}
+		</style>
+
     </head>
 
     <!--引入jQuery包用于使用ajax-->
@@ -102,7 +174,11 @@
                     <br><br>
                     <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">
                     <br><br>
-                    <input cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" style="width:750px;height:100px" value="cai-carney-deaqEVtdSgk-unsplash.jpg">
+                    <img cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" value="cai-carney-deaqEVtdSgk-unsplash.jpg">
+<!--                     <div class="ft_img" id="ft_img">-->
+                    <button class="t_img">选择背景图片</button>
+<!--			         </div>-->
+
                     <br><br>
 <!--                    <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">-->
 <!--                    <input type="file" id="music" name="music" accept="audio/*"   style="" />-->
@@ -114,16 +190,14 @@
                     <audio id="audio" controls style="width: calc(100%);"></audio>
                     <br><br>
                     <!--创建button按钮，点击则激发submit()事件-->
-                    <button onclick="submit_text();">生成视频</button>&nbsp;&nbsp;&nbsp;
-<!--                    <button onclick="preview();" href="#popup-article" class="card__link card__readmore">预览</button>-->
+<!--                    <button onclick="submit_text();">生成视频</button>&nbsp;&nbsp;&nbsp;-->
+                    <a href="#popup-article"  onclick="submit_text();">生成视频</a>&nbsp;&nbsp;&nbsp;
                     <a href="#popup-article"  onclick="preview();">预览</a>
 
-<!--           class="card__link card__readmore"-->
 
 
 
          </div>
-<!---->
             <div style="float:left;">
 
              <font color="grey">灵感： </font>   &nbsp;
@@ -158,6 +232,23 @@
 <div id="popup-article" class="popup">
   <div id="popup_block" class="popup__block">
   </div>
+</div>
+<div class="box">
+    <div class="s_box" id="sbox">
+        <div class="header">
+            <p>设置背景图片</p>
+            <span class="close" id="close">x</span>
+        </div>
+        <hr width="80%" color="#e0e0eb"/>
+        <div id="t_img" style="height:700px;width:1250px;overflow:scroll;">
+        </div>
+        <hr width="80%" color="#e0e0eb"/>
+        <div class="bt_box">
+            <input type="file" name="file0" id="file0" accept="image/*"/>
+            <a class="queren" href="javascript:" id="but">保存背景图片</a>
+            <a class="gb" href="javascript:" id="hide">关闭</a>
+        </div>
+    </div>
 </div>
 
 <!--    <div >-->
@@ -238,6 +329,7 @@
 
          /*在这里编写submit()事件*/
         function submit_text() {
+            document.getElementById('popup_block').innerHTML="";
             sentence_list = document.getElementById('text').getElementsByClassName("item-title")
             source_list = document.getElementById('text').querySelectorAll("p")
             text = ""
@@ -262,12 +354,44 @@
                         "operate":"generateVideo"},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
-                    if (result.message == "success!") {
-                        /* alert(result.message) */
-                    }
-                    else {
-                       /* alert(result.message) */
-                    }
+                   var h1 = document.createElement("h1");
+                    h1.setAttribute("class", "popup__title");
+                    h1.innerHTML= result.title;
+                    $('#popup_block').append(h1)
+
+                    cover_url = result.cover_url
+
+                    var cover = document.createElement("img");
+                    cover.setAttribute("class", "popup__media");
+                    cover.setAttribute("alt", "The foto of nature");
+                    cover.setAttribute("src", cover_url);
+                    $('#popup_block').append(cover);
+
+                    video_url = result.video_url
+                    var video = document.createElement("video");
+                    video.setAttribute("src", video_url);
+                    video.setAttribute("controls", "controls");
+                    video.setAttribute("class", "popup__media");
+                    $('#popup_block').append(video);
+
+                    var p1 = document.createElement("p");
+                    var p2 = document.createElement("p");
+                    var p3 = document.createElement("p");
+                    var p4 = document.createElement("p");
+                    p1.innerHTML="BGM:" + result.music_file_name;
+                    p2.innerHTML="图片名:" + result.picture_file_name;
+                    p3.innerHTML="作者:" + result.author;
+                    p4.innerHTML="视频时长：" + result.video_time;
+                    $('#popup_block').append(p1)
+                    $('#popup_block').append(p2)
+                    $('#popup_block').append(p3)
+                    $('#popup_block').append(p4)
+
+                    var a = document.createElement("a");
+                    a.setAttribute("href", "#");
+                    a.setAttribute("class", "popup__close");
+                    a.innerHTML="关闭";
+                    $('#popup_block').append(a)
                 }
             });
         }
@@ -470,6 +594,92 @@
 				}
 			});
 		});
+
+        /* 隐藏，显现效果 */
+          $(".t_img").click(function(){
+            document.getElementById('t_img').innerHTML="";
+
+            /* 获取图片list */
+              $.ajax({
+                        url: "get_picture_list",
+                        type: "GET",
+                        data: {},
+                        success: function (result) {
+                            picture_list = result.picture_list
+                            for (let i = 0; i < picture_list.length; ++i) {
+                                var img = document.createElement("img");
+                                img.setAttribute("src", "https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/picture/"+
+                                                        picture_list[i]+
+                                                        "?x-oss-process=image/resize,m_fixed,limit_0,w_250");
+                                img.onclick = function(){
+                                   /* $("#t_img").attr('src',picture_url); */
+                                     console.log("ok")
+                                     $("#picture").val(picture_list[i]);
+                                     $("#picture").attr("src","https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/picture/"+
+                                                        picture_list[i]+
+                                                        "?x-oss-process=image/resize,m_fixed,limit_0,w_250");
+                                     $("#sbox").hide("slow");
+                                }
+                                $('#t_img').append(img);
+                            }
+                            $("#sbox").show("slow");
+                        }
+                });
+          });
+          $("#hide").click(function(){
+                 $("#sbox").hide("slow");
+          });
+          $("#close").click(function(){
+                 $("#sbox").hide("slow");
+          });
+        /*  选定图像获取图像src值 */
+		var $t_img = document.getElementById('t_img');
+		var $img = $t_img.getElementsByTagName('img');
+		var index = 0;
+		for(var i = 0; i<$img.length;i++){
+			$img[i].index=i;
+			$img[i].onclick = function(){
+				$img[index].style.borderRadius="15%";
+				$img[index].style.border="none"
+				this.style.borderRadius="50%";
+				this.style.border="1px solid red"
+				index = this.index;
+				var $newsrc = $img[index].src;
+				$(".t_img").attr('src',$newsrc);
+			}
+		}
+		 //点击确认修改按钮更换头像
+		$("#but").click(function(){
+             $.ajax({
+                url: "save_picture",
+                type: "POST",
+                data: {"picture_url":$("#file0").val()},
+                success: function (result) {
+                   $("#sbox").hide("slow");
+                }
+             });
+		})
+
+	    //讲选中的图片替换头像的图片
+		$("#file0").change(function(){
+		  var objUrl = getObjectURL(this.files[0]) ;
+		  if (objUrl) {
+		    $(".t_img").attr("src", objUrl) ;
+		  }
+		}) ;
+		//创建一个可存取到该file的url
+		function getObjectURL(file) {
+		  var url = null ;
+		   // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已
+		  if (window.createObjectURL!=undefined) { // basic
+		    url = window.createObjectURL(file) ;
+		  } else if (window.URL!=undefined) { // mozilla(firefox)
+		    url = window.URL.createObjectURL(file) ;
+		  } else if (window.webkitURL!=undefined) { // webkit or chrome
+		    url = window.webkitURL.createObjectURL(file) ;
+		  }
+		  return url ;
+		}
 
     </script>
 </html>

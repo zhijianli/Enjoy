@@ -228,7 +228,8 @@ def generate_video(args):
     # compress_image(RESULT_DIR + "cover.png")
 
     # 视频写入文件
-    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+"flower.mp4",codec='mpeg4')
+    video_name = "flower.webm"
+    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+video_name,codec='libvpx')
 
     # 每次编辑完视频之后都要主动释放内存，进行垃圾回收
     del cover_clip
@@ -243,15 +244,30 @@ def generate_video(args):
     gc.collect()
 
     # 将结果放到zip压缩文件中
-    make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
+    # make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
 
     print("=============视频生成结束！=============")
 
-    # 拷贝文件
-    if args.env == "prod":
-        DATA_OSS_ROOT = ROOT+"enjoy-oss/"
-        copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
-        print("=============视频拷贝结束！=============")
+    # # 拷贝文件
+    # if args.env == "prod":
+    #     DATA_OSS_ROOT = ROOT+"enjoy-oss/"
+    #     copy_file(DATA_ROOT + "video/"+ current_time, DATA_OSS_ROOT + "video/"+ current_time)
+    #     print("=============视频拷贝结束！=============")
+
+    # 文件上传到oss
+    cover_url = put_object_from_file("video/" + current_time + "/cover.png",
+                                     DATA_ROOT + "video/" + current_time + "/cover.png")
+    video_url = put_object_from_file("video/" + current_time + "/" + video_name,
+                                     DATA_ROOT + "video/" + current_time + "/" + video_name)
+    put_object_from_file("video/" + current_time + "/introduction.txt",
+                                          DATA_ROOT + "video/" + current_time + "/introduction.txt")
+
+    print("=============视频上传结束！=============")
+
+    m, s = divmod(all_time, 60)
+    video_time = str(int(m)) + "分" + str(int(s)) + "秒"
+
+    return cover_url,video_url,title,music_file_name,picture_file_name,author,video_time
 
 
 def preview(args):

@@ -25,7 +25,7 @@ sys.path.append("..")
 from clip.video_clip import generate_video,preview
 from clip.file_operate import get_file_name_list,urllib_download
 import tools.aliyun_cutout as aliyun_cutout
-from tools.aliyun_oss import put_object_from_file
+from tools.aliyun_oss import put_object_from_file,get_bucket_list
 from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id,select_book_sentence_by_condition
 
 #创建Flask对象app并初始化
@@ -131,8 +131,14 @@ def submit():
 
     result_message = ""
     if operate == "generateVideo":
-        generate_video(args)
-        result_message = {'message': "视频生成完毕"}
+        cover_url,video_url,title,music_file_name,picture_file_name,author,video_time = generate_video(args)
+        result_message = {'cover_url': cover_url,
+                          'video_url': video_url,
+                          'title':title,
+                          'music_file_name':music_file_name,
+                          'picture_file_name':picture_file_name,
+                          'author':author,
+                          'video_time':video_time}
     elif operate == "preview":
         frame_list,title,music_file_name,picture_file_name,author,video_time = preview(args)
         result_message = {'frame_list': frame_list,
@@ -206,6 +212,24 @@ def cutout():
     put_object_from_file("avatar/" + author+".jpg",local_path)
 
     return {'result_url': result_url}
+
+@app.route("/get_picture_list",methods=["GET"])
+def get_picture_list():
+
+    # 获取阿里云oss背景图片链接list
+    picture_list = get_bucket_list(".jpg")
+
+    return {'picture_list': picture_list}
+
+
+
+@app.route("/save_picture",methods=["POST"])
+def save_picture():
+    picture_url = request.form.get("picture_url")
+    picture_name = picture_url.split("\\")[-1]
+    put_object_from_file("picture/" + picture_name, picture_url)
+    return {'result_message': "success"}
+
 
 
 #定义app在8080端口运行
