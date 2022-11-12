@@ -21,7 +21,8 @@ if env == "prod":
     book_path = "/data/enjoy/wechat_export/我的笔记/"
     DATA_ROOT = "/data/enjoy/"
 
-sys.path.append("..")
+sys.path.append("./")
+
 from clip.video_clip import generate_video,preview
 from clip.file_operate import get_file_name_list,urllib_download
 import tools.aliyun_cutout as aliyun_cutout
