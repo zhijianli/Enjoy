@@ -100,21 +100,23 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     # 作者
     author_clip = TextClip(author_name, fontsize=cover_w / 30, color='white', font=font)
     author_clip = author_clip.set_duration(1).set_start(1)
+    author_w,author_h = author_clip.size
 
     # 头像
-    avatar_clip = ImageClip(DATA_ROOT + "avatar/"+author_name+".jpg")
-    avatar_w,avatar_h = avatar_clip.size
-    avatar_resize = (cover_h/avatar_h)/2
-    avatar_w = avatar_w * avatar_resize
-    avatar_h = avatar_h * avatar_resize
-    avatar_x = (cover_w - txt_w - avatar_w) // 2-cover_w//42
-    avatar_y = (cover_h-avatar_h)//2*9//10
-    avatar_clip = avatar_clip.resize(avatar_resize)
+    # avatar_clip = ImageClip(DATA_ROOT + "avatar/"+author_name+".jpg")
+    # avatar_w,avatar_h = avatar_clip.size
+    # avatar_resize = (cover_h/avatar_h)/2
+    # avatar_w = avatar_w * avatar_resize
+    # avatar_h = avatar_h * avatar_resize
+    # avatar_x = (cover_w - txt_w - avatar_w) // 2-cover_w//42
+    # avatar_y = (cover_h-avatar_h)//2*9//10
+    # avatar_clip = avatar_clip.resize(avatar_resize)
+    avatar_w, avatar_h,avatar_x,avatar_y = 1,1,1,1
 
     # 遮罩
     colorclip_w = int(cover_w*8//10)
     # colorclip_w = int(avatar_w + txt_w)
-    colorclip_h = int(avatar_h * 9 // 10)
+    colorclip_h = int((txt_h+author_h*2) * 6 // 5)
     colorclip = ColorClip(size=(colorclip_w, colorclip_h), color=[00, 00, 00], duration=10).set_opacity(
         0.3)
 
@@ -128,12 +130,17 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
 
     # 设置位置
     position = (avatar_x, avatar_y)
-    txt_clip = txt_clip.set_position(((cover_w-avatar_w-txt_w)//2+avatar_w,cover_h//2))
-    author_clip = author_clip.set_position(((cover_w-avatar_w-txt_w)//2+avatar_w,cover_h//2-txt_h))
-    avatar_clip = avatar_clip.set_position(position)
-    colorclip = colorclip.set_position((cover_w//10,avatar_y+avatar_h*1//10))
+    # txt_clip = txt_clip.set_position(((cover_w-avatar_w-txt_w)//2+avatar_w,cover_h//2))
+    # author_clip = author_clip.set_position(((cover_w - avatar_w - txt_w) // 2 + avatar_w, cover_h // 2 - txt_h))
+    txt_clip = txt_clip.set_position(((cover_w - txt_w) // 2, (cover_h - (txt_h+author_h*2))//2))
+    author_clip = author_clip.set_position(((cover_w - author_w)//2,(cover_h - (txt_h+author_h*2))//2+txt_h+author_h))
+    # avatar_clip = avatar_clip.set_position(position)
+    # colorclip = colorclip.set_position((cover_w//10,avatar_y+avatar_h*1//10))
+    colorclip = colorclip.set_position((cover_w // 10, (cover_h-colorclip_h)//2))
+    color_y = (cover_h-colorclip_h)//2
     wireframe_top_clip_x = cover_w*11//100
-    wireframe_top_clip_y = avatar_y + avatar_h * 1 // 10 + colorclip_h // 20
+    wireframe_top_clip_y = color_y + colorclip_h // 20
+    # wireframe_top_clip_y = avatar_y + avatar_h * 1 // 10 + colorclip_h // 20
     # print("白框x轴",(wireframe_top_clip_x,wireframe_top_clip_y))
     # print("头像位置", position)
     # print("遮罩位置", (cover_w//10,avatar_y+avatar_h*1//10))
@@ -148,7 +155,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     cover_clip_list.append(wireframe_left_clip)
     cover_clip_list.append(wireframe_right_clip)
     cover_clip_list.append(colorclip)
-    cover_clip_list.append(avatar_clip)
+    # cover_clip_list.append(avatar_clip)
     cover_clip_list.append(txt_clip)
     cover_clip_list.append(author_clip)
     cover_clip = CompositeVideoClip(cover_clip_list)
