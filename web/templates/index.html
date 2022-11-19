@@ -393,6 +393,7 @@
                     var a = document.createElement("a");
                     a.setAttribute("href", "#");
                     a.setAttribute("class", "popup__close");
+                    a.setAttribute("onclick", "closeBulletBox();");
                     a.innerHTML="关闭";
                     $('#popup_block').append(a)
                 }
@@ -482,6 +483,7 @@
                     var a = document.createElement("a");
                     a.setAttribute("href", "#");
                     a.setAttribute("class", "popup__close");
+                    a.setAttribute("onclick", "closeBulletBox();");
                     a.innerHTML="关闭";
                     $('#popup_block').append(a)
                 }
@@ -557,7 +559,8 @@
                                 var div2 = document.createElement("div");
                                 var div3 = document.createElement("div");
                                 var div4 = document.createElement("div");
-                                var div5 = document.createElement("textarea");
+                                /* var div5 = document.createElement("textarea"); */
+                                var div5 = document.createElement("div");
                                 var img = document.createElement("img");
                                 var p = document.createElement("p");
                                 ul.append(li);
@@ -683,6 +686,11 @@
 		  }
 		  return url ;
 		}
+
+		function closeBulletBox() {
+              console.log("111111111111111")
+              document.getElementById('popup_block').innerHTML="";
+        }
 
     </script>
 </html>
