@@ -23,7 +23,10 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineProfile
 import os
 sys.path.append("../tools")
-from mysql_tools import insert_book,select_book,select_book_sentence,insert_book_sentence,select_book_by_wechat_book_id
+from mysql_tools import insert_book,select_book,select_book_sentence,\
+                        insert_book_sentence,select_book_by_wechat_book_id,\
+                        insert_tag,insert_book_tag_relation,select_tag,\
+                        select_book_tag_relation
 
 def get_develop_env():
     develop_env = os.environ["DEVELOP_ENV"]
@@ -182,8 +185,28 @@ if __name__=='__main__':
 
         # 先判断书籍表中有没有同名的数据，如果没有，就插入到书籍表中
         book_list = select_book(wechat_book_id,book_name)
+
         if len(book_list) == 0:
-            insert_book(wechat_book_id,book_name)
+            book_id = insert_book(wechat_book_id,book_name)
+
+            # 获取某本书的标签
+            tag_list = get_booktags(wechat_book_id, HEADERS)
+
+            # 插入标签数据到数据库
+            if len(tag_list) > 0:
+                for tag in tag_list:
+                    # 先判断标签表中有没有同名的标签，如果没有，就插入到标签表中
+                    tag_list = select_tag(tag)
+                    if len(tag_list) > 0:
+                        tag_id = tag_list[0].id
+                    else:
+                        tag_id = insert_tag(tag)
+
+                    # 先判断关联表中有没有同名的关联，如果没有，就插入到关联表中
+                    book_tag_relation_list = select_book_tag_relation(wechat_book_id, tag_id)
+                    if len(book_tag_relation_list) == 0:
+                        insert_book_tag_relation(wechat_book_id, book_id, tag_id)
+
             # 失败重试，最大重试次数为4
             for try_count in range(4):
                 try:

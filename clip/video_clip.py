@@ -372,21 +372,22 @@ def preview(args):
     for inx, val in enumerate(sents):
 
         text_str = sents[inx]
+        saying_comment = text_str.split('||')[0]  # 获取名言和评论
+        source = text_str.split('||')[1]  # 获取来源
+        saying = saying_comment.split('++')[0]
+        comment = saying_comment.split('++')[1]
+
         if args.dubbing > 0:
             audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
             duration = round(get_duration_wav(audio_file_path), 2) + dubbing_interval
         else:
-            duration = len(text_str) // 4.5
+            duration = len(saying) // 4.5
         print("text duration time = " + str(duration))
         all_time = all_time + duration
 
         saying_clip_list = [my_clip]
 
-        text_str = sents[inx]
-        saying_comment = text_str.split('||')[0]  # 获取名言和评论
-        source = text_str.split('||')[1]  # 获取来源
-        saying = saying_comment.split('++')[0]
-        comment = saying_comment.split('++')[1]
+
 
         if args.template == 0:
             saying = sub(saying)

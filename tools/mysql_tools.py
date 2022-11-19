@@ -50,6 +50,23 @@ class Book(db.Model):
     name = db.Column(db.String(255), unique=True, index=True)
     wechat_book_id = db.Column(db.Integer)
 
+class Tag(db.Model):
+    # 定义表名
+    __tablename__ = 'tag'
+    # 定义字段
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(20), unique=True, index=True)
+
+
+class BookTagRelation(db.Model):
+    # 定义表名
+    __tablename__ = 'book_tag_relation'
+    # 定义字段
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    wechat_book_id = db.Column(db.Integer)
+    book_id = db.Column(db.Integer)
+    tag_id = db.Column(db.Integer)
+
 class BookSentence(db.Model):
     # 定义表名
     __tablename__ = 'book_sentence'
@@ -71,7 +88,10 @@ def insert_book(wechat_book_id,book_name):
     with app.app_context():
         book = Book(wechat_book_id=wechat_book_id,name=book_name)
         db.session.add(book)
+        db.session.flush()
+        book_id = book.id
         db.session.commit()
+        return book_id
 
 def select_book_list():
     with app.app_context():
@@ -122,6 +142,33 @@ def select_book_sentence_by_condition(key_words,wechat_book_id):
 
     return book_sentence_list
 
+def insert_tag(tag_name):
+    with app.app_context():
+        tag = Tag(name=tag_name)
+        db.session.add(tag)
+        db.session.flush()
+        tag_id = tag.id
+        db.session.commit()
+        return tag_id
+
+def insert_book_tag_relation(wechat_book_id,book_id,tag_id):
+    with app.app_context():
+        bookTagRelation = BookTagRelation(wechat_book_id=wechat_book_id,book_id=book_id,tag_id=tag_id)
+        db.session.add(bookTagRelation)
+        db.session.commit()
+
+def select_tag(tag_name):
+    with app.app_context():
+        tag_list = Tag.query.filter_by(name=tag_name).all()
+
+    return tag_list
+
+def select_book_tag_relation(wechat_book_id,tag_id):
+    with app.app_context():
+        book_tag_relation_list = BookTagRelation.query.filter_by(wechat_book_id=wechat_book_id,tag_id=tag_id).all()
+
+    return book_tag_relation_list
+
 if __name__ == '__main__':
 
     # # 插入一条数据
@@ -136,9 +183,9 @@ if __name__ == '__main__':
     #     db.session.add(book)
     #     db.session.commit()
     # 插入书籍名字到表中
-    book_list = select_book(111,'天龙八部1')
-    if len(book_list) == 0:
-        insert_book(111,'天龙八部1')
+    # book_list = select_book(111,'天龙八部1')
+    # if len(book_list) == 0:
+    #     insert_book(111,'天龙八部1')
     # book_sentence_list = select_book_sentence('两句名言1',11111)
     # if len(book_sentence_list) == 0:
     #     insert_book_sentence('两句名言1',1,11111,'天龙八部',119,1)
@@ -146,3 +193,9 @@ if __name__ == '__main__':
     # book_list = select_book_by_wechat_book_id(11111)
     # print(book_list[0].name)
 
+    # tag_id = insert_tag("yixue")
+    # print(tag_id)
+    # insert_book_tag_relation(2,3,2)
+    # tag_list = select_tag("世界名著")
+    book_tag_relation_list = select_book_tag_relation(703157,7)
+    print(book_tag_relation_list)

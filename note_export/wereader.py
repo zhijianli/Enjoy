@@ -258,6 +258,29 @@ def get_bookinfo(bookId, headers):
         raise Exception(r.text)
     return data
 
+def get_booktags(bookId, headers):
+    """获取书的详情"""
+    url = "https://i.weread.qq.com/book/detailinfo"
+    params = dict(bookId=bookId,
+                  count="3, 0, 1",
+                  maxidx="0, 0, 0",
+                  listtypes="1, 6, 10",
+                  synckey="1668837609, 1668841022, 1668841022")
+
+    r = requests.get(url, params=params, headers=headers, verify=False)
+    tag_list = []
+    if r.ok:
+        data = r.json()
+        tags = data['booktags']['tags']
+        if len(tags) > 0:
+            for tag in tags:
+                tag_list.append(tag['tag'])
+
+    else:
+        raise Exception(r.text)
+    return tag_list
+
+
 
 def get_bookshelf(userVid, headers):
     """获取书架上所有书"""
