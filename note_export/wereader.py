@@ -356,5 +356,47 @@ def login_success(headers):
     else:
         return False
 
+"""根据类目id获取书的目录"""
+def get_book_by_category(categoryId,maxIdx,headers):
+
+    url = "https://i.weread.qq.com/category/data"
+    params = dict(wordcount_begin=0,
+                  synckey=0,
+                  maxIdx=maxIdx,
+                  count=50,
+                  finish=0,
+                  sort=1,
+                  wordcount_end=0,
+                  paytype=0,
+                  categoryId=categoryId)
+
+    r = requests.get(url, params=params, headers=headers, verify=False)
+    book_list = []
+    if r.ok:
+        data = r.json()
+        books = data['books']
+        if len(books) > 0:
+            for book in books:
+                bookInfo = book['bookInfo']
+                book_info_list = [bookInfo['bookId'],bookInfo['title'],bookInfo['author'],bookInfo['cover']]
+                book_list.append(book_info_list)
+    else:
+        raise Exception(r.text)
+    return book_list
 
 
+
+if __name__ == "__main__":
+    # 设置header
+    HEADERS = {
+        'Host': 'i.weread.qq.com',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
+    }
+
+    data = get_book_by_category(800000,10,HEADERS)
+    print(data)

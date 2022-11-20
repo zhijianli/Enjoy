@@ -23,10 +23,7 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineProfile
 import os
 sys.path.append("../tools")
-from mysql_tools import insert_book,select_book,select_book_sentence,\
-                        insert_book_sentence,select_book_by_wechat_book_id,\
-                        insert_tag,insert_book_tag_relation,select_tag,\
-                        select_book_tag_relation
+from mysql_tools import *
 
 def get_develop_env():
     develop_env = os.environ["DEVELOP_ENV"]
@@ -46,6 +43,77 @@ HEADERS = {
 
 # 微信读书用户id
 USER_VID = 0
+
+
+def insert_book_list(pbar):
+    for book in pbar:
+        wechat_book_id = book[0]
+        book_name = book[1]
+
+        # 先判断书籍表中有没有同名的数据，如果没有，就插入到书籍表中
+        book_list = select_book(wechat_book_id,book_name)
+
+        if len(book_list) == 0:
+            book_id = insert_book(wechat_book_id,book_name)
+
+            # 获取某本书的标签
+            tag_list = get_booktags(wechat_book_id, HEADERS)
+
+            # 插入标签数据到数据库
+            if len(tag_list) > 0:
+                for tag in tag_list:
+                    # 先判断标签表中有没有同名的标签，如果没有，就插入到标签表中
+                    tag_list = select_tag(tag)
+                    if len(tag_list) > 0:
+                        tag_id = tag_list[0].id
+                    else:
+                        tag_id = insert_tag(tag)
+
+                    # 先判断关联表中有没有同名的关联，如果没有，就插入到关联表中
+                    book_tag_relation_list = select_book_tag_relation(wechat_book_id, tag_id)
+                    if len(book_tag_relation_list) == 0:
+                        insert_book_tag_relation(wechat_book_id, book_id, tag_id)
+
+            # 失败重试，最大重试次数为4
+            for try_count in range(4):
+                try:
+                    pbar.set_description("正在导出笔记【{}】".format(book_name))
+
+                    # 获取最热划线句子
+                    best_notes,item_list = get_bestbookmarks(book[0], HEADERS)
+                    # with open(note_dir + book_name + '-best.txt', 'w', encoding='utf-8') as f:
+                    #     f.write(best_notes)
+
+                    for item in item_list:
+                        wechat_book_id = item['bookId']
+                        underline_num = item['totalCount']
+                        sentence = item['markText']
+                        book_sentence_list = select_book_sentence(sentence,wechat_book_id)
+                        if len(book_sentence_list) == 0:
+                            book_list = select_book_by_wechat_book_id(wechat_book_id)
+                            book_id = book_list[0].id
+                            book_name = book_list[0].name
+                            insert_book_sentence(sentence,book_id,wechat_book_id,book_name,underline_num, 1)
+
+                    # # 获取自己划线句子
+                    # notes = get_bookmarklist(book[0], HEADERS)
+                    # with open(note_dir + book_name + '.txt', 'w', encoding='utf-8') as f:
+                    #     f.write(notes)
+
+                    # 获取自己的想法
+                    # mythought_notes = get_mythought(book[0],HEADERS)
+                    # with open(note_dir + book_name + '-mythought.txt', 'w', encoding='utf-8') as f:
+                    #     f.write(mythought_notes)
+
+                    # 写入成功后跳出循环，防止重复写入
+                    break
+                except Exception as e:
+                    # 忽略异常，直接重试
+                    print(e)
+                    pbar.set_description("获取笔记【{}】失败，开始第{}次重试".format(book_name, try_count + 1))
+
+                    # 等待3秒后再重试
+                    time.sleep(3)
 
 
 
@@ -174,77 +242,15 @@ if __name__=='__main__':
     write_excel_xls_append(data_dir + '我的书架.xls', '最近阅读的书籍', books_recent_read)  # 追加写入excel文件
     write_excel_xls_append(data_dir + '我的书架.xls', '所有的书籍', books_all)  # 追加写入excel文件
 
+    for index in range(7,71):
+        maxIdx = 50 * index
+        books_all = get_book_by_category(800000, maxIdx, HEADERS)
 
+        # 获取【已读完的书籍】的笔记，如果想获取所有书籍的笔记，
+        # 请自行更改books_finish_read为books_all
+        pbar = tqdm(books_all)
 
-    # 获取【已读完的书籍】的笔记，如果想获取所有书籍的笔记，
-    # 请自行更改books_finish_read为books_all
-    pbar = tqdm(books_all)
-    for book in pbar:
-        wechat_book_id = book[0]
-        book_name = book[1]
+        # 插入书籍，标签，金句数据到数据库
+        insert_book_list(pbar)
 
-        # 先判断书籍表中有没有同名的数据，如果没有，就插入到书籍表中
-        book_list = select_book(wechat_book_id,book_name)
-
-        if len(book_list) == 0:
-            book_id = insert_book(wechat_book_id,book_name)
-
-            # 获取某本书的标签
-            tag_list = get_booktags(wechat_book_id, HEADERS)
-
-            # 插入标签数据到数据库
-            if len(tag_list) > 0:
-                for tag in tag_list:
-                    # 先判断标签表中有没有同名的标签，如果没有，就插入到标签表中
-                    tag_list = select_tag(tag)
-                    if len(tag_list) > 0:
-                        tag_id = tag_list[0].id
-                    else:
-                        tag_id = insert_tag(tag)
-
-                    # 先判断关联表中有没有同名的关联，如果没有，就插入到关联表中
-                    book_tag_relation_list = select_book_tag_relation(wechat_book_id, tag_id)
-                    if len(book_tag_relation_list) == 0:
-                        insert_book_tag_relation(wechat_book_id, book_id, tag_id)
-
-            # 失败重试，最大重试次数为4
-            for try_count in range(4):
-                try:
-                    pbar.set_description("正在导出笔记【{}】".format(book_name))
-
-                    # 获取最热划线句子
-                    best_notes,item_list = get_bestbookmarks(book[0], HEADERS)
-                    with open(note_dir + book_name + '-best.txt', 'w', encoding='utf-8') as f:
-                        f.write(best_notes)
-
-                    for item in item_list:
-                        wechat_book_id = item['bookId']
-                        underline_num = item['totalCount']
-                        sentence = item['markText']
-                        book_sentence_list = select_book_sentence(sentence,wechat_book_id)
-                        if len(book_sentence_list) == 0:
-                            book_list = select_book_by_wechat_book_id(wechat_book_id)
-                            book_id = book_list[0].id
-                            book_name = book_list[0].name
-                            insert_book_sentence(sentence,book_id,wechat_book_id,book_name,underline_num, 1)
-
-                    # # 获取自己划线句子
-                    # notes = get_bookmarklist(book[0], HEADERS)
-                    # with open(note_dir + book_name + '.txt', 'w', encoding='utf-8') as f:
-                    #     f.write(notes)
-
-                    # 获取自己的想法
-                    # mythought_notes = get_mythought(book[0],HEADERS)
-                    # with open(note_dir + book_name + '-mythought.txt', 'w', encoding='utf-8') as f:
-                    #     f.write(mythought_notes)
-
-                    # 写入成功后跳出循环，防止重复写入
-                    break
-                except Exception as e:
-                    # 忽略异常，直接重试
-                    print(e)
-                    pbar.set_description("获取笔记【{}】失败，开始第{}次重试".format(book_name, try_count + 1))
-
-                    # 等待3秒后再重试
-                    time.sleep(3)
 

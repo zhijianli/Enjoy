@@ -42,7 +42,8 @@ def generate_video(args):
 
     # font = DATA_ROOT+'fonts/SIMFANG.TTF'
     font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
-    comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
+    comment_font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
+    # comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
     # font='AR-PL-UKai-CN'
     # font = DATA_ROOT + 'fonts/STXIHEI.TTF'
     excel_content = pd.read_excel(DATA_ROOT+'text/text.xlsx')
@@ -229,8 +230,10 @@ def generate_video(args):
     # compress_image(RESULT_DIR + "cover.png")
 
     # 视频写入文件
-    video_name = "flower.webm"
-    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+video_name,codec='libvpx')
+    # video_name = "flower.webm"
+    # video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+video_name,codec='libvpx')
+    video_name = "flower.mp4"
+    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR + video_name, codec='libx264')
 
     # 每次编辑完视频之后都要主动释放内存，进行垃圾回收
     del cover_clip
@@ -288,7 +291,8 @@ def preview(args):
         DATA_ROOT = ROOT + "enjoy/"
 
     font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
-    comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
+    comment_font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
+    # comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
     excel_content = pd.read_excel(DATA_ROOT + 'text/text.xlsx')
     title_list = excel_content["title"]
     text_list = excel_content["text"]
@@ -381,7 +385,7 @@ def preview(args):
             audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
             duration = round(get_duration_wav(audio_file_path), 2) + dubbing_interval
         else:
-            duration = len(saying) // 4.5
+            duration = len(saying) // 3
         print("text duration time = " + str(duration))
         all_time = all_time + duration
 
