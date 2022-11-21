@@ -133,11 +133,12 @@ def select_book_sentence_by_wechat_id(wechat_book_id):
 
     return book_sentence_list
 
-def select_book_sentence_by_condition(key_words,wechat_book_id):
+def select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list):
     with app.app_context():
         book_sentence_list = BookSentence.query.filter(
                                                     BookSentence.sentence.like("%" + key_words + "%" if key_words else '%%'),
-                                                    (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1
+                                                    (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1,
+                                                    BookSentence.book_id.in_(book_id_list) if len(book_id_list) > 0 else 1==1
                                                 ).all()
 
     return book_sentence_list
@@ -163,9 +164,21 @@ def select_tag(tag_name):
 
     return tag_list
 
+def select_tag_list():
+    with app.app_context():
+        tag_list = Tag.query.filter_by().all()
+
+    return tag_list
+
 def select_book_tag_relation(wechat_book_id,tag_id):
     with app.app_context():
         book_tag_relation_list = BookTagRelation.query.filter_by(wechat_book_id=wechat_book_id,tag_id=tag_id).all()
+
+    return book_tag_relation_list
+
+def select_relation_by_tag_id(tag_id):
+    with app.app_context():
+        book_tag_relation_list = BookTagRelation.query.filter_by(tag_id=tag_id).all()
 
     return book_tag_relation_list
 
@@ -197,5 +210,10 @@ if __name__ == '__main__':
     # print(tag_id)
     # insert_book_tag_relation(2,3,2)
     # tag_list = select_tag("世界名著")
-    book_tag_relation_list = select_book_tag_relation(703157,7)
+    # book_tag_relation_list = select_book_tag_relation(703157,7)
+    # print(book_tag_relation_list)
+    # tag_list = select_tag_list()
+    # print(tag_list)
+
+    book_tag_relation_list = select_relation_by_tag_id(185)
     print(book_tag_relation_list)

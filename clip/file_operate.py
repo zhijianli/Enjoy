@@ -64,7 +64,7 @@ if __name__ == "__main__":
     # file_name = get_file_list(DATA_ROOT+"/music")
     # make_zip("/home/mocuili/data/enjoy/video/121/","/home/mocuili/data/enjoy/video/121.zip")
     # copy_file(DATA_ROOT + "video/2022-10-14 15:19:44", "/home/mocuili/data/enjoy-oss/video/2022-10-14 15:19:44.zip")
-    compress_image(DATA_ROOT+"cover.png",0.37)
+    compress_image(DATA_ROOT+"cover.jpg",0.3)
     # music_name = "whatsup"
     # file_name = music_name+".mp3"
     # new_file_name = music_name+"-16k.mp3"

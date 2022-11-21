@@ -27,7 +27,7 @@ from clip.video_clip import generate_video,preview
 from clip.file_operate import get_file_name_list,urllib_download
 import tools.aliyun_cutout as aliyun_cutout
 from tools.aliyun_oss import put_object_from_file,get_bucket_list
-from tools.mysql_tools import select_book_list,select_book_sentence_by_wechat_id,select_book_sentence_by_condition
+from tools.mysql_tools import *
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
@@ -151,8 +151,8 @@ def submit():
 
     return result_message
 
-@app.route("/get_books",methods=["GET"])
-def get_books():
+@app.route("/get_search_condition",methods=["GET"])
+def get_search_condition():
     # file_name_list = get_file_name_list(book_path)
     book_list = select_book_list()
     book_name_list = []
@@ -160,7 +160,13 @@ def get_books():
     for book in book_list:
         book_name_list.append(book.name)
         book_wechar_id_list.append(book.wechat_book_id)
-    return {'book_name_list': book_name_list,'book_wechar_id_list':book_wechar_id_list}
+    tag_name_list = []
+    tag_id_list = []
+    tag_list = select_tag_list()
+    for tag in tag_list:
+        tag_id_list.append(tag.id)
+        tag_name_list.append(tag.name)
+    return {'book_name_list': book_name_list,'book_wechar_id_list':book_wechar_id_list,'tag_id_list':tag_id_list,'tag_name_list':tag_name_list}
 
 @app.route("/get_content_by_book",methods=["GET"])
 def get_content_by_book():
@@ -191,12 +197,20 @@ def book_search():
 def book_search_list():
     key_words = request.args.get("key_words")
     wechat_book_id = request.args.get("wechat_book_id")
-    book_sentence_list = select_book_sentence_by_condition(key_words,wechat_book_id)
+    tag_id = request.args.get("tag_id")
+    book_id_list = []
+    book_tag_relation_list = select_relation_by_tag_id(tag_id)
+    for relation in book_tag_relation_list:
+        book_id_list.append(relation.book_id)
+
+    book_sentence_list = select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list)
     book_sentence_str_list = []
     book_name_list = []
     for book_sentence in book_sentence_list:
         book_sentence_str_list.append(book_sentence.sentence)
         book_name_list.append("－－《" + str(book_sentence.book_name) + "》")
+
+
     return {'book_sentence_str_list': book_sentence_str_list,'book_name_list': book_name_list}
 
 @app.route("/cutout",methods=["GET"])

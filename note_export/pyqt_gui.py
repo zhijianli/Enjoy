@@ -242,7 +242,7 @@ if __name__=='__main__':
     write_excel_xls_append(data_dir + '我的书架.xls', '最近阅读的书籍', books_recent_read)  # 追加写入excel文件
     write_excel_xls_append(data_dir + '我的书架.xls', '所有的书籍', books_all)  # 追加写入excel文件
 
-    for index in range(7,71):
+    for index in range(49,71):
         maxIdx = 50 * index
         books_all = get_book_by_category(800000, maxIdx, HEADERS)
 
