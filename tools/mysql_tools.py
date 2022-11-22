@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 # 引入多条件查询
-from sqlalchemy import and_
+from sqlalchemy import and_,func
 import pymysql
 
 pymysql.install_as_MySQLdb()
@@ -138,7 +138,8 @@ def select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list):
         book_sentence_list = BookSentence.query.filter(
                                                     BookSentence.sentence.like("%" + key_words + "%" if key_words else '%%'),
                                                     (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1,
-                                                    BookSentence.book_id.in_(book_id_list) if len(book_id_list) > 0 else 1==1
+                                                    BookSentence.book_id.in_(book_id_list) if len(book_id_list) > 0 else 1==1,
+                                                    func.length(BookSentence.sentence) < 100
                                                 ).all()
 
     return book_sentence_list

@@ -66,8 +66,9 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
     source_w,source_h = source_clip.size
     color_w,color_h = colorclip.size
     # 来源的位置：x位置是遮罩的x位置+遮罩的w-来源的w,y位置是遮罩的y+遮罩的h*11/10
-    source_x = (w - txt_w)//2-txt_w//10 + color_w - source_w
+    # source_x = (w - txt_w)//2-txt_w//10 + color_w - source_w
     # source_y = ((h - txt_h)//2 - h*3//40) * 9//10 + color_h*6//5
+    source_x = (w - source_w) // 2
     source_y = (h - color_h)//2 + color_h
     source_clip = source_clip.set_position((source_x,source_y)).set_duration(duration).set_start(text_clip_start)
 
@@ -154,7 +155,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     cover_clip_list.append(wireframe_bottom_clip)
     cover_clip_list.append(wireframe_left_clip)
     cover_clip_list.append(wireframe_right_clip)
-    cover_clip_list.append(colorclip)
+    # cover_clip_list.append(colorclip)
     # cover_clip_list.append(avatar_clip)
     cover_clip_list.append(txt_clip)
     cover_clip_list.append(author_clip)

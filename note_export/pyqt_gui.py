@@ -242,9 +242,10 @@ if __name__=='__main__':
     write_excel_xls_append(data_dir + '我的书架.xls', '最近阅读的书籍', books_recent_read)  # 追加写入excel文件
     write_excel_xls_append(data_dir + '我的书架.xls', '所有的书籍', books_all)  # 追加写入excel文件
 
-    for index in range(49,71):
+    for index in range(2,71):
         maxIdx = 50 * index
-        books_all = get_book_by_category(800000, maxIdx, HEADERS)
+        # 心理学类目id:800000,文学类目id:300000
+        books_all = get_book_by_category(300000, maxIdx, HEADERS)
 
         # 获取【已读完的书籍】的笔记，如果想获取所有书籍的笔记，
         # 请自行更改books_finish_read为books_all

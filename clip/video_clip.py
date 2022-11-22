@@ -94,7 +94,6 @@ def generate_video(args):
     # 调用背景图像生成一个基本的clip
     # my_clip = ImageSequenceClip(DATA_ROOT + "picture/" + picture_file_name,fps=5)
     my_clip = ImageClip(DATA_ROOT+"picture/"+picture_file_name)
-    # my_clip = ImageClip(DATA_ROOT+"picture/jonatan-pie-h8nxGssjQXs-unsplash.jpg")
     # my_clip = VideoFileClip(DATA_ROOT+"picture/"+picture_file_name)
     # my_clip = my_clip.loop(duration=my_clip.duration)
 
@@ -102,8 +101,8 @@ def generate_video(args):
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
     w,h = my_clip.size
-    text_font_size = w/40
-    start_end_font_size = w/20
+    text_font_size = w*3/80
+    start_end_font_size = w*3/40
 
     all_clip_list = [my_clip]
     audio_clip_list = []
@@ -116,7 +115,7 @@ def generate_video(args):
     # 设置开头标题
     txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
     txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,title_time,text_clip_start)
-    all_clip_list.append(colorclip)
+    # all_clip_list.append(colorclip)
     all_clip_list.append(txt_clip)
     text_clip_start = text_clip_start + title_time
     all_time = all_time + title_time
@@ -145,7 +144,7 @@ def generate_video(args):
             saying = sub(saying)
         else:
             # saying = "\"" + saying + "\""
-            saying = "\""+sentence_break(saying)+"\""
+            saying = sentence_break(saying)
         txt_clip = TextClip(saying,fontsize=text_font_size,color='white',font=font)
         comment_clip = TextClip(comment, fontsize=text_font_size // 1.5, color='white', font=comment_font)
         source_clip = TextClip(source, fontsize=text_font_size//1.5, color='white', font=comment_font)
@@ -156,7 +155,7 @@ def generate_video(args):
         if args.dubbing > 0:
             audioclip = AudioFileClip(audio_file_path).set_duration(duration-dubbing_interval).set_start(text_clip_start).volumex(2)
             audio_clip_list.append(audioclip)
-        all_clip_list.append(colorclip)
+        # all_clip_list.append(colorclip)
         all_clip_list.append(txt_clip)
         all_clip_list.append(comment_clip)
         all_clip_list.append(source_clip)
@@ -168,7 +167,7 @@ def generate_video(args):
     txt_clip = TextClip(cut_end(end), fontsize=start_end_font_size, color='white', font=font)
     txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,end_time,text_clip_start)
 
-    all_clip_list.append(colorclip)
+    # all_clip_list.append(colorclip)
     all_clip_list.append(txt_clip)
     text_clip_start = text_clip_start + end_time
     all_time = all_time + end_time
@@ -343,8 +342,8 @@ def preview(args):
     w, h = my_clip.size
     my_clip = my_clip.fx(vfx.crop, x1=0, y1=0, x2=w, y2=w / 1.88)
     w, h = my_clip.size
-    text_font_size = w / 40
-    start_end_font_size = w / 20
+    text_font_size = w*3/80
+    start_end_font_size = w*3/40
     text_clip_start = 0
     title_time = 3
     end_time = 5
@@ -364,7 +363,7 @@ def preview(args):
     start_clip_list = [my_clip]
     txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
     txt_clip, colorclip = optimi_txt_clip(txt_clip, w, h, title_time, text_clip_start)
-    start_clip_list.append(colorclip)
+    # start_clip_list.append(colorclip)
     start_clip_list.append(txt_clip)
     start_clip = CompositeVideoClip(start_clip_list)
     start_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "start_clip.png", t=1)
@@ -396,7 +395,7 @@ def preview(args):
         if args.template == 0:
             saying = sub(saying)
         else:
-            saying = "\"" + sentence_break(saying) + "\""
+            saying = sentence_break(saying)
         txt_clip = TextClip(saying, fontsize=text_font_size, color='white', font=font)
         comment_clip = TextClip(comment, fontsize=text_font_size // 1.5, color='white', font=comment_font)
         source_clip = TextClip(source, fontsize=text_font_size // 1.5, color='white', font=comment_font)
@@ -406,7 +405,7 @@ def preview(args):
                                                                                            text_clip_start, source_clip,
                                                                                            comment_clip)
 
-        saying_clip_list.append(colorclip)
+        # saying_clip_list.append(colorclip)
         saying_clip_list.append(txt_clip)
         saying_clip_list.append(comment_clip)
         saying_clip_list.append(source_clip)
@@ -427,7 +426,7 @@ def preview(args):
     txt_clip = TextClip(cut_end(end), fontsize=start_end_font_size, color='white', font=font)
     txt_clip, colorclip = optimi_txt_clip(txt_clip, w, h, end_time, text_clip_start)
 
-    end_clip_list.append(colorclip)
+    # end_clip_list.append(colorclip)
     end_clip_list.append(txt_clip)
     end_clip = CompositeVideoClip(end_clip_list)
     end_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "end_clip.png", t=1)
