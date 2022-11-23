@@ -208,7 +208,7 @@ def book_search_list():
     book_name_list = []
     for book_sentence in book_sentence_list:
         book_sentence_str_list.append(book_sentence.sentence)
-        book_name_list.append("－－《" + str(book_sentence.book_name) + "》")
+        book_name_list.append("《" + str(book_sentence.book_name) + "》")
 
 
     return {'book_sentence_str_list': book_sentence_str_list,'book_name_list': book_name_list}

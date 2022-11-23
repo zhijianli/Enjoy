@@ -113,12 +113,12 @@ def generate_video(args):
     dubbing_interval = 1 #多加1秒是因为要每一段语音之后间隔两秒
 
     # 设置开头标题
-    txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
-    txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,title_time,text_clip_start)
+    # txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
+    # txt_clip,colorclip = optimi_txt_clip(txt_clip,w,h,title_time,text_clip_start)
     # all_clip_list.append(colorclip)
-    all_clip_list.append(txt_clip)
-    text_clip_start = text_clip_start + title_time
-    all_time = all_time + title_time
+    # all_clip_list.append(txt_clip)
+    # text_clip_start = text_clip_start + title_time
+    # all_time = all_time + title_time
     colorclip_ori_list = []
 
     # 视频叠加上文字和AI配音
@@ -137,7 +137,7 @@ def generate_video(args):
             audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
             duration = round(get_duration_wav(audio_file_path),2)+dubbing_interval
         else:
-            duration = len(saying)//4.5
+            duration = len(saying)//3
         print("text duration time = " + str(duration))
 
         if args.template == 0:
@@ -145,12 +145,13 @@ def generate_video(args):
         else:
             # saying = "\"" + saying + "\""
             saying = sentence_break(saying)
+
         txt_clip = TextClip(saying,fontsize=text_font_size,color='white',font=font)
         comment_clip = TextClip(comment, fontsize=text_font_size // 1.5, color='white', font=comment_font)
         source_clip = TextClip(source, fontsize=text_font_size//1.5, color='white', font=comment_font)
 
         # 设置文字的剪辑信息
-        txt_clip,colorclip,source_clip,comment_clip,colorclip_ori = optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip)
+        txt_clip,colorclip,source_clip,comment_clip,colorclip_ori = optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip,text_font_size)
 
         if args.dubbing > 0:
             audioclip = AudioFileClip(audio_file_path).set_duration(duration-dubbing_interval).set_start(text_clip_start).volumex(2)
@@ -213,6 +214,8 @@ def generate_video(args):
 
     # 保存最后的结果
     os.mkdir(RESULT_DIR);
+    text = text.replace("++ ||", "－－");
+    text = text.replace("&", "");
     with open(RESULT_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
         f.write(title + "\n")
         f.write(text + "\n")
@@ -403,7 +406,7 @@ def preview(args):
         # 设置文字的剪辑信息
         txt_clip, colorclip, source_clip, comment_clip, colorclip_ori = optimi_saying_clip(txt_clip, w, h, 2,
                                                                                            text_clip_start, source_clip,
-                                                                                           comment_clip)
+                                                                                           comment_clip,text_font_size)
 
         # saying_clip_list.append(colorclip)
         saying_clip_list.append(txt_clip)

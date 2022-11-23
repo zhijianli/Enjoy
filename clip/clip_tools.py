@@ -35,11 +35,11 @@ def optimi_txt_clip(txt_clip,w,h,duration,text_clip_start):
     return txt_clip,colorclip
 
 # @profile
-def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip):
+def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip,text_font_size):
     txt_w, txt_h = txt_clip.size
     comment_w,comment_h = comment_clip.size
 
-    txt_x = (w - txt_w) // 2
+    txt_x = (w - txt_w) / 2
     txt_y = (h - (txt_h + comment_h))//2 * 9//10
     position = (txt_x, txt_y)
     txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start)
@@ -56,10 +56,12 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
 
     # 增加遮罩
     color_size = (txt_w*6//5, txt_h+h*3 //20)
+    # color_size = (w,h)
     print("color_size",color_size)
     colorclip_ori = ColorClip(size=color_size,color=(0, 0, 0))
 
     position = ((w - txt_w)//2 - txt_w//10, ((h - txt_h)//2 - h*3//40) * 9//10)
+    # position = (0,0)
     colorclip = colorclip_ori.set_opacity(0.3).set_position(position).set_duration(duration).set_start(text_clip_start)
 
     # 设置来源的剪辑信息
@@ -68,7 +70,8 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
     # 来源的位置：x位置是遮罩的x位置+遮罩的w-来源的w,y位置是遮罩的y+遮罩的h*11/10
     # source_x = (w - txt_w)//2-txt_w//10 + color_w - source_w
     # source_y = ((h - txt_h)//2 - h*3//40) * 9//10 + color_h*6//5
-    source_x = (w - source_w) // 2
+    # 在原来的基础上再减去半个字体的宽度，原因是因为每一行字最后都会有标点，而这个标点只有半个字体宽，所以减少半个字体，看上去文字和来源才是对齐的
+    source_x = (w - source_w) / 2 - text_font_size/3
     source_y = (h - color_h)//2 + color_h
     source_clip = source_clip.set_position((source_x,source_y)).set_duration(duration).set_start(text_clip_start)
 
@@ -94,7 +97,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     cover_w, cover_h = cover_pitcure_clip.size
 
     # 标题
-    txt_clip = TextClip(title, fontsize=cover_w / 20, color='white', font=font)
+    txt_clip = TextClip(title, fontsize=cover_w / 10, color='white', font=font)
     txt_clip = txt_clip.set_duration(1).set_start(1)
     txt_w, txt_h = txt_clip.size
 
@@ -151,10 +154,10 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     wireframe_right_clip = wireframe_right_clip.set_position((wireframe_top_clip_x+colorclip_w, wireframe_top_clip_y))
 
     cover_clip_list.append(cover_pitcure_clip)
-    cover_clip_list.append(wireframe_top_clip)
-    cover_clip_list.append(wireframe_bottom_clip)
-    cover_clip_list.append(wireframe_left_clip)
-    cover_clip_list.append(wireframe_right_clip)
+    # cover_clip_list.append(wireframe_top_clip)
+    # cover_clip_list.append(wireframe_bottom_clip)
+    # cover_clip_list.append(wireframe_left_clip)
+    # cover_clip_list.append(wireframe_right_clip)
     # cover_clip_list.append(colorclip)
     # cover_clip_list.append(avatar_clip)
     cover_clip_list.append(txt_clip)
