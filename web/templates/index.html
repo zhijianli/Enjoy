@@ -99,11 +99,16 @@
 
             <br><br>
             <!--创建两个input输入框，定义id分别为name,age-->
+            <select id="type_list" class="singleSelect"  style="width:210px">
+                <option value="">--请选择--</option>
+                <option value="1">心理学</option>
+                <option value="2">文学</option>
+            </select>
+             &nbsp;
             <select id="tag_list" class="singleSelect"  style="width:210px">
                 <option value="">--请选择--</option>
             </select>
              &nbsp;
-
             <select id="book_list" class="singleSelect"  style="width:270px">
                 <option value="">--请选择--</option>
             </select>
@@ -162,6 +167,7 @@
                     <datalist id="typelist" width="100%">
                     　　<option>《雪中悍刀行》那些经典致郁的句子</option>
                     　　<option>那些让人一眼泪目的话</option>
+                       <option>孤独能写到什么程度</option>
                        <option>生命是什么，这是佛陀的答案</option>　
                        <option>建议通篇对照</option>
                        <option>这是最佳答案</option>
@@ -170,7 +176,7 @@
 
                     </datalist>
                     <br><br>
-                    <input cols="30" type="text" id="author" name="author" placeholder="副标题" style="width:750px;height:100px">
+                    <input cols="30" type="text" id="author" name="author" placeholder="副标题" style="width:750px;height:100px" value="（这是我见过最有趣的回答）">
                     <br><br>
 <!--                    <input cols="30" type="text" id="avatarUrl" name="avatarUrl" placeholder="头像链接" style="width:600px;height:100px">-->
 <!--                    <button onclick="cutout();">头像抠图</button>&nbsp;&nbsp;&nbsp;-->
@@ -178,7 +184,7 @@
 <!--                    <textarea cols="30" type="text" id="start" name="start" placeholder="开头" style="width:750px;height:200px"></textarea>-->
 <!--                    <br><br>-->
 
-                    <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px" value="感谢观看，欢迎关注">
+                    <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px" value="感谢观看">
                     <br><br>
 <!--                    <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">-->
 <!--                    <br><br>-->
@@ -190,12 +196,13 @@
                     <br><br>
 <!--                    <input cols="30" type="text" id="music" name="music" placeholder="背景音乐（可以不填，不填就随机）" style="width:750px;height:100px">-->
 <!--                    <input type="file" id="music" name="music" accept="audio/*"   style="" />-->
+                    <audio id="audio" controls style="width: calc(100%);"></audio>
                     <form name="form1">
                         <input type="button" value="选择背景音乐" onclick="document.form1.file.click()">
                         <input type="file" name="file" id="file" style="display:none;" >
                         <input name="music" style="display:none;" id="music" readonly>
                     </form>
-                    <audio id="audio" controls style="width: calc(100%);"></audio>
+
                     <br><br>
                     <!--创建button按钮，点击则激发submit()事件-->
 <!--                    <button onclick="submit_text();">生成视频</button>&nbsp;&nbsp;&nbsp;-->
@@ -221,7 +228,7 @@
              <br>
             <font color="grey">学习对象： </font>&nbsp;<a href="https://space.bilibili.com/60509716/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">一个爱吃的猪</a>
             　<a href="https://www.ixigua.com/home/2093104668353164" target="_blank" style="color:#F68B33;">烟雨读书</a>
-              <a href="https://space.bilibili.com/179444595/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">佳人温文</a>
+              <a href="https://space.bilibili.com/179444595/search/video?keyword=%E6%97%B6%E9%97%B4" target="_blank" style="color:#F68B33;">佳人温文</a>
             　<a href="https://space.bilibili.com/181508854/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">文字铺</a>
       　　　　
 
@@ -496,7 +503,7 @@
             });
         }
 
-        /*获取书籍列表*/
+        /*获取筛选条件列表*/
         function get_search_condition(){
              $.ajax({
                 url: "get_search_condition",
@@ -554,7 +561,8 @@
                     type: "GET",
                     data: {"key_words":$("#key_words").val(),
                            "wechat_book_id":$('select#book_list').val(),
-                           "tag_id":$('select#tag_list').val()},
+                           "tag_id":$('select#tag_list').val(),
+                           "type":$('select#type_list').val()},
                     success: function (result) {
                         book_sentence_str_list = result.book_sentence_str_list
                         book_name_list = result.book_name_list

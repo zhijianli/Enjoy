@@ -22,7 +22,6 @@ def sentence_break(para):
 
     return para
 
-
 def sub(str):
     str = re.sub(r"(.{18})", "\\1\r\n\n", str)
     return str

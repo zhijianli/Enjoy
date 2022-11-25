@@ -49,6 +49,7 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), unique=True, index=True)
     wechat_book_id = db.Column(db.Integer)
+    type = db.Column(db.Integer)
 
 class Tag(db.Model):
     # 定义表名
@@ -98,6 +99,15 @@ def select_book_list():
         book_list = Book.query.filter_by().all()
     return book_list
 
+def select_book_by_type(type,book_id_list):
+    with app.app_context():
+        book_list = Book.query.filter(
+                                       (Book.type == type) if type else 1==1,
+                                        Book.id.in_(book_id_list) if len(book_id_list) > 0 else 1==1
+                                        ).all()
+
+    return book_list
+
 def select_book(wechat_book_id,book_name):
     with app.app_context():
         book_list = Book.query.filter_by(wechat_book_id=wechat_book_id,name=book_name).all()
@@ -139,8 +149,8 @@ def select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list):
                                                     BookSentence.sentence.like("%" + key_words + "%" if key_words else '%%'),
                                                     (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1,
                                                     BookSentence.book_id.in_(book_id_list) if len(book_id_list) > 0 else 1==1,
-                                                    func.length(BookSentence.sentence) < 120
-                                                ).all()
+                                                    func.length(BookSentence.sentence) < 200
+                                                ).order_by(func.rand()).limit(1000).all()
 
     return book_sentence_list
 

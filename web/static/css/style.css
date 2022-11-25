@@ -70,6 +70,7 @@ li.slot-item:not(:last-child){
 	line-height: 30px;
 	/* height: 150px; */
 	width: 300px;
+	white-space: pre-line;
 }
 .slot-handler p{
 	margin: 0;

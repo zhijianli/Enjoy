@@ -42,8 +42,8 @@ def generate_video(args):
 
     # font = DATA_ROOT+'fonts/SIMFANG.TTF'
     font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
-    comment_font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
-    # comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
+    # comment_font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
+    comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
     # font='AR-PL-UKai-CN'
     # font = DATA_ROOT + 'fonts/STXIHEI.TTF'
     excel_content = pd.read_excel(DATA_ROOT+'text/text.xlsx')
@@ -140,11 +140,11 @@ def generate_video(args):
             duration = len(saying)//3
         print("text duration time = " + str(duration))
 
-        if args.template == 0:
-            saying = sub(saying)
-        else:
-            # saying = "\"" + saying + "\""
-            saying = sentence_break(saying)
+        # if args.template == 0:
+        #     saying = sub(saying)
+        # else:
+        #     # saying = "\"" + saying + "\""
+        #     saying = sentence_break(saying)
 
         txt_clip = TextClip(saying,fontsize=text_font_size,color='white',font=font)
         comment_clip = TextClip(comment, fontsize=text_font_size // 1.5, color='white', font=comment_font)
@@ -235,7 +235,7 @@ def generate_video(args):
     # video_name = "flower.webm"
     # video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR+video_name,codec='libvpx')
     video_name = "flower.mp4"
-    video.set_duration(all_time).set_fps(5).write_videofile(RESULT_DIR + video_name, codec='libx264')
+    video.set_duration(all_time).set_fps(15).write_videofile(RESULT_DIR + video_name, codec='libx264')
 
     # 每次编辑完视频之后都要主动释放内存，进行垃圾回收
     del cover_clip
@@ -293,8 +293,8 @@ def preview(args):
         DATA_ROOT = ROOT + "enjoy/"
 
     font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
-    comment_font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
-    # comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
+    # comment_font = DATA_ROOT + 'fonts/ZiXinFangMingKeBen(GuJiBan)-2.ttf'
+    comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
     excel_content = pd.read_excel(DATA_ROOT + 'text/text.xlsx')
     title_list = excel_content["title"]
     text_list = excel_content["text"]
@@ -363,14 +363,14 @@ def preview(args):
     os.mkdir(PREVIEW_DIR);
 
     # 生成开头标题的图片帧
-    start_clip_list = [my_clip]
-    txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
-    txt_clip, colorclip = optimi_txt_clip(txt_clip, w, h, title_time, text_clip_start)
-    # start_clip_list.append(colorclip)
-    start_clip_list.append(txt_clip)
-    start_clip = CompositeVideoClip(start_clip_list)
-    start_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "start_clip.png", t=1)
-    all_time = all_time + title_time
+    # start_clip_list = [my_clip]
+    # txt_clip = TextClip(start, fontsize=start_end_font_size, color='white', font=font)
+    # txt_clip, colorclip = optimi_txt_clip(txt_clip, w, h, title_time, text_clip_start)
+    # # start_clip_list.append(colorclip)
+    # start_clip_list.append(txt_clip)
+    # start_clip = CompositeVideoClip(start_clip_list)
+    # start_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "start_clip.png", t=1)
+    # all_time = all_time + title_time
 
     saying_clip_frame_list = []
 
@@ -393,12 +393,10 @@ def preview(args):
 
         saying_clip_list = [my_clip]
 
-
-
-        if args.template == 0:
-            saying = sub(saying)
-        else:
-            saying = sentence_break(saying)
+        # if args.template == 0:
+        #     saying = sub(saying)
+        # else:
+        #     saying = sentence_break(saying)
         txt_clip = TextClip(saying, fontsize=text_font_size, color='white', font=font)
         comment_clip = TextClip(comment, fontsize=text_font_size // 1.5, color='white', font=comment_font)
         source_clip = TextClip(source, fontsize=text_font_size // 1.5, color='white', font=comment_font)
@@ -470,7 +468,7 @@ def preview(args):
     # 删除内存
     del my_clip
     del cover_clip
-    del start_clip
+    # del start_clip
     del end_clip
 
     gc.collect()
@@ -482,9 +480,9 @@ def preview(args):
                                    DATA_ROOT + "preview/" + current_time + "/cover.png")
     frame_list.append(cover_url)
 
-    start_clip_url = put_object_from_file("preview/" + current_time + "/start_clip.png",
-                                   DATA_ROOT + "preview/" + current_time + "/start_clip.png")
-    frame_list.append(start_clip_url)
+    # start_clip_url = put_object_from_file("preview/" + current_time + "/start_clip.png",
+    #                                DATA_ROOT + "preview/" + current_time + "/start_clip.png")
+    # frame_list.append(start_clip_url)
 
     for saving_clip_frame in saying_clip_frame_list:
         saving_clip_url = put_object_from_file("preview/" + current_time + "/"+saving_clip_frame,

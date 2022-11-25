@@ -5,6 +5,8 @@ import gc
 import subprocess
 from memory_profiler import profile
 
+fade_time = 1
+
 # 命令格式：aspeak -t "你好，世界！" -l zh-CN -o ouput.wav -v zh-CN-XiaoqiuNeural -r -0.06
 def ai_dubbing(is_dubbing,template,sents,DATA_ROOT):
     print("开始AI配音")
@@ -27,7 +29,7 @@ def ai_dubbing(is_dubbing,template,sents,DATA_ROOT):
 def optimi_txt_clip(txt_clip,w,h,duration,text_clip_start):
     txt_w, txt_h = txt_clip.size
     position = ((w - txt_w) // 2, (h - txt_h)//2 * 9//10)
-    txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start)
+    txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start).crossfadein(fade_time).crossfadeout(fade_time)
 
     # 增加遮罩
     colorclip = add_txt_mask(txt_clip,duration,text_clip_start,w,h)
@@ -36,16 +38,17 @@ def optimi_txt_clip(txt_clip,w,h,duration,text_clip_start):
 
 # @profile
 def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment_clip,text_font_size):
+
     txt_w, txt_h = txt_clip.size
     comment_w,comment_h = comment_clip.size
 
     txt_x = (w - txt_w) / 2
     txt_y = (h - (txt_h + comment_h))//2 * 9//10
     position = (txt_x, txt_y)
-    txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start)
+    txt_clip = txt_clip.set_position(position).set_duration(duration).set_start(text_clip_start).crossfadein(fade_time).crossfadeout(fade_time)
 
     # 设置评论的剪辑信息
-    comment_clip = comment_clip.set_position(((w - comment_w)//2,txt_y+txt_h)).set_duration(duration).set_start(text_clip_start)
+    comment_clip = comment_clip.set_position(((w - comment_w)//2,txt_y+txt_h)).set_duration(duration).set_start(text_clip_start).crossfadein(fade_time).crossfadeout(fade_time)
 
     # 如果评论的长度更长，那就把评论的长度当成整个txt领域的长度
     if comment_w > txt_w:
@@ -54,15 +57,14 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
     # 金句的高度加上评论的高度，正好是整个txt领域的高度
     txt_h = txt_h + comment_h
 
+
     # 增加遮罩
     color_size = (txt_w*6//5, txt_h+h*3 //20)
-    # color_size = (w,h)
-    print("color_size",color_size)
-    colorclip_ori = ColorClip(size=color_size,color=(0, 0, 0))
+    colorclip_ori = ColorClip(size=(w,h),color=(0, 0, 0))
 
     position = ((w - txt_w)//2 - txt_w//10, ((h - txt_h)//2 - h*3//40) * 9//10)
-    # position = (0,0)
-    colorclip = colorclip_ori.set_opacity(0.3).set_position(position).set_duration(duration).set_start(text_clip_start)
+    colorclip = colorclip_ori.set_opacity(0.3).set_position((0,0)).set_duration(duration).set_start(text_clip_start)
+
 
     # 设置来源的剪辑信息
     source_w,source_h = source_clip.size
@@ -72,8 +74,9 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
     # source_y = ((h - txt_h)//2 - h*3//40) * 9//10 + color_h*6//5
     # 在原来的基础上再减去半个字体的宽度，原因是因为每一行字最后都会有标点，而这个标点只有半个字体宽，所以减少半个字体，看上去文字和来源才是对齐的
     source_x = (w - source_w) / 2 - text_font_size/3
-    source_y = (h - color_h)//2 + color_h
-    source_clip = source_clip.set_position((source_x,source_y)).set_duration(duration).set_start(text_clip_start)
+    # source_y = (h - color_h)//2 + color_h
+    source_y = txt_y+txt_h+text_font_size*2
+    source_clip = source_clip.set_position((source_x,source_y)).set_duration(duration).set_start(text_clip_start).crossfadein(fade_time).crossfadeout(fade_time)
 
     return txt_clip,colorclip,source_clip,comment_clip,colorclip_ori
 
@@ -90,14 +93,19 @@ def add_txt_mask(txt_clip,duration,text_clip_start,w,h):
     return colorclip
 
 def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
+
+
+
     # 封面图
     cover_clip_list = []
     cover_w, cover_h = cover_pitcure_clip.size
     cover_pitcure_clip = cover_pitcure_clip.fx(vfx.crop, x1=0, y1=0, x2=cover_w, y2=cover_w / 1.88)
     cover_w, cover_h = cover_pitcure_clip.size
 
+    font_size = cover_w / 10
+
     # 标题
-    txt_clip = TextClip(title, fontsize=cover_w / 10, color='white', font=font)
+    txt_clip = TextClip(title, fontsize=font_size, color='white', font=font)
     txt_clip = txt_clip.set_duration(1).set_start(1)
     txt_w, txt_h = txt_clip.size
 
@@ -137,7 +145,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     # txt_clip = txt_clip.set_position(((cover_w-avatar_w-txt_w)//2+avatar_w,cover_h//2))
     # author_clip = author_clip.set_position(((cover_w - avatar_w - txt_w) // 2 + avatar_w, cover_h // 2 - txt_h))
     txt_clip = txt_clip.set_position(((cover_w - txt_w) // 2, (cover_h - (txt_h+author_h*2))//2))
-    author_clip = author_clip.set_position(((cover_w - author_w)//2,(cover_h - (txt_h+author_h*2))//2+txt_h+author_h))
+    author_clip = author_clip.set_position(((cover_w - author_w)//2-font_size/3,(cover_h - (txt_h+author_h*2))//2+txt_h+author_h))
     # avatar_clip = avatar_clip.set_position(position)
     # colorclip = colorclip.set_position((cover_w//10,avatar_y+avatar_h*1//10))
     colorclip = colorclip.set_position((cover_w // 10, (cover_h-colorclip_h)//2))
@@ -154,6 +162,12 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     wireframe_right_clip = wireframe_right_clip.set_position((wireframe_top_clip_x+colorclip_w, wireframe_top_clip_y))
 
     cover_clip_list.append(cover_pitcure_clip)
+
+    # mask = ImageClip("/home/mocuili/data/enjoy/11111.jpg")
+    # mask.set_opacity(0.3).set_position((0, 0)).set_duration(10).set_start(0)
+    # mask.save_frame(DATA_ROOT + "22222.png", t=1)
+    # cover_clip_list.append(mask)
+
     # cover_clip_list.append(wireframe_top_clip)
     # cover_clip_list.append(wireframe_bottom_clip)
     # cover_clip_list.append(wireframe_left_clip)

@@ -6,6 +6,7 @@ import xlrd
 from xlutils.copy import copy
 import socket
 import os
+from clip.clause import *
 
 # 判断环境
 def get_develop_env():
@@ -154,18 +155,22 @@ def submit():
 @app.route("/get_search_condition",methods=["GET"])
 def get_search_condition():
     # file_name_list = get_file_name_list(book_path)
+    # 获取书籍列表
     book_list = select_book_list()
     book_name_list = []
     book_wechar_id_list = []
     for book in book_list:
         book_name_list.append(book.name)
         book_wechar_id_list.append(book.wechat_book_id)
+
+    # 获取标签列表
     tag_name_list = []
     tag_id_list = []
     tag_list = select_tag_list()
     for tag in tag_list:
         tag_id_list.append(tag.id)
         tag_name_list.append(tag.name)
+
     return {'book_name_list': book_name_list,'book_wechar_id_list':book_wechar_id_list,'tag_id_list':tag_id_list,'tag_name_list':tag_name_list}
 
 @app.route("/get_content_by_book",methods=["GET"])
@@ -198,18 +203,32 @@ def book_search_list():
     key_words = request.args.get("key_words")
     wechat_book_id = request.args.get("wechat_book_id")
     tag_id = request.args.get("tag_id")
+    type = request.args.get("type")
     book_id_list = []
-    book_tag_relation_list = select_relation_by_tag_id(tag_id)
-    for relation in book_tag_relation_list:
-        book_id_list.append(relation.book_id)
 
+    # 筛选出相应标签的book_id
+    if len(tag_id)>0:
+        book_tag_relation_list = select_relation_by_tag_id(tag_id)
+        for relation in book_tag_relation_list:
+            book_id_list.append(relation.book_id)
+
+    # 筛选出相应类型的book_id
+    if len(type) > 0:
+        book_list = select_book_by_type(type,book_id_list)
+        book_id_list = []
+        for book in book_list:
+            book_id_list.append(book.id)
+
+    # 筛选出金句列表
     book_sentence_list = select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list)
     book_sentence_str_list = []
     book_name_list = []
     for book_sentence in book_sentence_list:
-        book_sentence_str_list.append(book_sentence.sentence)
+        sentence = book_sentence.sentence
+        # 做断句
+        sentence = sentence_break(sentence)
+        book_sentence_str_list.append(sentence)
         book_name_list.append("《" + str(book_sentence.book_name) + "》")
-
 
     return {'book_sentence_str_list': book_sentence_str_list,'book_name_list': book_name_list}
 
