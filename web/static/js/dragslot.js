@@ -16,6 +16,29 @@
 		slotList : 'ul',
 		dropCallback : null
  	}
+
+    /**
+     * 将秒转换为 分:秒
+     * s int 秒数
+    */
+    function s_to_hs(s){
+        //计算分钟
+        //算法：将秒数除以60，然后下舍入，既得到分钟数
+        var h;
+        h  =   Math.floor(s/60);
+        //计算秒
+        //算法：取得秒%60的余数，既得到秒数
+        s  =   s%60;
+        //将变量转换为字符串
+        h    +=    '';
+        s    +=    '';
+        //如果只有一位数，前面增加一个0
+        h  =   (h.length==1)?'0'+h:h;
+        s  =   (s.length==1)?'0'+s:s;
+        h  =   Math.round(h)
+        s  =   Math.round(s)
+        return h+'分'+s+'秒';
+    }
 	
 	function Dragslot(element,options){
 		this.element = $(element);
@@ -137,6 +160,19 @@
             	self.slotlist.closest('.' + self.options.slotClass).addClass(self.options.emptySlotClass);
             	self.slotlist[0].parentNode.removeChild(self.slotlist[0]);
             }
+
+           　//计算文字的总时长
+            textList = document.getElementById("border-green").getElementsByClassName("item-title")
+            timeLength = 0
+            for (let i = 1; i < textList.length; ++i) {
+                sentence = textList[i].innerText
+//                sentence=sentence.replace(/\n/g,"")
+                console.log(parseInt(sentence.length/2.5))
+                timeLength = timeLength + parseInt(sentence.length/2.5)
+            }
+            timeLength = s_to_hs(timeLength + 5)  //结尾这边有5秒钟时间，所以最后要加5秒
+            document.getElementById("timer").innerText='视频时长：'+timeLength
+
 		}
 	}
 	

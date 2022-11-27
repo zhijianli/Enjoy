@@ -13,7 +13,7 @@ from memory_profiler import profile
 
 
 from moviepy.editor import *
-from clip.clause import cut_sent,sub,cut_end,sentence_break
+from clip.clause import *
 from clip.file_operate import get_file_list,make_zip,copy_file,compress_image,copy_preview
 from clip.get_audio_time import get_duration_wav
 from clip.clip_tools import ai_dubbing,add_txt_mask,optimi_txt_clip,optimi_saying_clip,generate_cover
@@ -21,6 +21,9 @@ from tools.aliyun_oss import put_object_from_file
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 from guppy import hpy
+
+
+reading_speed = 2.5
 
 # @profile
 def generate_video(args):
@@ -102,7 +105,7 @@ def generate_video(args):
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
     w,h = my_clip.size
     text_font_size = w*3/80
-    start_end_font_size = w*3/40
+    start_end_font_size = w*2/40
 
     all_clip_list = [my_clip]
     audio_clip_list = []
@@ -137,7 +140,7 @@ def generate_video(args):
             audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
             duration = round(get_duration_wav(audio_file_path),2)+dubbing_interval
         else:
-            duration = len(saying)//3
+            duration = len(saying)//reading_speed
         print("text duration time = " + str(duration))
 
         # if args.template == 0:
@@ -196,7 +199,7 @@ def generate_video(args):
 
     # 生成横的封面
     # video.save_frame(DATA_ROOT+"cover.png",t=1)
-    cover_clip = generate_cover(my_clip, DATA_ROOT, font, author, title)
+    cover_clip = generate_cover(my_clip, DATA_ROOT, font, author, title,args.font_cover_ratio)
 
     # 弄一个竖封面
 
@@ -216,6 +219,10 @@ def generate_video(args):
     os.mkdir(RESULT_DIR);
     text = text.replace("++ ||", "－－");
     text = text.replace("&", "");
+    text = text.replace("\n", "");
+    text = text.replace("》", "》\n");
+    text = labeled(text)
+
     with open(RESULT_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
         f.write(title + "\n")
         f.write(text + "\n")
@@ -387,7 +394,7 @@ def preview(args):
             audio_file_path = DATA_ROOT + "dubbing/clip_out_" + str(inx) + ".wav"
             duration = round(get_duration_wav(audio_file_path), 2) + dubbing_interval
         else:
-            duration = len(saying) // 3
+            duration = len(saying) // reading_speed
         print("text duration time = " + str(duration))
         all_time = all_time + duration
 
@@ -434,7 +441,7 @@ def preview(args):
     all_time = all_time + end_time
 
     # 生成横的封面帧
-    cover_clip = generate_cover(my_clip, DATA_ROOT, font, author, title)
+    cover_clip = generate_cover(my_clip, DATA_ROOT, font, author, title,args.font_cover_ratio)
     cover_clip.resize(width=preview_size).save_frame(PREVIEW_DIR + "cover.png", t=1)
 
     # 生成一个背景音乐

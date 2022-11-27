@@ -89,6 +89,7 @@ def submit():
         music = music.split("\\")[-1]
         label = request.form.get("label")
         operate = request.form.get("operate")
+        font_cover_ratio = request.form.get("font_cover_ratio")
 
     print("title:"+str(title))
     print("start:"+str(start))
@@ -99,6 +100,7 @@ def submit():
     print("music:"+str(music))
     print("label:"+str(label))
     print("operate:" + str(operate))
+    print("font_cover_ratio:" + str(font_cover_ratio))
 
     num = write_excel(title, start, text, end, author)
 
@@ -122,6 +124,13 @@ def submit():
         args.music = music
     if picture is not None and len(picture) > 0:
         args.picture = picture
+
+    # 获取封面字体和封面宽度的比值
+    if font_cover_ratio is None:
+        args.font_cover_ratio = 10
+    else:
+        args.font_cover_ratio = font_cover_ratio
+
     print("接受参数：picture：" + str(args.picture))
     print("接受参数：music：" + str(args.music))
     print("接受参数：dubbing：" + str(args.dubbing))

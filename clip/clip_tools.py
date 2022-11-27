@@ -92,7 +92,7 @@ def add_txt_mask(txt_clip,duration,text_clip_start,w,h):
 
     return colorclip
 
-def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
+def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title,font_cover_ratio):
 
 
 
@@ -102,7 +102,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title):
     cover_pitcure_clip = cover_pitcure_clip.fx(vfx.crop, x1=0, y1=0, x2=cover_w, y2=cover_w / 1.88)
     cover_w, cover_h = cover_pitcure_clip.size
 
-    font_size = cover_w / 10
+    font_size = cover_w / int(font_cover_ratio)
 
     # 标题
     txt_clip = TextClip(title, fontsize=font_size, color='white', font=font)

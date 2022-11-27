@@ -134,7 +134,7 @@
 
 <!--                        </ul>-->
                     </div>
-                    <div class="slot border-green" style="width:420px;height:820px;overflow:auto;" >
+                    <div class="slot border-green" id="border-green" style="width:420px;height:820px;overflow:auto;" >
                                 <ul class="slot-list" id="text" style="">
                                     <li class="slot-item">
                                         <div class="slot-handler">
@@ -143,7 +143,7 @@
                                                     <img src="/static/img/avatar4.jpg"/>
                                                 </div>
                                                 <div class="content">
-                                                    <div class="item-title"></div>
+                                                    <div class="item-title" id="timer"></div>
 
                                                     <p></p>
                                                 </div>
@@ -184,10 +184,22 @@
 <!--                    <textarea cols="30" type="text" id="start" name="start" placeholder="开头" style="width:750px;height:200px"></textarea>-->
 <!--                    <br><br>-->
 
-                    <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px" value="感谢观看">
+<!--                    <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px" value="感谢观看">-->
+                    <textarea cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:200px" value=""> 感谢观看
+＠青山书阁</textarea>
+
+
                     <br><br>
 <!--                    <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">-->
 <!--                    <br><br>-->
+
+                    <select id="font_cover_ratio" class="singleSelect"  style="width:210px;height:30px">
+                        <option value="10">10分之一</option>
+                        <option value="11">11分之一</option>
+                        <option value="12">12分之一</option>
+                    </select> <font color="grey">封面字体大小：选项为封面宽度的几分之几</font>
+
+                     <br><br>
                     <img cols="30" type="text" id="picture" name="picture" placeholder="背景图片（可以不填，不填就随机）" value="cai-carney-deaqEVtdSgk-unsplash.jpg">
 <!--                     <div class="ft_img" id="ft_img">-->
                     <button class="t_img">选择背景图片</button>
@@ -318,31 +330,6 @@
 
         });
 
-        /*在这里编写submit()事件*/
-        function submit() {
-            $.ajax({
-                url: "submit", /*数据提交到submit处*/
-                type: "POST",  /*采用POST方法提交*/
-                data: { "title": $("#title").val(),
-                        "start":$("#start").val(),
-                        "text":$("#text").val(),
-                        "end":$("#end").val(),
-                        "author":$("#author").val(),
-                        "label":$("#label").val(),
-                        "picture":$("#picture").val(),
-                        "music":$("#music").val()},  /*提交的数据（json格式），从输入框中获取*/
-                /*result为后端函数返回的json*/
-                success: function (result) {
-                    if (result.message == "success!") {
-                        /* alert(result.message) */
-                    }
-                    else {
-                       /* alert(result.message) */
-                    }
-                }
-            });
-        }
-
          /*在这里编写submit()事件*/
         function submit_text() {
             document.getElementById('popup_block').innerHTML="";
@@ -367,7 +354,8 @@
                         "label":$("#label").val(),
                         "picture":$("#picture").val(),
                         "music":$("#music").val(),
-                        "operate":"generateVideo"},  /*提交的数据（json格式），从输入框中获取*/
+                        "operate":"generateVideo",
+                        "font_cover_ratio":$('select#font_cover_ratio').val()},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
                    var h1 = document.createElement("h1");
@@ -455,7 +443,8 @@
                         "label":$("#label").val(),
                         "picture":$("#picture").val(),
                         "music":$("#music").val(),
-                        "operate":"preview"},  /*提交的数据（json格式），从输入框中获取*/
+                        "operate":"preview",
+                        "font_cover_ratio":$('select#font_cover_ratio').val()},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
 
