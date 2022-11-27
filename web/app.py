@@ -29,6 +29,7 @@ from clip.file_operate import get_file_name_list,urllib_download
 import tools.aliyun_cutout as aliyun_cutout
 from tools.aliyun_oss import put_object_from_file,get_bucket_list
 from tools.mysql_tools import *
+from tools.my_logging import *
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
@@ -273,7 +274,31 @@ def save_picture():
     put_object_from_file("picture/" + picture_name, picture_url)
     return {'result_message': "success"}
 
-
+line_number = [0] #存放当前日志行数
+# 定义接口把处理日志并返回到前端
+@app.route('/get_log',methods=['GET','POST'])
+def get_log():
+    log_data = red_logs() # 获取日志
+    # 判断如果此次获取日志行数减去上一次获取日志行数大于0，代表获取到新的日志
+    if len(log_data) - line_number[0] > 0:
+        log_type = 2 # 当前获取到日志
+        log_difference = len(log_data) - line_number[0] # 计算获取到少行新日志
+        log_list = [] # 存放获取到的新日志
+        # 遍历获取到的新日志存放到log_list中
+        for i in range(log_difference):
+            log_i = log_data[-(i+1)].decode('utf-8') # 遍历每一条日志并解码
+            log_list.insert(0,log_i) # 将获取的日志存放log_list中
+    else:
+        log_type = 3
+        log_list = ''
+    # 已字典形式返回前端
+    _log = {
+        'log_type' : log_type,
+        'log_list' : log_list
+    }
+    line_number.pop() # 删除上一次获取行数
+    line_number.append(len(log_data)) # 添加此次获取行数
+    return {'_log': _log}
 
 #定义app在8080端口运行
 app.run(host = '0.0.0.0',port=8088)

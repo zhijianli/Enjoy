@@ -84,6 +84,7 @@
 			.bt_box .gb:hover,.bt_box .queren:hover{
 				box-shadow: 0 6px 10px 0 rgba(0,0,0,0.24),0 9px 25px 0 rgba(0,0,0,0.19);
 			}
+
 		</style>
 
     </head>
@@ -698,6 +699,49 @@
 		function closeBulletBox() {
               document.getElementById('popup_block').innerHTML="";
         }
+
+
+
+
+        var time
+        // 创建一个元素节点
+        function insertAfter( newElement, targetElement ){ // newElement是要追加的元素targetElement 是指定元素的位置
+            var parent = targetElement.parentNode; // 找到指定元素的父节点
+            parent.appendChild( newElement, targetElement );
+        };
+        function log(){
+            clearTimeout(time) // 清空定时器
+            var log_null = 0 //存放空日志次数
+            var div = document.getElementById('log_list') //找到存放日志的块
+            div.innerHTML = "<div id='log_text'></div>" // 每次跑清空div内内容
+
+            // $.post('/generation_log',{},function (){
+           //  }) //请求生成日志接口
+            // 生成定时器
+            time = setInterval(function (){
+                $.get('/get_log',{},function (data){ //请求获取日志接口获取日志
+                    if (data.log_type == 3){ //如果获取的是空日志log_null次数加1
+                        log_null ++
+                        if (log_null >= 5){
+                            clearTimeout(time) //如果连续10次获取的都是空日志清除定时任务
+                        }
+                        return
+                    }
+                    if (data.log_type == 2){ //如果获取到新日志
+                        for (i=0;i<data.log_list.length;i++){ //遍历日志
+                            var p = document.createElement("p") //生成一个p标签
+                            p.innerHTML = data.log_list[i] //日志存放到P标签内
+                            var header = document.getElementById('log_text')
+                            insertAfter(p,header) //将p标签添加到log_text div中
+                            div.scrollTop = div.scrollHeight //滚动条实时显示到底部
+                        }
+                        log_null = 0 //日志为空次数清0
+                    }
+
+                })
+            },1000) //每1秒钟执行一次
+        }
+        document.getElementById('button').addEventListener("click",log)
 
     </script>
 </html>

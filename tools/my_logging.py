@@ -39,7 +39,14 @@ def generation_log():
 
 
 # 读取日志并返回
-def red_logs(_path,log_name):
+def red_logs():
+    env = os.environ["DEVELOP_ENV"]
+    if env == "test":
+        _path = "/home/mocuili/data/"
+    if env == "prod":
+        _path = "/data/"
+    log_name = "video_clip.log"
+
     log_path = f'{_path}{log_name}'  # 获取日志文件路径
     with open(log_path, 'rb') as f:
         log_size = os.path.getsize(log_path)  # 获取日志大小
@@ -78,6 +85,6 @@ if __name__ == '__main__':
     # lg.warning('44444')
     generation_log()
 
-    data = red_logs(_path,log_name)
+    data = red_logs()
 
     print(data)
