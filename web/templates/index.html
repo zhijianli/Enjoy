@@ -743,8 +743,8 @@
                     log_list = data._log.log_list
                     if (log_type == 3){ //如果获取的是空日志log_null次数加1
                         log_null ++
-                        if (log_null >= 5){
-                            clearTimeout(time) //如果连续10次获取的都是空日志清除定时任务
+                        if (log_null >= 15){
+                            clearTimeout(time) //如果连续15次获取的都是空日志清除定时任务
                         }
                         return
                     }
