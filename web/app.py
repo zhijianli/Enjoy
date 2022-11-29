@@ -6,7 +6,6 @@ import xlrd
 from xlutils.copy import copy
 import socket
 import os
-from clip.clause import *
 
 # 判断环境
 def get_develop_env():
@@ -24,8 +23,10 @@ if env == "prod":
     DATA_ROOT = "/data/enjoy/"
     CODE_ROOT = "/github/"
 
-sys.path.append(CODE_ROOT)
+print("root_path",os.path.dirname(sys.path[0]))
+sys.path.append(os.path.dirname(sys.path[0]))
 
+from clip.clause import *
 from clip.video_clip import generate_video,preview
 from clip.file_operate import get_file_name_list,urllib_download
 import tools.aliyun_cutout as aliyun_cutout
