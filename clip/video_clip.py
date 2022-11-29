@@ -21,7 +21,7 @@ from tools.aliyun_oss import put_object_from_file
 from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 from guppy import hpy
-
+from tools.my_logging import *
 
 reading_speed = 2.5
 
@@ -33,7 +33,7 @@ def generate_video(args):
         num = random.randint(0,16)
     else: # 如果有传参数，就用传的参数
         num = args.num
-    print("num：" + str(num))
+    # info_log("num：" + str(num))
 
     # 加载text数据
     if args.env == "test":
@@ -62,12 +62,12 @@ def generate_video(args):
     end = end_list[num]
     author = author_list[num]
     provenance = provenance_list[num]
-    print("标题：" + str(title))
-    print("开头：" + str(start))
-    print("内容：" + str(text))
-    print("结尾：" + str(end))
-    print("作者：" + str(author))
-    print("出处：" + str(provenance))
+    # info_log("标题：" + str(title))
+    # info_log("开头：" + str(start))
+    # info_log("内容：" + str(text))
+    # info_log("结尾：" + str(end))
+    # info_log("作者：" + str(author))
+    # info_log("出处：" + str(provenance))
     print("命令是： python3 video_clip.py --num="+str(num)+
           " --picture="+str(args.picture)+
           " --music="+str(args.music)+
@@ -92,7 +92,7 @@ def generate_video(args):
         picture_file_name = "blues-lee-zUsvn51N2Ro-unsplash.jpg"
     else: # 如果有传数据，就用传的图片路径
         picture_file_name = args.picture
-    print("picture_file_name：" + picture_file_name)
+    info_log("背景图片名字：" + picture_file_name)
 
     # 调用背景图像生成一个基本的clip
     # my_clip = ImageSequenceClip(DATA_ROOT + "picture/" + picture_file_name,fps=5)
@@ -125,7 +125,7 @@ def generate_video(args):
     colorclip_ori_list = []
 
     # 视频叠加上文字和AI配音
-    print("sents", sents)
+    # info_log("sents"+sents)
     for inx,val in enumerate(sents):
 
         text_str = sents[inx]
@@ -141,7 +141,7 @@ def generate_video(args):
             duration = round(get_duration_wav(audio_file_path),2)+dubbing_interval
         else:
             duration = len(saying)//reading_speed
-        print("text duration time = " + str(duration))
+        # info_log("text duration time = " + str(duration))
 
         # if args.template == 0:
         #     saying = sub(saying)
@@ -185,7 +185,7 @@ def generate_video(args):
         music_file_name = "02 - Rainbow River.mp3"
     else: # 如果有传数据，就用传的音乐路径
         music_file_name = args.music
-    print("music_file_name：" + music_file_name)
+    info_log("背景音乐名字：" + music_file_name)
 
     # 叠加上背景音乐
     back_music_clip = AudioFileClip(DATA_ROOT+"music/" + music_file_name).subclip(t_start=0, t_end=all_time).volumex(0.3).audio_fadeout(end_time*0.7)
@@ -194,8 +194,8 @@ def generate_video(args):
 
     video = video.set_audio(all_audio_clip)
 
-    print("all_time " +str(all_time))
-    print("video.size = " + str(video.size))
+    info_log("视频总时长： " +str(all_time))
+    info_log("视频尺寸：" + str(video.size))
 
     # 生成横的封面
     # video.save_frame(DATA_ROOT+"cover.png",t=1)
@@ -259,7 +259,7 @@ def generate_video(args):
     # 将结果放到zip压缩文件中
     # make_zip(RESULT_DIR,DATA_ROOT + "video/"+ current_time + ".zip")
 
-    print("=============视频生成结束！=============")
+    info_log("=============视频生成结束！=============")
 
     # # 拷贝文件
     # if args.env == "prod":
@@ -275,10 +275,13 @@ def generate_video(args):
     put_object_from_file("video/" + current_time + "/introduction.txt",
                                           DATA_ROOT + "video/" + current_time + "/introduction.txt")
 
-    print("=============视频上传结束！=============")
+    info_log("=============视频上传结束！=============")
 
     m, s = divmod(all_time, 60)
     video_time = str(int(m)) + "分" + str(int(s)) + "秒"
+
+    # 多睡眠两秒，好让前端日志显示完整
+    time.sleep(2)
 
     return cover_url,video_url,title,music_file_name,picture_file_name,author,video_time
 
@@ -289,7 +292,7 @@ def preview(args):
         num = random.randint(0, 16)
     else:  # 如果有传参数，就用传的参数
         num = args.num
-    print("num：" + str(num))
+    # info_log("num：" + str(num))
 
     # 加载text数据
     if args.env == "test":
@@ -315,12 +318,12 @@ def preview(args):
     end = end_list[num]
     author = author_list[num]
     provenance = provenance_list[num]
-    print("标题：" + str(title))
-    print("开头：" + str(start))
-    print("内容：" + str(text))
-    print("结尾：" + str(end))
-    print("作者：" + str(author))
-    print("出处：" + str(provenance))
+    # info_log("标题：" + str(title))
+    # info_log("开头：" + str(start))
+    # info_log("内容：" + str(text))
+    # info_log("结尾：" + str(end))
+    # info_log("作者：" + str(author))
+    # info_log("出处：" + str(provenance))
     print("命令是： python3 video_clip.py --num=" + str(num) +
           " --picture=" + str(args.picture) +
           " --music=" + str(args.music) +
@@ -395,7 +398,7 @@ def preview(args):
             duration = round(get_duration_wav(audio_file_path), 2) + dubbing_interval
         else:
             duration = len(saying) // reading_speed
-        print("text duration time = " + str(duration))
+        info_log("句子时长 = " + str(duration))
         all_time = all_time + duration
 
         saying_clip_list = [my_clip]
@@ -481,7 +484,7 @@ def preview(args):
     gc.collect()
 
     # 上次文件到阿里云oss
-    print("=============预览拷贝开始！=============", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+    info_log("=============预览拷贝开始！============="+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     frame_list = []
     cover_url = put_object_from_file("preview/" + current_time + "/cover.png",
                                    DATA_ROOT + "preview/" + current_time + "/cover.png")
@@ -502,12 +505,15 @@ def preview(args):
     put_object_from_file("preview/" + current_time + "/introduction.txt",
                                           DATA_ROOT + "preview/" + current_time + "/introduction.txt")
 
-    print("=============预览拷贝结束！=============", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+    info_log("=============预览拷贝结束！============="+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
     m, s = divmod(all_time, 60)
     video_time = str(int(m)) + "分" + str(int(s)) + "秒"
-    print("video_time:",video_time)
+    info_log("视频总时长:"+video_time)
     frame_list.append(end_clip_url)
+
+    # 多睡眠两秒，好让前端日志显示完整
+    time.sleep(2)
 
     return frame_list,title,music_file_name,picture_file_name,author,video_time
 

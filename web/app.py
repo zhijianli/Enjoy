@@ -69,16 +69,6 @@ def write_excel(title,start,text,end,author):
 @app.route("/submit",methods=["GET", "POST"])
 #从这里定义具体的函数 返回值均为json格式
 def submit():
-    #由于POST、GET获取数据的方式不同，需要使用if语句进行判断
-    # if request.method == "GET":
-    #     title = request.args.get("title")
-    #     start = request.args.get("start")
-    #     text = request.args.get("text")
-    #     end = request.args.get("end")
-    #     author = request.args.get("author")
-    #     label = request.args.get("label")
-    #     picture = request.args.get("picture")
-    #     music = request.args.get("music")
     if request.method == "POST":
         title = request.form.get("title")
         start = request.form.get("start")
@@ -92,16 +82,16 @@ def submit():
         operate = request.form.get("operate")
         font_cover_ratio = request.form.get("font_cover_ratio")
 
-    print("title:"+str(title))
-    print("start:"+str(start))
-    print("text:"+str(text))
-    print("end:"+str(end))
-    print("author:"+str(author))
-    print("picture:"+str(picture))
-    print("music:"+str(music))
-    print("label:"+str(label))
-    print("operate:" + str(operate))
-    print("font_cover_ratio:" + str(font_cover_ratio))
+    # print("title:"+str(title))
+    # print("start:"+str(start))
+    # print("text:"+str(text))
+    # print("end:"+str(end))
+    # print("author:"+str(author))
+    # print("picture:"+str(picture))
+    # print("music:"+str(music))
+    # print("label:"+str(label))
+    # print("operate:" + str(operate))
+    # print("font_cover_ratio:" + str(font_cover_ratio))
 
     num = write_excel(title, start, text, end, author)
 
@@ -132,14 +122,14 @@ def submit():
     else:
         args.font_cover_ratio = font_cover_ratio
 
-    print("接受参数：picture：" + str(args.picture))
-    print("接受参数：music：" + str(args.music))
-    print("接受参数：dubbing：" + str(args.dubbing))
-    print("接受参数：num：" + str(args.num))
-    print("接受参数：template：" + str(args.template))
-    print("接受参数：uploadoss：" + str(args.uploadoss))
-    print("接受参数：env：" + str(args.env))
-    print("接受参数：label：" + str(args.label))
+    # print("接受参数：picture：" + str(args.picture))
+    # print("接受参数：music：" + str(args.music))
+    # print("接受参数：dubbing：" + str(args.dubbing))
+    # print("接受参数：num：" + str(args.num))
+    # print("接受参数：template：" + str(args.template))
+    # print("接受参数：uploadoss：" + str(args.uploadoss))
+    # print("接受参数：env：" + str(args.env))
+    # print("接受参数：label：" + str(args.label))
 
     result_message = ""
     if operate == "generateVideo":

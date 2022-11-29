@@ -145,7 +145,7 @@ def generate_cover(cover_pitcure_clip,DATA_ROOT,font,author_name,title,font_cove
     # txt_clip = txt_clip.set_position(((cover_w-avatar_w-txt_w)//2+avatar_w,cover_h//2))
     # author_clip = author_clip.set_position(((cover_w - avatar_w - txt_w) // 2 + avatar_w, cover_h // 2 - txt_h))
     txt_clip = txt_clip.set_position(((cover_w - txt_w) // 2, (cover_h - (txt_h+author_h*2))//2))
-    author_clip = author_clip.set_position(((cover_w - author_w)//2-font_size/3,(cover_h - (txt_h+author_h*2))//2+txt_h+author_h))
+    author_clip = author_clip.set_position(((cover_w - author_w)//2,(cover_h - (txt_h+author_h*2))//2+txt_h+author_h))
     # avatar_clip = avatar_clip.set_position(position)
     # colorclip = colorclip.set_position((cover_w//10,avatar_y+avatar_h*1//10))
     colorclip = colorclip.set_position((cover_w // 10, (cover_h-colorclip_h)//2))

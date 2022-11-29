@@ -1,8 +1,9 @@
 import logging as lg
+import sys
 import os,time
 
 class logging_():
-    def __init__(self,path,name, delete=True):
+    def __init__(self,path,name,delete=True):
         self.path = path  # 日志文件存放位置
         self.log_ = os.path.join(self.path, name)  # 进入文件目录
         if delete == True:
@@ -30,6 +31,14 @@ class logging_():
         # 关闭文件
         self.fh.close()
 
+env = os.environ["DEVELOP_ENV"]
+if env == "test":
+    _path = "/home/mocuili/data/"
+if env == "prod":
+    _path = "/data/"
+log_name = "video_clip.log"
+lg = logging_(_path, log_name).logger  # 实例化封装类
+
 
 # 创建方法生成日志
 def generation_log():
@@ -37,6 +46,8 @@ def generation_log():
         lg.info(i)
         # time.sleep(1)
 
+def info_log(str):
+    lg.info(str)
 
 # 读取日志并返回
 def red_logs():
@@ -79,12 +90,12 @@ if __name__ == '__main__':
     log_name = "video_clip.log"
     lg = logging_(_path,log_name).logger  # 实例化封装类
 
-    # lg.info('1111')
-    # lg.debug('2222')
-    # lg.error('33333')
-    # lg.warning('44444')
-    generation_log()
+    lg.info('1111')
+    lg.debug('2222')
+    lg.error('33333')
+    lg.warning('44444')
+    # generation_log()
 
-    data = red_logs()
+    # data = red_logs()
 
-    print(data)
+    # print(data)

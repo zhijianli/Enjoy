@@ -260,6 +260,7 @@
 
 <div id="popup-article" class="popup">
   <div id="popup_block" class="popup__block">
+
   </div>
 </div>
 <div class="box">
@@ -333,7 +334,9 @@
 
          /*在这里编写submit()事件*/
         function submit_text() {
-            document.getElementById('popup_block').innerHTML="";
+
+            log()
+
             sentence_list = document.getElementById('text').getElementsByClassName("item-title")
             source_list = document.getElementById('text').querySelectorAll("p")
             text = ""
@@ -359,7 +362,10 @@
                         "font_cover_ratio":$('select#font_cover_ratio').val()},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
-                   var h1 = document.createElement("h1");
+
+                    document.getElementById('popup_block').innerHTML="";
+
+                    var h1 = document.createElement("h1");
                     h1.setAttribute("class", "popup__title");
                     h1.innerHTML= result.title;
                     $('#popup_block').append(h1)
@@ -422,7 +428,7 @@
         /*在这里编写preview()事件*/
         function preview() {
 
-            document.getElementById('popup_block').innerHTML="";
+            log()
             sentence_list = document.getElementById('text').getElementsByClassName("item-title")
             source_list = document.getElementById('text').querySelectorAll("p")
             text = ""
@@ -448,7 +454,7 @@
                         "font_cover_ratio":$('select#font_cover_ratio').val()},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
-
+                    document.getElementById('popup_block').innerHTML="";
                     var h1 = document.createElement("h1");
                     h1.setAttribute("class", "popup__title");
                     h1.innerHTML= result.title;
@@ -710,6 +716,19 @@
             parent.appendChild( newElement, targetElement );
         };
         function log(){
+
+            popup_block = document.getElementById('popup_block')
+            var div1 = document.createElement("div");
+            var div2 = document.createElement("div");
+            var div3 = document.createElement("div");
+            div1.setAttribute("class", "log");
+            div2.setAttribute("class", "log_text");
+            div2.setAttribute("id", "log_list");
+            div3.setAttribute("id", "log_text");
+            popup_block.append(div1)
+            div1.append(div2)
+            div2.append(div3)
+
             clearTimeout(time) // 清空定时器
             var log_null = 0 //存放空日志次数
             var div = document.getElementById('log_list') //找到存放日志的块
@@ -720,17 +739,19 @@
             // 生成定时器
             time = setInterval(function (){
                 $.get('/get_log',{},function (data){ //请求获取日志接口获取日志
-                    if (data.log_type == 3){ //如果获取的是空日志log_null次数加1
+                    log_type = data._log.log_type
+                    log_list = data._log.log_list
+                    if (log_type == 3){ //如果获取的是空日志log_null次数加1
                         log_null ++
                         if (log_null >= 5){
                             clearTimeout(time) //如果连续10次获取的都是空日志清除定时任务
                         }
                         return
                     }
-                    if (data.log_type == 2){ //如果获取到新日志
-                        for (i=0;i<data.log_list.length;i++){ //遍历日志
+                    if (log_type == 2){ //如果获取到新日志
+                        for (i=0;i<log_list.length;i++){ //遍历日志
                             var p = document.createElement("p") //生成一个p标签
-                            p.innerHTML = data.log_list[i] //日志存放到P标签内
+                            p.innerHTML = log_list[i] //日志存放到P标签内
                             var header = document.getElementById('log_text')
                             insertAfter(p,header) //将p标签添加到log_text div中
                             div.scrollTop = div.scrollHeight //滚动条实时显示到底部
@@ -741,7 +762,7 @@
                 })
             },1000) //每1秒钟执行一次
         }
-        document.getElementById('button').addEventListener("click",log)
+        // document.getElementById('button').addEventListener("click",log)
 
     </script>
 </html>
