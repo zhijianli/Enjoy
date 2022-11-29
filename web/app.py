@@ -18,11 +18,13 @@ book_path = ""
 if env == "test":
     book_path = "/home/mocuili/data/enjoy/wechat_export/我的笔记/"
     DATA_ROOT = "/home/mocuili/data/enjoy/"
+    CODE_ROOT = "/home/mocuili/github/Enjoy/"
 if env == "prod":
     book_path = "/data/enjoy/wechat_export/我的笔记/"
     DATA_ROOT = "/data/enjoy/"
+    CODE_ROOT = "/github/"
 
-sys.path.append("./")
+sys.path.append(CODE_ROOT)
 
 from clip.video_clip import generate_video,preview
 from clip.file_operate import get_file_name_list,urllib_download
