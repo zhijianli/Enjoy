@@ -167,8 +167,12 @@
             for (let i = 1; i < textList.length; ++i) {
                 sentence = textList[i].innerText
 //                sentence=sentence.replace(/\n/g,"")
-                console.log(parseInt(sentence.length/2.5))
-                timeLength = timeLength + parseInt(sentence.length/2.5)
+//                console.log(parseInt(sentence.length/2.5))
+                duration = parseInt(sentence.length/3)
+                if(duration > 15){
+                    duration = 15
+                }
+                timeLength = timeLength + duration
             }
             timeLength = s_to_hs(timeLength + 5)  //结尾这边有5秒钟时间，所以最后要加5秒
             document.getElementById("timer").innerText='视频时长：'+timeLength

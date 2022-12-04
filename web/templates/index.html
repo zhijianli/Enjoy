@@ -110,6 +110,10 @@
                 <option value="">--请选择--</option>
             </select>
              &nbsp;
+            <select id="author_list" class="singleSelect"  style="width:210px">
+                <option value="">--请选择--</option>
+            </select>
+             &nbsp;
             <select id="book_list" class="singleSelect"  style="width:270px">
                 <option value="">--请选择--</option>
             </select>
@@ -166,18 +170,24 @@
 <!--                    <input cols="30" type="text" id="title" name="title" placeholder="标题" style="width:750px;height:100px">-->
                     <input id="title" type="text" list="typelist" placeholder="标题" style="width:750px;height:70px" >
                     <datalist id="typelist" width="100%">
+                       <option>如何应对迷茫？</option>
                     　　<option>《雪中悍刀行》那些经典致郁的句子</option>
                     　　<option>那些让人一眼泪目的话</option>
                        <option>孤独能写到什么程度</option>
                        <option>生命是什么，这是佛陀的答案</option>　
-                       <option>建议通篇对照</option>
-                       <option>这是最佳答案</option>
-                       <option>建议收藏备用</option>
-                       <option>如何体面地回答“你为什么不喜欢我”｜建议灵活应用收藏备用</option>
-
+                        <option>用一句话形容喜欢</option>
+                       <option>如何体面地回答“你为什么不喜欢我”</option>
                     </datalist>
                     <br><br>
-                    <input cols="30" type="text" id="author" name="author" placeholder="副标题" style="width:750px;height:100px" value="（这是我见过最有趣的回答）">
+                   <input id="author" type="text" list="subtitlelist" placeholder="副标题" style="width:750px;height:70px" >
+                    <datalist id="subtitlelist" width="100%">
+                    　　<option>（这是我见过最有趣的回答）</option>
+                       <option>（建议通篇对照）</option>
+                       <option>（这是最佳答案）</option>
+                       <option>（建议收藏备用）</option>
+                       <option>（建议灵活应用）</option>
+                    </datalist>
+
                     <br><br>
 <!--                    <input cols="30" type="text" id="avatarUrl" name="avatarUrl" placeholder="头像链接" style="width:600px;height:100px">-->
 <!--                    <button onclick="cutout();">头像抠图</button>&nbsp;&nbsp;&nbsp;-->
@@ -510,6 +520,8 @@
                    book_wechar_id_list = result.book_wechar_id_list
                    tag_id_list = result.tag_id_list
                    tag_name_list = result.tag_name_list
+                   author_id_list = result.author_id_list
+                   author_name_list = result.author_name_list
                    for (let i = 0; i < book_name_list.length; ++i) {
                         var option = document.createElement("option");
                         $(option).val(book_wechar_id_list[i]);
@@ -521,6 +533,12 @@
                         $(option).val(tag_id_list[i]);
                         $(option).text(tag_name_list[i]);
                         $('#tag_list').append(option);
+                   }
+                   for (let i = 0; i < author_id_list.length; ++i) {
+                        var option = document.createElement("option");
+                        $(option).val(author_id_list[i]);
+                        $(option).text(author_name_list[i]);
+                        $('#author_list').append(option);
                    }
                 }
             });
@@ -558,6 +576,7 @@
                     data: {"key_words":$("#key_words").val(),
                            "wechat_book_id":$('select#book_list').val(),
                            "tag_id":$('select#tag_list').val(),
+                           "author_id":$('select#author_list').val(),
                            "type":$('select#type_list').val()},
                     success: function (result) {
                         book_sentence_str_list = result.book_sentence_str_list
@@ -743,8 +762,8 @@
                     log_list = data._log.log_list
                     if (log_type == 3){ //如果获取的是空日志log_null次数加1
                         log_null ++
-                        if (log_null >= 15){
-                            clearTimeout(time) //如果连续15次获取的都是空日志清除定时任务
+                        if (log_null >= 20){
+                            clearTimeout(time) //如果连续20次获取的都是空日志清除定时任务
                         }
                         return
                     }

@@ -174,7 +174,20 @@ def get_search_condition():
         tag_id_list.append(tag.id)
         tag_name_list.append(tag.name)
 
-    return {'book_name_list': book_name_list,'book_wechar_id_list':book_wechar_id_list,'tag_id_list':tag_id_list,'tag_name_list':tag_name_list}
+    # 获取作者列表
+    author_id_list = []
+    author_name_list = []
+    author_list = select_author_list()
+    for author in author_list:
+        author_id_list.append(author.id)
+        author_name_list.append(author.name)
+
+    return {'book_name_list': book_name_list,
+            'book_wechar_id_list':book_wechar_id_list,
+            'tag_id_list':tag_id_list,
+            'tag_name_list':tag_name_list,
+            'author_id_list':author_id_list,
+            'author_name_list':author_name_list}
 
 @app.route("/get_content_by_book",methods=["GET"])
 def get_content_by_book():
@@ -205,33 +218,42 @@ def book_search():
 def book_search_list():
     key_words = request.args.get("key_words")
     wechat_book_id = request.args.get("wechat_book_id")
+    author_id = request.args.get("author_id")
     tag_id = request.args.get("tag_id")
     type = request.args.get("type")
     book_id_list = []
+    is_no_book=False
 
     # 筛选出相应标签的book_id
     if len(tag_id)>0:
         book_tag_relation_list = select_relation_by_tag_id(tag_id)
-        for relation in book_tag_relation_list:
-            book_id_list.append(relation.book_id)
+        if len(book_tag_relation_list)>0:
+            for relation in book_tag_relation_list:
+                book_id_list.append(relation.book_id)
+        else:
+            is_no_book = True
 
-    # 筛选出相应类型的book_id
-    if len(type) > 0:
-        book_list = select_book_by_type(type,book_id_list)
+    # 筛选出相应类型和作者的book_id
+    if is_no_book == False and (len(author_id)>0 or len(type)>0):
+        book_list = select_book_by_condition(type,author_id,book_id_list)
         book_id_list = []
-        for book in book_list:
-            book_id_list.append(book.id)
+        if len(book_list)>0:
+            for book in book_list:
+                book_id_list.append(book.id)
+        else:
+            is_no_book = True
 
     # 筛选出金句列表
-    book_sentence_list = select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list)
     book_sentence_str_list = []
     book_name_list = []
-    for book_sentence in book_sentence_list:
-        sentence = book_sentence.sentence
-        # 做断句
-        sentence = sentence_break(sentence)
-        book_sentence_str_list.append(sentence)
-        book_name_list.append("《" + str(book_sentence.book_name) + "》")
+    if is_no_book is False:
+        book_sentence_list = select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list)
+        for book_sentence in book_sentence_list:
+            sentence = book_sentence.sentence
+            # 做断句
+            sentence = sentence_break(sentence)
+            book_sentence_str_list.append(sentence)
+            book_name_list.append("《" + str(book_sentence.book_name) + "》")
 
     return {'book_sentence_str_list': book_sentence_str_list,'book_name_list': book_name_list}
 

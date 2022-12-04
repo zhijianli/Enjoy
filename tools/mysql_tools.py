@@ -48,6 +48,10 @@ class Book(db.Model):
     # 定义字段
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), unique=True, index=True)
+    author_id = db.Column(db.Integer)
+    author_name = db.Column(db.String(255), unique=True, index=True)
+    introduction = db.Column(db.String(1000), unique=True, index=True)
+    book_cover_url = db.Column(db.String(255), unique=True, index=True)
     wechat_book_id = db.Column(db.Integer)
     type = db.Column(db.Integer)
 
@@ -94,15 +98,20 @@ def insert_book(wechat_book_id,book_name):
         db.session.commit()
         return book_id
 
+def update_book(wechat_book_id,author_name,book_cover_url,author_id,type):
+    with app.app_context():
+        Book.query.filter_by(wechat_book_id=wechat_book_id).update({"author_name": author_name,"book_cover_url": book_cover_url,"author_id":author_id,"type":type})
+        db.session.commit()
+
 def select_book_list():
     with app.app_context():
         book_list = Book.query.filter_by().all()
     return book_list
 
-def select_book_by_type(type,book_id_list):
+def select_book_by_condition(type,author_id,book_id_list):
     with app.app_context():
-        book_list = Book.query.filter(
-                                       (Book.type == type) if type else 1==1,
+        book_list = Book.query.filter( (Book.type == type) if type else 1==1,
+                                       (Book.author_id == author_id) if author_id else 1==1,
                                         Book.id.in_(book_id_list) if len(book_id_list) > 0 else 1==1
                                         ).all()
 
@@ -149,7 +158,7 @@ def select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list):
                                                     BookSentence.sentence.like("%" + key_words + "%" if key_words else '%%'),
                                                     (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1,
                                                     BookSentence.book_id.in_(book_id_list) if len(book_id_list) > 0 else 1==1,
-                                                    func.length(BookSentence.sentence) < 200
+                                                    func.length(BookSentence.sentence) < 150
                                                 ).order_by(func.rand()).limit(1000).all()
 
     return book_sentence_list
@@ -193,13 +202,32 @@ def select_relation_by_tag_id(tag_id):
 
     return book_tag_relation_list
 
+def select_author(author_name):
+    with app.app_context():
+        author_list = Author.query.filter_by(name=author_name).all()
+
+    return author_list
+
+def select_author_list():
+    with app.app_context():
+        author_list = Author.query.filter_by().all()
+
+    return author_list
+
+def insert_author(author_name):
+    with app.app_context():
+        author = Author(name=author_name)
+        db.session.add(author)
+        db.session.flush()
+        author_id = author.id
+        db.session.commit()
+        return author_id
+
 if __name__ == '__main__':
 
-    # # 插入一条数据
-    # with app.app_context():
-    #     author1 = Author(name='弗洛伊德')
-    #     db.session.add(author1)
-    #     db.session.commit()
+    # 插入一条数据
+    # id = insert_author('弗洛伊德１１１')
+    # print("作者id:",id)
 
     # # 插入一条数据
     # with app.app_context():
@@ -226,5 +254,8 @@ if __name__ == '__main__':
     # tag_list = select_tag_list()
     # print(tag_list)
 
-    book_tag_relation_list = select_relation_by_tag_id(185)
-    print(book_tag_relation_list)
+    # book_tag_relation_list = select_relation_by_tag_id(185)
+    # print(book_tag_relation_list)
+    # update_book(3001057944,"2","222")
+    list = select_author("欧文·亚隆")
+    print("list",list[0].id,list[0].name)

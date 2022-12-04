@@ -23,7 +23,7 @@ from moviepy.video.tools.drawing import color_split
 from guppy import hpy
 from tools.my_logging import *
 
-reading_speed = 2.5
+reading_speed = 3
 
 # @profile
 def generate_video(args):
@@ -104,8 +104,8 @@ def generate_video(args):
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
     w,h = my_clip.size
-    text_font_size = w*3/80
-    start_end_font_size = w*2/40
+    text_font_size = w*3.6/80
+    start_end_font_size = w/20
 
     all_clip_list = [my_clip]
     audio_clip_list = []
@@ -141,6 +141,8 @@ def generate_video(args):
             duration = round(get_duration_wav(audio_file_path),2)+dubbing_interval
         else:
             duration = len(saying)//reading_speed
+            if duration > 15:
+                duration = 15
         # info_log("text duration time = " + str(duration))
 
         # if args.template == 0:
@@ -188,7 +190,7 @@ def generate_video(args):
     info_log("背景音乐名字：" + music_file_name)
 
     # 叠加上背景音乐
-    back_music_clip = AudioFileClip(DATA_ROOT+"music/" + music_file_name).subclip(t_start=0, t_end=all_time).volumex(0.3).audio_fadeout(end_time*0.7)
+    back_music_clip = AudioFileClip(DATA_ROOT+"music/" + music_file_name).subclip(t_start=0, t_end=all_time).volumex(0.7).audio_fadeout(end_time*0.7)
     audio_clip_list.append(back_music_clip)
     all_audio_clip = CompositeAudioClip(audio_clip_list)
 
@@ -222,13 +224,14 @@ def generate_video(args):
     text = text.replace("\n", "");
     text = text.replace("》", "》\n");
     text = labeled(text)
+    music_file_name = os.path.splitext(music_file_name)[0]
 
     with open(RESULT_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
         f.write(title + "\n")
+        f.write("BGM:" + music_file_name + "\n\n")
         f.write(text + "\n")
         f.write(end + "\n")
         # f.write("出处:" + provenance + "\n")
-        f.write("BGM:"+ music_file_name + "\n")
         f.write("图片名:" + picture_file_name + "\n")
         f.write("作者:" + author + "\n")
         # f.write("标签:" + str(convert_label_str) + "\n")
@@ -355,8 +358,8 @@ def preview(args):
     w, h = my_clip.size
     my_clip = my_clip.fx(vfx.crop, x1=0, y1=0, x2=w, y2=w / 1.88)
     w, h = my_clip.size
-    text_font_size = w*3/80
-    start_end_font_size = w*3/40
+    text_font_size = w*3.6/80
+    start_end_font_size = w/20
     text_clip_start = 0
     title_time = 3
     end_time = 5
@@ -398,6 +401,8 @@ def preview(args):
             duration = round(get_duration_wav(audio_file_path), 2) + dubbing_interval
         else:
             duration = len(saying) // reading_speed
+            if duration > 15:
+                duration = 15
         info_log("句子时长 = " + str(duration))
         all_time = all_time + duration
 
@@ -464,13 +469,15 @@ def preview(args):
     #     for label in label_list:
     #         convert_label_str = convert_label_str + "#"+str(label)+"　"
 
+    music_file_name = os.path.splitext(music_file_name)[0]
+
     # 生成简介
     with open(PREVIEW_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
         f.write(title + "\n")
+        f.write("BGM:" + music_file_name + "\n\n")
         f.write(text + "\n")
         f.write(end + "\n")
         # f.write("出处:" + provenance + "\n")
-        f.write("BGM:" + music_file_name + "\n")
         f.write("图片名:" + picture_file_name + "\n")
         f.write("作者:" + author + "\n")
         # f.write("标签:" + str(convert_label_str) + "\n")
