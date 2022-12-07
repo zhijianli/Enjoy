@@ -469,7 +469,7 @@ def preview(args):
     #     for label in label_list:
     #         convert_label_str = convert_label_str + "#"+str(label)+"　"
 
-    music_file_name = os.path.splitext(music_file_name)[0]
+    # music_file_name = os.path.splitext(music_file_name)[0]
 
     # 生成简介
     with open(PREVIEW_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象

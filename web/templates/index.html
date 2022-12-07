@@ -125,6 +125,7 @@
 
 
         <br><br>
+
         <div style="float:left;">
             <section class="demo clearfix" >
 
@@ -139,6 +140,7 @@
 
 <!--                        </ul>-->
                     </div>
+
                     <div class="slot border-green" id="border-green" style="width:420px;height:820px;overflow:auto;" >
                                 <ul class="slot-list" id="text" style="">
                                     <li class="slot-item">
@@ -147,6 +149,7 @@
                                                 <div class="avator">
                                                     <img src="/static/img/avatar4.jpg"/>
                                                 </div>
+
                                                 <div class="content">
                                                     <div class="item-title" id="timer"></div>
 
@@ -226,6 +229,8 @@
                         <input name="music" style="display:none;" id="music" readonly>
                     </form>
 
+
+                    <button id="edit_cotainer" >编辑文本</button>
                     <br><br>
                     <!--创建button按钮，点击则激发submit()事件-->
 <!--                    <button onclick="submit_text();">生成视频</button>&nbsp;&nbsp;&nbsp;-->
@@ -323,6 +328,11 @@
 <!--    </div>-->
     </body>
     <script>
+
+        var container_element
+        var container_dragStartEvent
+        var edit_switch = false
+
         $(document).ready(function () {//加载页面时执行select2
             $('.singleSelect').select2();
         });
@@ -612,7 +622,9 @@
                                 div3.setAttribute("class", "avator");
                                 div4.setAttribute("class", "content");
                                 div5.setAttribute("class", "item-title");
-                               /* div5.setAttribute("contenteditable", "true"); */
+                                div5.setAttribute("contenteditable", "true");
+                                p.setAttribute("style", "font-size:12px");
+                                p.setAttribute("contenteditable", "true");
                                 $(div5).text(book_sentence_str_list[i]);
                                 img.setAttribute("src", "/static/img/avatar4.jpg");
                                 $(p).text(book_name_list[i]);
@@ -628,11 +640,15 @@
         });*/
 
         jQuery(function($){
-			$('#dragslot').dragslot({
+			var obj = $('#dragslot').dragslot({
 				dropCallback: function(el){
 				//	alert(el);
 				}
 			});
+			container_element = obj.slotContainer.element
+			container_dragStartEvent = obj.dragStartEvent
+			console.log(container_element)
+			console.log(container_dragStartEvent)
 		});
 
         /* 隐藏，显现效果 */
@@ -783,5 +799,18 @@
         }
         // document.getElementById('button').addEventListener("click",log)
 
+
+        /*根据关键词+书籍名字获取书籍内容*/
+        $('button#edit_cotainer').click(function(){
+            console.log(edit_switch)
+            if(edit_switch == true){
+              container_element.on("mousedown",container_dragStartEvent)
+              edit_switch=false
+            }else if(edit_switch == false){
+              container_element.off("mousedown")
+              edit_switch=true
+            }
+            console.log(edit_switch)
+        });
     </script>
 </html>

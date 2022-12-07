@@ -13,7 +13,7 @@ class Config(object):
     """配置参数"""
     # 设置连接数据库的URL
     user = 'root'
-    password = '123456'
+    password = 'Mocuiliniubi&*&123'
     database = 'enjoy'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://%s:%s@47.98.124.127:3306/%s' % (user, password, database)
 
@@ -88,15 +88,16 @@ class BookSentence(db.Model):
     wechat_book_id = db.Column(db.Integer)
 
 
-def insert_book(wechat_book_id,book_name):
+def insert_book(wechat_book_id,book_name,type):
     # 插入一条数据
     with app.app_context():
-        book = Book(wechat_book_id=wechat_book_id,name=book_name)
+        book = Book(wechat_book_id=wechat_book_id,name=book_name,type=type)
         db.session.add(book)
         db.session.flush()
         book_id = book.id
         db.session.commit()
         return book_id
+
 
 def update_book(wechat_book_id,author_name,book_cover_url,author_id,type):
     with app.app_context():
@@ -138,6 +139,16 @@ def insert_book_sentence(sentence,book_id,wechat_book_id,book_name,underline_num
                                     underline_num=underline_num,
                                     type=type)
         db.session.add(bookSentence)
+        db.session.commit()
+
+def batch_insert_book(book_sentence_list):
+    with app.app_context():
+        db.session.execute(
+            BookSentence.__table__.insert(),
+            [{"sentence":book_sentence[0] , "book_id":book_sentence[1] ,
+              "wechat_book_id":book_sentence[2] ,"book_name":book_sentence[3],
+              "underline_num":book_sentence[4],"type":book_sentence[5]} for book_sentence in book_sentence_list]
+        )
         db.session.commit()
 
 def select_book_sentence(sentence,wechat_book_id):
@@ -257,5 +268,25 @@ if __name__ == '__main__':
     # book_tag_relation_list = select_relation_by_tag_id(185)
     # print(book_tag_relation_list)
     # update_book(3001057944,"2","222")
-    list = select_author("欧文·亚隆")
-    print("list",list[0].id,list[0].name)
+    # list = select_author("欧文·亚隆")
+    # print("list",list[0].id,list[0].name)
+
+    book_sentence_list = []
+    sentence = []
+    sentence2 = []
+    sentence.append("sentence")
+    sentence.append(1)
+    sentence.append(11)
+    sentence.append("book_name")
+    sentence.append(12)
+    sentence.append(1)
+    sentence2.append("sentence2")
+    sentence2.append(2)
+    sentence2.append(22)
+    sentence2.append("book_name2")
+    sentence2.append(22)
+    sentence2.append(2)
+    book_sentence_list.append(sentence)
+    book_sentence_list.append(sentence2)
+
+    batch_insert_book(book_sentence_list)

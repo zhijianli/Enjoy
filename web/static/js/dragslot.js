@@ -43,7 +43,7 @@
 	function Dragslot(element,options){
 		this.element = $(element);
 		this.options = $.extend({}, defaults, options);
-		this.init();
+		return this.init();
 	}
 	Dragslot.prototype = {
 		init : function(){
@@ -57,7 +57,7 @@
 
 				e.preventDefault();
 				slotContainer._dragStart(e);
-				
+
 			};
 			var dragMoveEvent = function(e){
 				if(slotContainer.dragElement){
@@ -68,13 +68,18 @@
 			var dragEndEvent = function(e){
 				if(slotContainer.dragElement){
 						e.preventDefault();
-						slotContainer._dragEnd(e);
+						slotContainer._dragEnd(e,dragStartEvent,slotContainer);
 					}
-				
+
 			};
 			slotContainer.element.on(eStart, dragStartEvent);
 			$(window).on(eMove, dragMoveEvent);
 			$(window).on(eEnd, dragEndEvent);
+
+            return{
+              slotContainer:slotContainer,
+              dragStartEvent:dragStartEvent
+            }
 
 		},
 		_dragStart : function(e){
@@ -91,7 +96,7 @@
 			dragItem.appendTo(this.dragElement);
 			$(document.body).append(this.dragElement);
 			clientX = e.clientX + (document.body.scrollLeft || document.documentElement.scrollLeft);
-			clientY = e.clientY + (document.body.scrollTop || document.documentElement.scrollTop); 
+			clientY = e.clientY + (document.body.scrollTop || document.documentElement.scrollTop);
 			this.dragElement.css({
 				'left' : clientX,
 				'top'  : clientY
@@ -116,7 +121,7 @@
                 this.pointEl = this.pointEl.closest('.' + this.options.slotItemClass);
                  var before = e.pageY < (this.pointEl.offset().top + this.pointEl.height() / 2);
                     parent = this.placeholder.parent();
-             
+
                 if (before) {
                     this.pointEl.before(this.placeholder);
                 }
@@ -135,20 +140,20 @@
             }
             this.toSlot = this.pointEl.closest('.' + this.options.slotClass);
 		},
-		_dragEnd : function(e){
+		_dragEnd : function(e,dragStartEvent,slotContainer){
 			var self = this;
 			var el = self.dragElement.children('.' + self.options.slotItemClass).first();
             el[0].parentNode.removeChild(el[0]);
             this.placeholder.replaceWith(el);
-            
+
             self.dragElement.remove();
             if($.isFunction(self.options.dropCallback)) {
               var itemInfo = {
               	dragItem : el,
               	sourceSlot : self.slotlist.closest('.slot'),
               	destinationSlot : self.toSlot,
-              	dragItemId : el.attr('id') 
-              } 
+              	dragItemId : el.attr('id')
+              }
               self.options.dropCallback.call(self, itemInfo);
             }
             self.dragElement = null;
@@ -165,6 +170,8 @@
             textList = document.getElementById("border-green").getElementsByClassName("item-title")
             timeLength = 0
             for (let i = 1; i < textList.length; ++i) {
+//                textList[i].setAttribute('contentEditable', 'true');
+
                 sentence = textList[i].innerText
 //                sentence=sentence.replace(/\n/g,"")
 //                console.log(parseInt(sentence.length/2.5))
@@ -182,7 +189,11 @@
 	
 
 	$.fn.dragslot = function(options){
-		new Dragslot(this,options);
+		var obj = new Dragslot(this,options);
+		return{
+           slotContainer:obj.slotContainer,
+           dragStartEvent:obj.dragStartEvent
+        }
 	}
 
 })(window.jQuery, window, document);
