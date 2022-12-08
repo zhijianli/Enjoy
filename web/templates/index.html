@@ -603,7 +603,7 @@
                                 var div2 = document.createElement("div");
                                 var div3 = document.createElement("div");
                                 var div4 = document.createElement("div");
-                                /* var div5 = document.createElement("textarea"); */
+                              /*  var div5 = document.createElement("textarea");*/
                                 var div5 = document.createElement("div");
                                 var img = document.createElement("img");
                                 var p = document.createElement("p");
@@ -622,7 +622,8 @@
                                 div3.setAttribute("class", "avator");
                                 div4.setAttribute("class", "content");
                                 div5.setAttribute("class", "item-title");
-                                div5.setAttribute("contenteditable", "true");
+                                /* div5.setAttribute("contenteditable", "true");*/
+                                div5.setAttribute("style", "-webkit-user-modify: read-write-plaintext-only");
                                 p.setAttribute("style", "font-size:12px");
                                 p.setAttribute("contenteditable", "true");
                                 $(div5).text(book_sentence_str_list[i]);
