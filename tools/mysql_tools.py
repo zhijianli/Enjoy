@@ -174,6 +174,12 @@ def select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list):
 
     return book_sentence_list
 
+
+def update_book_sentence(wechat_book_id,author_id,author_name):
+    with app.app_context():
+        BookSentence.query.filter_by(wechat_book_id=wechat_book_id).update({"author_id":author_id,"author_name": author_name})
+        db.session.commit()
+
 def insert_tag(tag_name):
     with app.app_context():
         tag = Tag(name=tag_name)
@@ -271,22 +277,30 @@ if __name__ == '__main__':
     # list = select_author("欧文·亚隆")
     # print("list",list[0].id,list[0].name)
 
-    book_sentence_list = []
-    sentence = []
-    sentence2 = []
-    sentence.append("sentence")
-    sentence.append(1)
-    sentence.append(11)
-    sentence.append("book_name")
-    sentence.append(12)
-    sentence.append(1)
-    sentence2.append("sentence2")
-    sentence2.append(2)
-    sentence2.append(22)
-    sentence2.append("book_name2")
-    sentence2.append(22)
-    sentence2.append(2)
-    book_sentence_list.append(sentence)
-    book_sentence_list.append(sentence2)
+    # book_sentence_list = []
+    # sentence = []
+    # sentence2 = []
+    # sentence.append("sentence")
+    # sentence.append(1)
+    # sentence.append(11)
+    # sentence.append("book_name")
+    # sentence.append(12)
+    # sentence.append(1)
+    # sentence2.append("sentence2")
+    # sentence2.append(2)
+    # sentence2.append(22)
+    # sentence2.append("book_name2")
+    # sentence2.append(22)
+    # sentence2.append(2)
+    # book_sentence_list.append(sentence)
+    # book_sentence_list.append(sentence2)
+    #
+    # batch_insert_book(book_sentence_list)
 
-    batch_insert_book(book_sentence_list)
+    book_list = select_book_list()
+    for book in book_list:
+        wechat_book_id = book.wechat_book_id
+        author_id = book.author_id
+        author_name = book.author_name
+        update_book_sentence(wechat_book_id,author_id,author_name)
+

@@ -2,12 +2,12 @@
     <head>
         <meta charset="UTF-8">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
-        <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/dragslot.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/preview_style.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/cutout-style.css" />
+        <link rel="stylesheet" type="text/css" href="/static/content_production/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="/static/content_production/css/demo.css">
+        <link rel="stylesheet" type="text/css" href="/static/content_production/css/dragslot.css">
+        <link rel="stylesheet" type="text/css" href="/static/content_production/css/style.css">
+        <link type="text/css" rel="stylesheet" href="/static/content_production/css/preview_style.css">
+        <link type="text/css" rel="stylesheet" href="/static/content_production/css/cutout-style.css" />
 		<script src="http://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 
         <style>
@@ -91,10 +91,10 @@
 
     <!--引入jQuery包用于使用ajax-->
 <!--    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>-->
-    <script src="/static/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="/static/content_production/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+	<script src="/static/content_production/js/dragslot.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/static/content_production/js/cutout-tinybox.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
-	<script src="/static/js/dragslot.js" type="text/javascript"></script>
-    <script type="text/javascript" src="/static/js/cutout-tinybox.js"></script>
     <body onload="get_search_condition()">
             <br>
 
@@ -147,7 +147,7 @@
                                         <div class="slot-handler">
                                             <div class="slot-handler clearfix">
                                                 <div class="avator">
-                                                    <img src="/static/img/avatar4.jpg"/>
+                                                    <img src="/static/content_production/img/avatar4.jpg"/>
                                                 </div>
 
                                                 <div class="content">
@@ -256,6 +256,7 @@
              <br>
             <font color="grey">学习对象： </font>&nbsp;<a href="https://space.bilibili.com/60509716/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">一个爱吃的猪</a>
             　<a href="https://www.ixigua.com/home/2093104668353164" target="_blank" style="color:#F68B33;">烟雨读书</a>
+             　<a href="https://space.bilibili.com/8370869" target="_blank" style="color:#F68B33;">yui与小森林</a>
               <a href="https://space.bilibili.com/179444595/search/video?keyword=%E6%97%B6%E9%97%B4" target="_blank" style="color:#F68B33;">佳人温文</a>
             　<a href="https://space.bilibili.com/181508854/?spm_id_from=333.999.0.0" target="_blank" style="color:#F68B33;">文字铺</a>
       　　　　
@@ -627,7 +628,7 @@
                                 p.setAttribute("style", "font-size:12px");
                                 p.setAttribute("contenteditable", "true");
                                 $(div5).text(book_sentence_str_list[i]);
-                                img.setAttribute("src", "/static/img/avatar4.jpg");
+                                img.setAttribute("src", "/static/content_production/img/avatar4.jpg");
                                 $(p).text(book_name_list[i]);
 
                        }

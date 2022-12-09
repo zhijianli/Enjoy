@@ -43,7 +43,25 @@ app = Flask(__name__)
 @app.route("/")
 #定义方法 用jinjia2引擎来渲染页面，并返回一个index.html页面
 def root():
-    return render_template("index.html")
+    return render_template("/content_production/index.html")
+
+
+@app.route("/mengan/")
+def mengan():
+    return render_template("/official_website/index.html")
+
+@app.route("/about/")
+def about():
+    return render_template("/official_website/About.html")
+
+@app.route("/news/")
+def news():
+    return render_template("/official_website/News.html")
+
+@app.route("/newsDetail/")
+def newsDetail():
+    return render_template("/official_website/news-detail.html")
+
 
 def write_excel(title,start,text,end,author):
     if env == "test":
@@ -253,7 +271,7 @@ def book_search_list():
             # 做断句
             sentence = sentence_break(sentence)
             book_sentence_str_list.append(sentence)
-            book_name_list.append("《" + str(book_sentence.book_name) + "》")
+            book_name_list.append(book_sentence.author_name+" 《" + str(book_sentence.book_name) + "》")
 
     return {'book_sentence_str_list': book_sentence_str_list,'book_name_list': book_name_list}
 
