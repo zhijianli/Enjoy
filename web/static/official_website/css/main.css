@@ -502,8 +502,8 @@ body{background:#fff}
 .Ued-header h1{float:left; margin:0;}
 .Ued-header h1 a.logo{
 	display: block;
-	width: 450px;
-	height: 60px;
+	width: 100px;
+	height: 100px;
 	text-indent: -8889px;
 	-moz-transition: none;
 	-webkit-transition: none;
@@ -522,7 +522,7 @@ body{background:#fff}
 .Ued-header ul.nav li a.current,.Ued-Header ul.nav li a.current:hover{ background:url(../images/dot_w.png) no-repeat center bottom; background-size:6px;}
 
 .Ued-header-scroll{padding:8px 0; height:60px; background:#fff; background:rgba(255,255,255,.96); -moz-transition:all 0.3s;-webkit-transition:all 0.3s;-o-transition:all 0.3s;-ms-transition:all 0.3s;transition:all 0.3s;}
-.Ued-header-scroll h1 a.logo{display:block; width:192px; height:44px; background:url(../images/logo2.png) no-repeat center; background-size:192px 44px; text-indent:-8889px; -moz-transition:none;-webkit-transition:none;-o-transition:none;-ms-transition:none;transition:none;}
+.Ued-header-scroll h1 a.logo{display:block; width:50px; height:50px; background:url(../images/logo2.png) no-repeat center; background-size:192px 44px; text-indent:-8889px; -moz-transition:none;-webkit-transition:none;-o-transition:none;-ms-transition:none;transition:none;}
 .Ued-header-scroll ul.nav li a{display:block; font-size:16px; line-height:44px; color:#121212; text-decoration:none;}
 .Ued-header-scroll ul.nav li a.cicon-qq{margin:0; display:block; width:44px; height:44px; text-indent:-8889px; background:url(../images/cicon_bg_qq.png) no-repeat 0px -88px; background-size:44px;}
 .Ued-header-scroll ul.nav li a.cicon-qq:hover{background:url(../images/cicon_bg_qq.png) no-repeat 0px -44px; background-size:44px; }
