@@ -242,6 +242,8 @@ def book_search_list():
     book_id_list = []
     is_no_book=False
 
+    current_time1 = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
     # 筛选出相应标签的book_id
     if len(tag_id)>0:
         book_tag_relation_list = select_relation_by_tag_id(tag_id)
@@ -250,7 +252,7 @@ def book_search_list():
                 book_id_list.append(relation.book_id)
         else:
             is_no_book = True
-
+    current_time2 = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     # 筛选出相应类型和作者的book_id
     if is_no_book == False and (len(author_id)>0 or len(type)>0):
         book_list = select_book_by_condition(type,author_id,book_id_list)
@@ -260,10 +262,11 @@ def book_search_list():
                 book_id_list.append(book.id)
         else:
             is_no_book = True
-
+    current_time3 = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     # 筛选出金句列表
     book_sentence_str_list = []
     book_name_list = []
+    underline_num_list = []
     if is_no_book is False:
         book_sentence_list = select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list)
         for book_sentence in book_sentence_list:
@@ -272,8 +275,13 @@ def book_search_list():
             sentence = sentence_break(sentence)
             book_sentence_str_list.append(sentence)
             book_name_list.append(book_sentence.author_name+" 《" + str(book_sentence.book_name) + "》")
+            underline_num_list.append(book_sentence.underline_num)
+    current_time4 = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-    return {'book_sentence_str_list': book_sentence_str_list,'book_name_list': book_name_list}
+    # info_log("time",current_time1,current_time2,current_time3,current_time4)
+    return {'book_sentence_str_list': book_sentence_str_list,
+            'book_name_list': book_name_list,
+            'underline_num_list': underline_num_list}
 
 @app.route("/cutout",methods=["GET"])
 def cutout():

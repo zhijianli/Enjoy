@@ -104,6 +104,7 @@
                 <option value="">--请选择--</option>
                 <option value="1">心理学</option>
                 <option value="2">文学</option>
+                <option value="3">小说</option>
             </select>
              &nbsp;
             <select id="tag_list" class="singleSelect"  style="width:210px">
@@ -174,11 +175,12 @@
                     <input id="title" type="text" list="typelist" placeholder="标题" style="width:750px;height:70px" >
                     <datalist id="typelist" width="100%">
                        <option>如何应对迷茫？</option>
+                       <option>生命是什么，这是佛陀的答案</option>
+                       <option>还有人读鲁迅吗？</option>
                     　　<option>《雪中悍刀行》那些经典致郁的句子</option>
                     　　<option>那些让人一眼泪目的话</option>
                        <option>孤独能写到什么程度</option>
-                       <option>生命是什么，这是佛陀的答案</option>　
-                        <option>用一句话形容喜欢</option>
+                       <option>用一句话形容喜欢</option>
                        <option>如何体面地回答“你为什么不喜欢我”</option>
                     </datalist>
                     <br><br>
@@ -199,8 +201,8 @@
 <!--                    <br><br>-->
 
 <!--                    <input cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:100px" value="感谢观看">-->
-                    <textarea cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:200px" value=""> 感谢观看
-＠青山书阁</textarea>
+                    <textarea cols="30" type="text" id="end" name="end" placeholder="结尾" style="width:750px;height:200px" value="">感谢观看
+欢迎关注 ＠青山书阁</textarea>
 
 
                     <br><br>
@@ -208,6 +210,7 @@
 <!--                    <br><br>-->
 
                     <select id="font_cover_ratio" class="singleSelect"  style="width:210px;height:30px">
+                        <option value="5">5分之一</option>
                         <option value="10">10分之一</option>
                         <option value="11">11分之一</option>
                         <option value="12">12分之一</option>
@@ -596,6 +599,7 @@
                     success: function (result) {
                         book_sentence_str_list = result.book_sentence_str_list
                         book_name_list = result.book_name_list
+                        underline_num_list = result.underline_num_list
                         document.getElementById('book_content_list').innerHTML="";
                         console.log("获取element")
                         var ul = document.createElement("ul");
@@ -617,7 +621,8 @@
                                 div1.append(div2);
                                 div2.append(div3);
                                 div2.append(div4);
-                                div3.append(img);
+                               /* div3.append(img);*/
+                                div3.append(underline_num_list[i]);
                                 div4.append(div5);
                                 div4.append(p);
 

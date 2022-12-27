@@ -56,11 +56,18 @@ def insert_author_info(book,wechat_book_id,type):
     # 修改书籍相关信息
     update_book(wechat_book_id, author_name, book[3], author_id, type)
 
+    return author_id,author_name
+
 
 def insert_book_list(pbar,type):
     for book in pbar:
         wechat_book_id = book[0]
         book_name = book[1]
+        author_name = book[2]
+
+        # print("author_name:",author_name)
+        # if author_name != "金庸":
+        #     continue
 
         # 先判断书籍表中有没有同名的数据，如果没有，就插入到书籍表中
         book_list = select_book(wechat_book_id,book_name)
@@ -86,7 +93,7 @@ def insert_book_list(pbar,type):
                     if len(book_tag_relation_list) == 0:
                         insert_book_tag_relation(wechat_book_id, book_id, tag_id)
             # 插入作者数据到数据库
-            insert_author_info(book, wechat_book_id, type)
+            author_id,author_name = insert_author_info(book, wechat_book_id, type)
 
             # 失败重试，最大重试次数为4
             # for try_count in range(4):
@@ -122,6 +129,8 @@ def insert_book_list(pbar,type):
                     book_sentence.append(book_id)
                     book_sentence.append(wechat_book_id)
                     book_sentence.append(book_name)
+                    book_sentence.append(author_id)
+                    book_sentence.append(author_name)
                     book_sentence.append(underline_num)
                     book_sentence.append(1)
                     batch_book_sentence_list.append(book_sentence)
@@ -149,7 +158,8 @@ def insert_book_list(pbar,type):
                 # 等待3秒后再重试
                 time.sleep(3)
         else:
-            insert_author_info(book, wechat_book_id, type)
+            # insert_author_info(book, wechat_book_id, type)
+            pass
 
 
 
@@ -281,9 +291,9 @@ if __name__=='__main__':
     for index in range(0,72):
         print("==========================index:",str(index))
         maxIdx = 50 * index
-        # 心理学类目id:800000,type:1;文学类目id:300000;type:2
-        books_all = get_book_by_category(300000, maxIdx, HEADERS)
-        type=2
+        # 心理学类目id:800000,type:1;文学类目id:300000;type:2,小说类目id:100000;type:2
+        books_all = get_book_by_category(100000, maxIdx, HEADERS)
+        type=3
 
         # 获取【已读完的书籍】的笔记，如果想获取所有书籍的笔记，
         # 请自行更改books_finish_read为books_all

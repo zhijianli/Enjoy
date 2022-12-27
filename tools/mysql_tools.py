@@ -147,7 +147,8 @@ def batch_insert_book(book_sentence_list):
             BookSentence.__table__.insert(),
             [{"sentence":book_sentence[0] , "book_id":book_sentence[1] ,
               "wechat_book_id":book_sentence[2] ,"book_name":book_sentence[3],
-              "underline_num":book_sentence[4],"type":book_sentence[5]} for book_sentence in book_sentence_list]
+              "author_id": book_sentence[4],"author_name":book_sentence[5],
+              "underline_num":book_sentence[6],"type":book_sentence[7]} for book_sentence in book_sentence_list]
         )
         db.session.commit()
 
@@ -166,11 +167,14 @@ def select_book_sentence_by_wechat_id(wechat_book_id):
 def select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list):
     with app.app_context():
         book_sentence_list = BookSentence.query.filter(
+                                                    func.length(BookSentence.sentence) < 150,
+                                                    # BookSentence.underline_num > 200
                                                     BookSentence.sentence.like("%" + key_words + "%" if key_words else '%%'),
                                                     (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1,
                                                     BookSentence.book_id.in_(book_id_list) if len(book_id_list) > 0 else 1==1,
-                                                    func.length(BookSentence.sentence) < 150
-                                                ).order_by(func.rand()).limit(1000).all()
+
+                                                # ).order_by(func.rand()).limit(1000).all()
+                                                    ).order_by(BookSentence.underline_num.desc()).limit(1000).all()
 
     return book_sentence_list
 
@@ -284,12 +288,16 @@ if __name__ == '__main__':
     # sentence.append(1)
     # sentence.append(11)
     # sentence.append("book_name")
+    # sentence2.append("author_id1")
+    # sentence2.append("author_name1")
     # sentence.append(12)
     # sentence.append(1)
     # sentence2.append("sentence2")
     # sentence2.append(2)
     # sentence2.append(22)
     # sentence2.append("book_name2")
+    # sentence2.append("author_id2")
+    # sentence2.append("author_name2")
     # sentence2.append(22)
     # sentence2.append(2)
     # book_sentence_list.append(sentence)
