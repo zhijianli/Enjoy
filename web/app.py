@@ -40,13 +40,13 @@ app = Flask(__name__)
 
 
 #通过python装饰器的方法定义路由地址
-@app.route("/")
+@app.route("/clip/")
 #定义方法 用jinjia2引擎来渲染页面，并返回一个index.html页面
 def root():
     return render_template("/content_production/index.html")
 
 
-@app.route("/mengan/")
+@app.route("/")
 def mengan():
     return render_template("/official_website/index.html")
 
@@ -342,4 +342,4 @@ def get_log():
     return {'_log': _log}
 
 #定义app在8080端口运行
-app.run(host = '0.0.0.0',port=8088)
+app.run(host = '0.0.0.0',port=80)
