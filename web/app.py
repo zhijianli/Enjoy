@@ -341,5 +341,7 @@ def get_log():
     line_number.append(len(log_data)) # 添加此次获取行数
     return {'_log': _log}
 
-#定义app在8080端口运行
-app.run(host = '0.0.0.0',port=80)
+if env == "test":
+    app.run(host='0.0.0.0', port=8088)
+if env == "prod":
+    app.run(host = '0.0.0.0',port=80)
