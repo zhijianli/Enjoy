@@ -87,7 +87,7 @@ def write_excel(title,start,text,end,author):
 
 
 #app的路由地址"/submit"即为ajax中定义的url地址，采用POST、GET方法均可提交
-@app.route("/submit",methods=["GET", "POST"])
+@app.route("/clip/submit",methods=["GET", "POST"])
 #从这里定义具体的函数 返回值均为json格式
 def submit():
     if request.method == "POST":
@@ -102,17 +102,7 @@ def submit():
         label = request.form.get("label")
         operate = request.form.get("operate")
         font_cover_ratio = request.form.get("font_cover_ratio")
-
-    # print("title:"+str(title))
-    # print("start:"+str(start))
-    # print("text:"+str(text))
-    # print("end:"+str(end))
-    # print("author:"+str(author))
-    # print("picture:"+str(picture))
-    # print("music:"+str(music))
-    # print("label:"+str(label))
-    # print("operate:" + str(operate))
-    # print("font_cover_ratio:" + str(font_cover_ratio))
+        commentguide = request.form.get("commentguide")
 
     num = write_excel(title, start, text, end, author)
 
@@ -130,6 +120,7 @@ def submit():
     args.template = 1
     args.num = num
     args.env = env
+    args.commentguide = commentguide
     if label is not None and len(label) > 0:
         args.label = label
     if music is not None and len(music) > 0:
@@ -143,37 +134,32 @@ def submit():
     else:
         args.font_cover_ratio = font_cover_ratio
 
-    # print("接受参数：picture：" + str(args.picture))
-    # print("接受参数：music：" + str(args.music))
-    # print("接受参数：dubbing：" + str(args.dubbing))
-    # print("接受参数：num：" + str(args.num))
-    # print("接受参数：template：" + str(args.template))
-    # print("接受参数：uploadoss：" + str(args.uploadoss))
-    # print("接受参数：env：" + str(args.env))
-    # print("接受参数：label：" + str(args.label))
-
     result_message = ""
     if operate == "generateVideo":
-        cover_url,video_url,title,music_file_name,picture_file_name,author,video_time = generate_video(args)
+        cover_url,video_url,title,music_file_name,picture_file_name,author,video_time,text = generate_video(args)
         result_message = {'cover_url': cover_url,
                           'video_url': video_url,
                           'title':title,
                           'music_file_name':music_file_name,
                           'picture_file_name':picture_file_name,
                           'author':author,
-                          'video_time':video_time}
+                          'video_time':video_time,
+                          'commentguide':args.commentguide,
+                          'text':text}
     elif operate == "preview":
-        frame_list,title,music_file_name,picture_file_name,author,video_time = preview(args)
+        frame_list,title,music_file_name,picture_file_name,author,video_time,text = preview(args)
         result_message = {'frame_list': frame_list,
                           'title':title,
                           'music_file_name':music_file_name,
                           'picture_file_name':picture_file_name,
                           'author':author,
-                          'video_time':video_time}
+                          'video_time':video_time,
+                          'commentguide':args.commentguide,
+                          'text':text}
 
     return result_message
 
-@app.route("/get_search_condition",methods=["GET"])
+@app.route("/clip/get_search_condition",methods=["GET"])
 def get_search_condition():
     # file_name_list = get_file_name_list(book_path)
     # 获取书籍列表
@@ -207,7 +193,7 @@ def get_search_condition():
             'author_id_list':author_id_list,
             'author_name_list':author_name_list}
 
-@app.route("/get_content_by_book",methods=["GET"])
+@app.route("/clip/get_content_by_book",methods=["GET"])
 def get_content_by_book():
     # file_object = open(book_path+book_name)
     # try:
@@ -222,7 +208,7 @@ def get_content_by_book():
     return {'message': book_content}
 
 
-@app.route("/book_search",methods=["GET"])
+@app.route("/clip/book_search",methods=["GET"])
 def book_search():
     key_words = request.args.get("key_words")
     wechat_book_id = request.args.get("wechat_book_id")
@@ -232,7 +218,7 @@ def book_search():
         book_content = book_content + book_sentence.sentence + "－－《" + book_sentence.book_name + "》" + "划线数：" + str(book_sentence.underline_num) + '\n\n'
     return {'message': book_content}
 
-@app.route("/book_search_list",methods=["GET"])
+@app.route("/clip/book_search_list",methods=["GET"])
 def book_search_list():
     key_words = request.args.get("key_words")
     wechat_book_id = request.args.get("wechat_book_id")
@@ -283,7 +269,7 @@ def book_search_list():
             'book_name_list': book_name_list,
             'underline_num_list': underline_num_list}
 
-@app.route("/cutout",methods=["GET"])
+@app.route("/clip/cutout",methods=["GET"])
 def cutout():
     avatarUrl = request.args.get("avatarUrl")
     author = request.args.get("author")
@@ -298,7 +284,7 @@ def cutout():
 
     return {'result_url': result_url}
 
-@app.route("/get_picture_list",methods=["GET"])
+@app.route("/clip/get_picture_list",methods=["GET"])
 def get_picture_list():
 
     # 获取阿里云oss背景图片链接list
@@ -308,7 +294,7 @@ def get_picture_list():
 
 
 
-@app.route("/save_picture",methods=["POST"])
+@app.route("/clip/save_picture",methods=["POST"])
 def save_picture():
     picture_url = request.form.get("picture_url")
     picture_name = picture_url.split("\\")[-1]
@@ -317,7 +303,7 @@ def save_picture():
 
 line_number = [0] #存放当前日志行数
 # 定义接口把处理日志并返回到前端
-@app.route('/get_log',methods=['GET','POST'])
+@app.route('/clip/get_log',methods=['GET','POST'])
 def get_log():
     log_data = red_logs() # 获取日志
     # 判断如果此次获取日志行数减去上一次获取日志行数大于0，代表获取到新的日志

@@ -35,7 +35,7 @@ def labeled(paragraph):
     list = paragraph.split("\n")
     for i,v in enumerate(list):
         if len(v) > 0:
-            result_paragraph = result_paragraph+str(i+1)+"："+v+"\n"
+            result_paragraph = result_paragraph+str(i+1)+"："+v+"</br>"
     return result_paragraph
 
 if __name__ == "__main__":

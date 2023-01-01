@@ -209,6 +209,11 @@
 <!--                    <input cols="30" type="text" id="label" name="label" placeholder="标签,（可以不填）,注：每个标签使用空格来分割，比如：心理学　拉康　文学" style="width:750px;height:100px">-->
 <!--                    <br><br>-->
 
+                    <input id="commentguide" type="text" list="commentguidelist" placeholder="评论引导" style="width:750px;height:70px" >
+                    <datalist id="commentguidelist" width="100%">
+                    　　<option>你还有什么获得自信的方法吗？欢迎评论～</option>
+                    </datalist>
+                    <br><br>
                     <select id="font_cover_ratio" class="singleSelect"  style="width:210px;height:30px">
                         <option value="5">5分之一</option>
                         <option value="10">10分之一</option>
@@ -387,7 +392,8 @@
                         "picture":$("#picture").val(),
                         "music":$("#music").val(),
                         "operate":"generateVideo",
-                        "font_cover_ratio":$('select#font_cover_ratio').val()},  /*提交的数据（json格式），从输入框中获取*/
+                        "font_cover_ratio":$('select#font_cover_ratio').val(),
+                        "commentguide":$("#commentguide").val()},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
 
@@ -417,14 +423,20 @@
                     var p2 = document.createElement("p");
                     var p3 = document.createElement("p");
                     var p4 = document.createElement("p");
-                    p1.innerHTML="BGM:" + result.music_file_name;
-                    p2.innerHTML="图片名:" + result.picture_file_name;
-                    p3.innerHTML="作者:" + result.author;
-                    p4.innerHTML="视频时长：" + result.video_time;
+                    var p5 = document.createElement("p");
+                    var p6 = document.createElement("p");
+                    p1.innerHTML= result.commentguide;
+                    p2.innerHTML="BGM：" + result.music_file_name;
+                    p3.innerHTML= result.text;
+                    p4.innerHTML="图片名：" + result.picture_file_name;
+                    p5.innerHTML="副标题：" + result.author;
+                    p6.innerHTML="视频时长：" + result.video_time;
                     $('#popup_block').append(p1)
                     $('#popup_block').append(p2)
                     $('#popup_block').append(p3)
                     $('#popup_block').append(p4)
+                    $('#popup_block').append(p5)
+                    $('#popup_block').append(p6)
 
                     var a = document.createElement("a");
                     a.setAttribute("href", "#");
@@ -479,7 +491,8 @@
                         "picture":$("#picture").val(),
                         "music":$("#music").val(),
                         "operate":"preview",
-                        "font_cover_ratio":$('select#font_cover_ratio').val()},  /*提交的数据（json格式），从输入框中获取*/
+                        "font_cover_ratio":$('select#font_cover_ratio').val(),
+                        "commentguide":$("#commentguide").val()},  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
                     document.getElementById('popup_block').innerHTML="";
@@ -502,14 +515,22 @@
                     var p2 = document.createElement("p");
                     var p3 = document.createElement("p");
                     var p4 = document.createElement("p");
-                    p1.innerHTML="BGM:" + result.music_file_name;
-                    p2.innerHTML="图片名:" + result.picture_file_name;
-                    p3.innerHTML="作者:" + result.author;
-                    p4.innerHTML="视频时长：" + result.video_time;
+                    var p5 = document.createElement("p");
+                    var p6 = document.createElement("p");
+
+                    p1.innerHTML= result.commentguide;
+                    p2.innerHTML="BGM：" + result.music_file_name;
+                    p3.innerHTML= result.text;
+                    p4.innerHTML="图片名：" + result.picture_file_name;
+                    p5.innerHTML="副标题：" + result.author;
+                    p6.innerHTML="视频时长：" + result.video_time;
+
                     $('#popup_block').append(p1)
                     $('#popup_block').append(p2)
                     $('#popup_block').append(p3)
                     $('#popup_block').append(p4)
+                    $('#popup_block').append(p5)
+                    $('#popup_block').append(p6)
                     var audio = document.createElement("audio");
                     audio.setAttribute("style", "width: calc(50%);");
                     audio.setAttribute("src", "https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/music/"+result.music_file_name);
@@ -784,7 +805,7 @@
            //  }) //请求生成日志接口
             // 生成定时器
             time = setInterval(function (){
-                $.get('/get_log',{},function (data){ //请求获取日志接口获取日志
+                $.get('/clip/get_log',{},function (data){ //请求获取日志接口获取日志
                     log_type = data._log.log_type
                     log_list = data._log.log_list
                     if (log_type == 3){ //如果获取的是空日志log_null次数加1

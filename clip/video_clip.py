@@ -227,7 +227,8 @@ def generate_video(args):
     music_file_name = os.path.splitext(music_file_name)[0]
 
     with open(RESULT_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
-        f.write(title + "\n")
+        f.write(title + "\n\n")
+        f.write(args.commentguide + "\n\n")
         f.write("BGM:" + music_file_name + "\n\n")
         f.write(text + "\n")
         f.write(end + "\n")
@@ -286,7 +287,7 @@ def generate_video(args):
     # 多睡眠两秒，好让前端日志显示完整
     time.sleep(2)
 
-    return cover_url,video_url,title,music_file_name,picture_file_name,author,video_time
+    return cover_url,video_url,title,music_file_name,picture_file_name,author,video_time,text
 
 
 def preview(args):
@@ -470,10 +471,16 @@ def preview(args):
     #         convert_label_str = convert_label_str + "#"+str(label)+"　"
 
     # music_file_name = os.path.splitext(music_file_name)[0]
-
+    text = text.replace("++ ||", "－－");
+    text = text.replace("&", "");
+    text = text.replace("\n", "");
+    text = text.replace("》", "》\n");
+    text = labeled(text)
+    music_file_name = os.path.splitext(music_file_name)[0]
     # 生成简介
     with open(PREVIEW_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
-        f.write(title + "\n")
+        f.write(title + "\n\n")
+        f.write(args.commentguide + "\n\n")
         f.write("BGM:" + music_file_name + "\n\n")
         f.write(text + "\n")
         f.write(end + "\n")
@@ -522,7 +529,7 @@ def preview(args):
     # 多睡眠两秒，好让前端日志显示完整
     time.sleep(2)
 
-    return frame_list,title,music_file_name,picture_file_name,author,video_time
+    return frame_list,title,music_file_name,picture_file_name,author,video_time,text
 
 
 
