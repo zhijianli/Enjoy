@@ -476,7 +476,7 @@ def preview(args):
     text = text.replace("\n", "");
     text = text.replace("》", "》\n");
     text = labeled(text)
-    music_file_name = os.path.splitext(music_file_name)[0]
+    # music_file_name = os.path.splitext(music_file_name)[0]
     # 生成简介
     with open(PREVIEW_DIR + 'introduction.txt', 'w') as f:  # 设置文件对象
         f.write(title + "\n\n")
