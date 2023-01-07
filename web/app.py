@@ -333,9 +333,11 @@ def get_log():
 @app.route('/clip/access_bilibili_token',methods=['GET'])
 def access_bilibili_token():
     code = request.args.get("code")
-    print("code",code)
     content = access_token(code)
-    return {'message': content}
+    token = content['data']['access_token']
+    print('token',token)
+    user_info = get_user_info(token)
+    return {'message': user_info}
 
 
 
