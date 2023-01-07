@@ -26,6 +26,7 @@ def access_token(code):
     content = requests.post(url=url, headers=header, data=data).text
     content = json.loads(content)
     print(content)
+    return content
 
 
 def upload_video(title,cover,tid,no_reprint,desc,tag,copyright,source):
