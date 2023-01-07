@@ -33,6 +33,7 @@ import tools.aliyun_cutout as aliyun_cutout
 from tools.aliyun_oss import put_object_from_file,get_bucket_list
 from tools.mysql_tools import *
 from tools.my_logging import *
+from tools.bilibili_open_api import *
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
@@ -326,6 +327,17 @@ def get_log():
     line_number.pop() # 删除上一次获取行数
     line_number.append(len(log_data)) # 添加此次获取行数
     return {'_log': _log}
+
+
+
+@app.route('/clip/access_token',methods=['GET'])
+def access_token():
+    code = request.args.get("code")
+    print("code",code)
+    access_token(code)
+
+
+
 
 if env == "test":
     app.run(host='0.0.0.0', port=8088)
