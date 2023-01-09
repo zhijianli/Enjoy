@@ -32,6 +32,7 @@ def access_token(code):
     # 请求方式
     content = requests.post(url=access_token_url, headers=header, data=data).text
     content = json.loads(content)
+    print("conent",content)
     return content
 
 def refresh_token(refresh_token):
@@ -102,7 +103,7 @@ if __name__ == "__main__":
      init = True
 
      if init is True:
-         code = "38a3a2f591d542f2a3ece83c124050b8"
+         code = "ceaf8e3f01ba41aa8cfa2b62ca0c7379"
          content = access_token(code)
      else:
          r_token = "8aae5c4800213312ef662b23036f4c11"
