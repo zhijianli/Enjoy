@@ -337,25 +337,27 @@ def bilibili_video_contribute():
     content = get_access_token(code)
     access_token = content['data']['access_token']
     print('access_token',access_token)
+    message = access_token
 
-    # 视频初始化
-    upload_token = video_init(access_token)
-
-    # 上传单个小视频
-    video_upload(upload_token,'video/2023-01-09 08:13:54/flower.mp4')
-
-    # 上传封面
-    cover_upload(access_token)
-
-    # 投稿
-    title = "那些关于别离的文字"
-    cover = "https://archive.biliimg.com/bfs/archive/14bdc569dc189431682f9c62f0af45836bdafdfd.png"
-    tid = 124
-    desc = "BGM：「露を吸う群」_増田俊郎.mp3"
-    tag = "别离,心理,文字,句子,人文,心理学,离开,思念"
-    contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
-    print("contribute_result", contribute_result)
-    return {'message': contribute_result}
+    # # 视频初始化
+    # upload_token = video_init(access_token)
+    #
+    # # 上传单个小视频
+    # video_upload(upload_token,'video/2023-01-09 08:13:54/flower.mp4')
+    #
+    # # 上传封面
+    # cover_upload(access_token)
+    #
+    # # 投稿
+    # title = "那些关于别离的文字"
+    # cover = "https://archive.biliimg.com/bfs/archive/14bdc569dc189431682f9c62f0af45836bdafdfd.png"
+    # tid = 124
+    # desc = "BGM：「露を吸う群」_増田俊郎.mp3"
+    # tag = "别离,心理,文字,句子,人文,心理学,离开,思念"
+    # contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
+    # print("contribute_result", contribute_result)
+    # message = contribute_result
+    return {'message': message}
 
 
 
