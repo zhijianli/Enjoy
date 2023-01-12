@@ -286,6 +286,11 @@ def select_video(id):
 
     return video
 
+def select_video_list():
+    with app.app_context():
+        video_list = Video.query.filter_by().all()
+    return video_list
+
 def update_video(id,cover_url,video_url):
     with app.app_context():
         Video.query.filter_by(id=id).update({"cover_url":cover_url,"video_url": video_url})

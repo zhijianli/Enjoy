@@ -46,6 +46,11 @@ app = Flask(__name__)
 def root():
     return render_template("/content_production/index.html")
 
+@app.route("/videoList/")
+#定义方法 用jinjia2引擎来渲染页面，并返回一个index.html页面
+def videoList():
+    return render_template("/content_production/videoList.html")
+
 
 @app.route("/")
 def mengan():
@@ -370,6 +375,31 @@ def bilibili_video_contribute():
     message = contribute_result
     return {'message': message}
 
+
+@app.route('/videoList/get_video_list',methods=['GET'])
+def get_video_list():
+
+    video_list = select_video_list()
+    video_id_list = []
+    video_title_list = []
+    video_cover_url_list = []
+    video_bgm_list = []
+    video_subtitle_list = []
+    video_comment_guide_list = []
+    for video in video_list:
+        video_id_list.append(video.id)
+        video_title_list.append(video.title)
+        video_cover_url_list.append(video.cover_url)
+        video_bgm_list.append(video.bgm_name)
+        video_subtitle_list.append(video.subtitle)
+        video_comment_guide_list.append(video.comment_guide)
+
+    return {'video_id_list':video_id_list,
+            'video_title_list': video_title_list,
+            'video_cover_url_list' : video_cover_url_list,
+            'video_bgm_list' : video_bgm_list,
+            'video_subtitle_list' : video_subtitle_list,
+            'video_comment_guide_list':video_comment_guide_list}
 
 
 

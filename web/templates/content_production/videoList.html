@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+
+<!-- style -->
+<link type="text/css" rel="stylesheet" href="/static/content_production/css/videoList_style.css">
+
+<!-- website behavior /public/ -->
+<script type="text/javascript" src="/static/content_production/js/videoList_jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="/static/content_production/js/videoList_jquery.isotope.js"></script>
+<script type="text/javascript" src="/static/content_production/js/videoList_script.js"></script>
+
+</head>
+<body onload="get_video_list()">
+
+
+<!-- main start -->
+
+<div id="yhc_responsive" class="main">
+
+    <div class="allProduct respl-header">
+        <ul class="productTab respl-option" data-option-key="filter">
+            <li class="select"><a href="#" data-rl_value="*">全部</a></li>
+            <li><a href="#" data-rl_value=".category-10">未投稿</a></li>
+            <li><a href="#" data-rl_value=".category-20">定时投稿</a></li>
+            <li><a href="#" data-rl_value=".category-20">已投稿</a></li>
+        </ul>
+        <ul id="video_list" class="ProductList respl-items">
+<!--            <li class="respl-item category-10">-->
+<!--                <div class="unit">-->
+<!--                    <p class="hoverline"></p>-->
+<!--                    <a class="images" href="http://www.17sucai.com/"><img src="/static/content_production/img/g1.jpg"></a>-->
+<!--                    <h1><a href="http://www.17sucai.com/">御皇樟芝养生液</a></h1>-->
+<!--                    <dl>-->
+<!--                        <dd>产品成分：100%野生牛樟芝浓缩</dd>-->
+<!--                        <dd>产品功效：强免疫、活细胞、解..</dd>-->
+<!--                        <dd>包装规格：300ML</dd>-->
+<!--                    </dl>-->
+<!--                    <div class="view">-->
+<!--                        <div class="left">39 浏览</div>-->
+<!--                        <a class="right" href="http://www.17sucai.com/">查看<span>&gt;</span></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="respl-item category-20">-->
+<!--                <div class="unit">-->
+<!--                    <p class="hoverline"></p>-->
+<!--                    <a class="images" href="http://www.17sucai.com/"><img src="/static/content_production/img/g3.jpg"></a>-->
+<!--                    <h1><a href="http://www.17sucai.com/">御皇樟芝养生液</a></h1>-->
+<!--                    <dl>-->
+<!--                        <dd>产品成分：100%野生牛樟芝浓缩</dd>-->
+<!--                        <dd>产品功效：强免疫、活细胞、解..</dd>-->
+<!--                        <dd>包装规格：300ML</dd>-->
+<!--                    </dl>-->
+<!--                    <div class="view">-->
+<!--                        <div class="left">39 浏览</div>-->
+<!--                        <a class="right" href="http://www.17sucai.com/">查看<span>&gt;</span></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+
+<!--            <li class="respl-item category-20">-->
+<!--                <div class="unit">-->
+<!--                    <p class="hoverline"></p>-->
+<!--                    <a class="images" href="http://www.17sucai.com/"><img src="/static/content_production/img/g4.jpg"></a>-->
+<!--                    <h1><a href="http://www.17sucai.com/">御皇樟芝养生液</a></h1>-->
+<!--                    <dl>-->
+<!--                        <dd>产品成分：100%野生牛樟芝浓缩</dd>-->
+<!--                        <dd>产品功效：强免疫、活细胞、解..</dd>-->
+<!--                        <dd>包装规格：300ML</dd>-->
+<!--                    </dl>-->
+<!--                    <div class="view">-->
+<!--                        <div class="left">39 浏览</div>-->
+<!--                        <a class="right" href="http://www.17sucai.com/">查看<span>&gt;</span></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+
+<!--            <li class="respl-item category-10">-->
+<!--                <div class="unit">-->
+<!--                    <p class="hoverline"></p>-->
+<!--                    <a class="images" href="http://www.17sucai.com/"><img src="/static/content_production/img/g1.jpg"></a>-->
+<!--                    <h1><a href="http://www.17sucai.com/">御皇樟芝养生液</a></h1>-->
+<!--                    <dl>-->
+<!--                        <dd>产品成分：100%野生牛樟芝浓缩</dd>-->
+<!--                        <dd>产品功效：强免疫、活细胞、解..</dd>-->
+<!--                        <dd>包装规格：300ML</dd>-->
+<!--                    </dl>-->
+<!--                    <div class="view">-->
+<!--                        <div class="left">39 浏览</div>-->
+<!--                        <a class="right" href="http://www.17sucai.com/">查看<span>&gt;</span></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+
+<!--            <li class="respl-item category-10">-->
+<!--                <div class="unit">-->
+<!--                    <p class="hoverline"></p>-->
+<!--                    <a class="images" href="http://www.17sucai.com/"><img src="/static/content_production/img/g3.jpg"></a>-->
+<!--                    <h1><a href="http://www.17sucai.com/">御皇樟芝养生液</a></h1>-->
+<!--                    <dl>-->
+<!--                        <dd>产品成分：100%野生牛樟芝浓缩</dd>-->
+<!--                        <dd>产品功效：强免疫、活细胞、解..</dd>-->
+<!--                        <dd>包装规格：300ML</dd>-->
+<!--                    </dl>-->
+<!--                    <div class="view">-->
+<!--                        <div class="left">39 浏览</div>-->
+<!--                        <a class="right" href="http://www.17sucai.com/">查看<span>&gt;</span></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="respl-item category-20">-->
+<!--                <div class="unit">-->
+<!--                    <p class="hoverline"></p>-->
+<!--                    <a class="images" href="http://www.17sucai.com/"><img src="/static/content_production/img/g4.jpg"></a>-->
+<!--                    <h1><a href="http://www.17sucai.com/">御皇樟芝养生液</a></h1>-->
+<!--                    <dl>-->
+<!--                        <dd>产品成分：100%野生牛樟芝浓缩</dd>-->
+<!--                        <dd>产品功效：强免疫、活细胞、解..</dd>-->
+<!--                        <dd>包装规格：300ML</dd>-->
+<!--                    </dl>-->
+<!--                    <div class="view">-->
+<!--                        <div class="left">39 浏览</div>-->
+<!--                        <a class="right" href="http://www.17sucai.com/">查看<span>&gt;</span></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+
+<!--            <li class="respl-item category-10">-->
+<!--                <div class="unit">-->
+<!--                    <p class="hoverline"></p>-->
+<!--                    <a class="images" href="http://www.17sucai.com/"><img src="/static/content_production/img/g1.jpg"></a>-->
+<!--                    <h1><a href="http://www.17sucai.com/">御皇樟芝养生液</a></h1>-->
+<!--                    <dl>-->
+<!--                        <dd>产品成分：100%野生牛樟芝浓缩</dd>-->
+<!--                        <dd>产品功效：强免疫、活细胞、解..</dd>-->
+<!--                        <dd>包装规格：300ML</dd>-->
+<!--                    </dl>-->
+<!--                    <div class="view">-->
+<!--                        <div class="left">39 浏览</div>-->
+<!--                        <a class="right" href="http://www.17sucai.com/">查看<span>&gt;</span></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+        </ul>
+    </div>   
+</div>
+
+<!-- main end -->
+
+<!-- load more -->
+<!--<div class="loadMore">-->
+<!--	<a href="javascript:;">更多</a>-->
+<!--</div>-->
+
+
+</body>
+<script>
+    /*获取视频列表*/
+    function get_video_list(){
+         $.ajax({
+            url: "get_video_list",
+            type: "GET",
+            data: { },
+            success: function (result) {
+               video_list = document.getElementById('video_list')
+               console.log(video_list)
+               video_id_list = result.video_id_list
+               video_title_list = result.video_title_list
+               video_cover_url_list = result.video_cover_url_list
+               video_bgm_list = result.video_bgm_list
+               video_subtitle_list = result.video_subtitle_list
+               video_comment_guide_list = result.video_comment_guide_list
+               for (let i = 0; i < video_title_list.length; ++i) {
+
+                    var li = document.createElement("li");
+                    var div1 = document.createElement("div");
+                    var p = document.createElement("p");
+                    var a1 = document.createElement("a");
+                    var img = document.createElement("img");
+                    var h1 = document.createElement("h1");
+                    var a2 = document.createElement("a");
+                    var dl = document.createElement("dl");
+                    var dd1 = document.createElement("dd");
+                    var dd2 = document.createElement("dd");
+                    var dd3 = document.createElement("dd");
+                    var div2 = document.createElement("div");
+                    var div3 = document.createElement("div");
+                    var a3 = document.createElement("a");
+                    var span = document.createElement("span");
+                    li.setAttribute("class", "respl-item category-10 isotope-item");
+                    var row_num = (i%4)*310
+                    var vertical_num = parseInt(i/4)*310
+                    li_style = "position: absolute; left: 0px; top: 0px; transform: translate3d("+row_num.toString()+"px, "+vertical_num.toString()+"px, 0px)"
+                    console.log(li_style)
+                    li.setAttribute("style", li_style);
+                    div1.setAttribute("class", "unit");
+                    p.setAttribute("class", "hoverline");
+                    p.setAttribute("style", "display:block;");
+                    a1.setAttribute("class", "images");
+                    a1.setAttribute("href","http://www.17sucai.com/");
+                    a1.setAttribute("style","height:160px");
+                    img.setAttribute("src","https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/"+video_cover_url_list[i]+"?x-oss-process=image/resize,m_fixed,limit_0,w_250");
+                    a2.setAttribute("href","http://www.17sucai.com/");
+                    div2.setAttribute("class","view");
+                    div2.setAttribute("style","bottom:0px");
+                    div3.setAttribute("class","left");
+                    a3.setAttribute("class","right");
+                    var contribute_href = "https://passport.bilibili.com/register/pc_oauth2.html#/?client_id=1afc4f32b90641ae&return_url=http://menganhealth.cn/clip/bilibili_video_contribute&response_type=code&state="+video_id_list[i]
+                    a3.setAttribute("href",contribute_href);
+                    a3.setAttribute("target","_blank");
+                    dd1.innerHTML="副标题："+video_subtitle_list[i];
+                    dd2.innerHTML="BGM："+video_bgm_list[i];
+                    dd3.innerHTML="评论引导："+video_comment_guide_list[i];
+                    a2.innerHTML=video_title_list[i];
+                    div3.innerHTML="39 浏览";
+                    a3.innerText = "投稿";
+                    span.innerHTML="&gt;";
+
+                    video_list.append(li)
+                    li.append(div1)
+                    div1.append(p)
+                    div1.append(a1)
+                    div1.append(h1)
+                    div1.append(dl)
+                    div1.append(div2)
+                    a1.append(img)
+                    h1.append(a2)
+                    dl.append(dd1)
+                    dl.append(dd2)
+                    dl.append(dd3)
+                    div2.append(div3)
+                    div2.append(a3)
+                    a3.append(span)
+
+
+               }
+            }
+        });
+    }
+
+
+
+</script>
+</html>
