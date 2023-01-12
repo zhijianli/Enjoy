@@ -108,8 +108,8 @@ def video_upload(upload_token,video_url):
     return content
 
 # 封面上传接口
-def cover_upload(access_token):
-    data = get_object('video/2023-01-09 08:13:54/cover.png')
+def cover_upload(access_token,cover_url):
+    data = get_object(cover_url)
     files = {
         'file': data
     }
@@ -118,9 +118,9 @@ def cover_upload(access_token):
     url = cover_upload_url+"?client_id="+client_id+"&access_token="+access_token
     content = requests.post(url= url, files=files).text
     content = json.loads(content)
-    cover_url = content['data']['url']
-    print("cover_url", cover_url)
-    return cover_url
+    bi_cover_url = content['data']['url']
+    print("bi_cover_url", bi_cover_url)
+    return bi_cover_url
 
 # 投稿接口
 def contribute(access_token,upload_token,title,cover,tid,desc,tag):

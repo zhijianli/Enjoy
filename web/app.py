@@ -105,8 +105,6 @@ def submit():
         font_cover_ratio = request.form.get("font_cover_ratio")
         commentguide = request.form.get("commentguide")
 
-    num = write_excel(title, start, text, end, author)
-
     # 接收参数
     parser = argparse.ArgumentParser(description='manual to this script')
     parser.add_argument('--picture', type=str, default = None) #背景图片
@@ -119,7 +117,6 @@ def submit():
     parser.add_argument('--label', type=str, default=None)  # AI配音
     args = parser.parse_args()
     args.template = 1
-    args.num = num
     args.env = env
     args.commentguide = commentguide
     if label is not None and len(label) > 0:
@@ -137,6 +134,11 @@ def submit():
 
     result_message = ""
     if operate == "generateVideo":
+        num = insert_video(title, author,end,commentguide, text,
+                           "https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/picture/"+picture,
+                           music, font_cover_ratio, 124,
+                           "描述", label, 0)
+        args.num = num
         cover_url,video_url,title,music_file_name,picture_file_name,author,video_time,text = generate_video(args)
         result_message = {'cover_url': cover_url,
                           'video_url': video_url,
@@ -148,6 +150,8 @@ def submit():
                           'commentguide':args.commentguide,
                           'text':text}
     elif operate == "preview":
+        num = write_excel(title, start, text, end, author)
+        args.num = num
         frame_list,title,music_file_name,picture_file_name,author,video_time,text = preview(args)
         result_message = {'frame_list': frame_list,
                           'title':title,
@@ -332,31 +336,33 @@ def get_log():
 @app.route('/clip/bilibili_video_contribute',methods=['GET'])
 def bilibili_video_contribute():
     code = request.args.get("code")
+    state = request.args.get("state")
+
+    video = select_video(state)
 
     # 获取token
     content = get_access_token(code)
     access_token = content['data']['access_token']
-    print('access_token',access_token)
     message = access_token
 
-    # # 视频初始化
-    # upload_token = video_init(access_token)
-    #
-    # # 上传单个小视频
-    # video_upload(upload_token,'video/2023-01-09 08:13:54/flower.mp4')
-    #
-    # # 上传封面
-    # cover_upload(access_token)
-    #
-    # # 投稿
-    # title = "那些关于别离的文字"
-    # cover = "https://archive.biliimg.com/bfs/archive/14bdc569dc189431682f9c62f0af45836bdafdfd.png"
-    # tid = 124
-    # desc = "BGM：「露を吸う群」_増田俊郎.mp3"
-    # tag = "别离,心理,文字,句子,人文,心理学,离开,思念"
-    # contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
-    # print("contribute_result", contribute_result)
-    # message = contribute_result
+    # 视频初始化
+    upload_token = video_init(access_token)
+
+    # 上传单个小视频
+    video_upload(upload_token,video.video_url)
+
+    # 上传封面
+    bi_cover_url = cover_upload(access_token,video.cover_url)
+
+    # 投稿
+    title = video.title
+    cover = bi_cover_url
+    tid = video.bilibili_tid
+    desc = video.description
+    tag = video.tag
+    contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
+    print("contribute_result", contribute_result)
+    message = contribute_result
     return {'message': message}
 
 

@@ -87,6 +87,26 @@ class BookSentence(db.Model):
     comment = db.Column(db.String(255))
     wechat_book_id = db.Column(db.Integer)
 
+class Video(db.Model):
+    # 定义表名
+    __tablename__ = 'video'
+    # 定义字段
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(30))
+    subtitle = db.Column(db.String(50))
+    end = db.Column(db.String(100))
+    comment_guide = db.Column(db.String(100))
+    text = db.Column(db.String(1000))
+    background_url = db.Column(db.String(500))
+    bgm_name = db.Column(db.String(100))
+    cover_url = db.Column(db.String(200))
+    font_cover_ratio = db.Column(db.Integer)
+    video_url = db.Column(db.String(200))
+    bilibili_tid = db.Column(db.Integer)
+    description = db.Column(db.String(1000))
+    tag = db.Column(db.String(200))
+    open_id = db.Column(db.Integer)
+    status = db.Column(db.Integer)
 
 def insert_book(wechat_book_id,book_name,type):
     # 插入一条数据
@@ -168,13 +188,13 @@ def select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list):
     with app.app_context():
         book_sentence_list = BookSentence.query.filter(
                                                     func.length(BookSentence.sentence) < 150,
-                                                    # BookSentence.underline_num > 200
+                                                    BookSentence.underline_num > 1000,
                                                     BookSentence.sentence.like("%" + key_words + "%" if key_words else '%%'),
                                                     (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1,
                                                     BookSentence.book_id.in_(book_id_list) if len(book_id_list) > 0 else 1==1,
 
-                                                # ).order_by(func.rand()).limit(1000).all()
-                                                    ).order_by(BookSentence.underline_num.desc()).limit(1000).all()
+                                                ).order_by(func.rand()).limit(1000).all()
+                                                    # ).order_by(BookSentence.underline_num.desc()).limit(1000).all()
 
     return book_sentence_list
 
@@ -244,6 +264,33 @@ def insert_author(author_name):
         db.session.commit()
         return author_id
 
+def insert_video(title,subtitle,end,comment_guide,text,
+                 background_url,bgm_name,
+                 font_cover_ratio,bilibili_tid,
+                 description,tag,status
+                 ):
+    with app.app_context():
+        video = Video(title=title,subtitle=subtitle,end=end,comment_guide=comment_guide,
+                      text=text,background_url=background_url,bgm_name=bgm_name,
+                      font_cover_ratio=font_cover_ratio,
+                      bilibili_tid=bilibili_tid,description=description,tag=tag,status=status)
+        db.session.add(video)
+        db.session.flush()
+        video_id = video.id
+        db.session.commit()
+        return video_id
+
+def select_video(id):
+    with app.app_context():
+        video = Video.query.get(id)
+
+    return video
+
+def update_video(id,cover_url,video_url):
+    with app.app_context():
+        Video.query.filter_by(id=id).update({"cover_url":cover_url,"video_url": video_url})
+        db.session.commit()
+
 if __name__ == '__main__':
 
     # 插入一条数据
@@ -305,10 +352,33 @@ if __name__ == '__main__':
     #
     # batch_insert_book(book_sentence_list)
 
-    book_list = select_book_list()
-    for book in book_list:
-        wechat_book_id = book.wechat_book_id
-        author_id = book.author_id
-        author_name = book.author_name
-        update_book_sentence(wechat_book_id,author_id,author_name)
+    # book_list = select_book_list()
+    # for book in book_list:
+    #     wechat_book_id = book.wechat_book_id
+    #     author_id = book.author_id
+    #     author_name = book.author_name
+    #     update_book_sentence(wechat_book_id,author_id,author_name)
+
+    # title= "标题"
+    # subtitle = "副标题"
+    # end = "结尾"
+    # comment_guide = "引导评论"
+    # text = "文本"
+    # background_url = "背景图片地址"
+    # bgm_name = "BGM名字"
+    # font_cover_ratio = 10
+    # bilibili_tid = 124
+    # description = "描述"
+    # tag = "标签"
+    # status = 0
+    # index = insert_video(title,subtitle,end,comment_guide, text,
+    #              background_url, bgm_name,
+    #              font_cover_ratio, bilibili_tid,
+    #              description, tag, status
+    #              )
+    #
+    # print("index",index)
+    # video = select_video(4)
+    # print("video",video.end)
+    update_video(7,"cover_url","url")
 

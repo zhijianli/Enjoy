@@ -22,18 +22,14 @@ from moviepy.video.tools.drawing import color_gradient
 from moviepy.video.tools.drawing import color_split
 from guppy import hpy
 from tools.my_logging import *
+from tools.mysql_tools import *
 
 reading_speed = 3
 
 # @profile
 def generate_video(args):
 
-    num = 0
-    if args.num == 0: # 如果传的参数是0，就随机取一个整数
-        num = random.randint(0,16)
-    else: # 如果有传参数，就用传的参数
-        num = args.num
-    # info_log("num：" + str(num))
+    num = args.num
 
     # 加载text数据
     if args.env == "test":
@@ -49,25 +45,25 @@ def generate_video(args):
     comment_font = DATA_ROOT + 'fonts/SIMFANG.TTF'
     # font='AR-PL-UKai-CN'
     # font = DATA_ROOT + 'fonts/STXIHEI.TTF'
-    excel_content = pd.read_excel(DATA_ROOT+'text/text.xlsx')
-    title_list = excel_content["title"]
-    text_list = excel_content["text"]
-    start_list = excel_content["start"]
-    end_list = excel_content["end"]
-    author_list = excel_content["author"]
-    provenance_list = excel_content["provenance"]
-    title = title_list[num] #标题是５－９个字长度最合适
-    text = text_list[num]
-    start = start_list[num]
-    end = end_list[num]
-    author = author_list[num]
-    provenance = provenance_list[num]
-    # info_log("标题：" + str(title))
-    # info_log("开头：" + str(start))
-    # info_log("内容：" + str(text))
-    # info_log("结尾：" + str(end))
-    # info_log("作者：" + str(author))
-    # info_log("出处：" + str(provenance))
+    # excel_content = pd.read_excel(DATA_ROOT+'text/text.xlsx')
+    # title_list = excel_content["title"]
+    # text_list = excel_content["text"]
+    # start_list = excel_content["start"]
+    # end_list = excel_content["end"]
+    # author_list = excel_content["author"]
+    # provenance_list = excel_content["provenance"]
+    # title = title_list[num] #标题是５－９个字长度最合适
+    # text = text_list[num]
+    # start = start_list[num]
+    # end = end_list[num]
+    # author = author_list[num]
+    # provenance = provenance_list[num]
+    video = select_video(num)
+    title = video.title #标题是５－９个字长度最合适
+    text = video.text
+    end = video.end
+    author = video.subtitle
+
     print("命令是： python3 video_clip.py --num="+str(num)+
           " --picture="+str(args.picture)+
           " --music="+str(args.music)+
@@ -278,6 +274,9 @@ def generate_video(args):
                                      DATA_ROOT + "video/" + current_time + "/" + video_name)
     put_object_from_file("video/" + current_time + "/introduction.txt",
                                           DATA_ROOT + "video/" + current_time + "/introduction.txt")
+
+    # 修改video表视频地址和封面地址
+    update_video(num,"video/" + current_time + "/cover.png","video/" + current_time + "/" + video_name)
 
     info_log("=============视频上传结束！=============")
 
