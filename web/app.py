@@ -336,9 +336,9 @@ def get_log():
 @app.route('/clip/bilibili_video_contribute',methods=['GET'])
 def bilibili_video_contribute():
     code = request.args.get("code")
-    state = request.args.get("state")
+    video_id = request.args.get("state")
 
-    video = select_video(state)
+    video = select_video(video_id)
 
     # 获取token
     content = get_access_token(code)
@@ -362,6 +362,11 @@ def bilibili_video_contribute():
     tag = video.tag
     contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
     print("contribute_result", contribute_result)
+    resource_id = contribute_result['data']['resource_id']
+
+    # 投稿完成之后修改第三方id和投稿状态
+    update_video_open_id_and_status(video_id,resource_id,2)
+
     message = contribute_result
     return {'message': message}
 

@@ -105,7 +105,7 @@ class Video(db.Model):
     bilibili_tid = db.Column(db.Integer)
     description = db.Column(db.String(1000))
     tag = db.Column(db.String(200))
-    open_id = db.Column(db.Integer)
+    open_id = db.Column(db.String(100))
     status = db.Column(db.Integer)
 
 def insert_book(wechat_book_id,book_name,type):
@@ -291,6 +291,11 @@ def update_video(id,cover_url,video_url):
         Video.query.filter_by(id=id).update({"cover_url":cover_url,"video_url": video_url})
         db.session.commit()
 
+def update_video_open_id_and_status(id,open_id,status):
+    with app.app_context():
+        Video.query.filter_by(id=id).update({"open_id":open_id,"status":status})
+        db.session.commit()
+
 if __name__ == '__main__':
 
     # 插入一条数据
@@ -380,5 +385,6 @@ if __name__ == '__main__':
     # print("index",index)
     # video = select_video(4)
     # print("video",video.end)
-    update_video(7,"cover_url","url")
+    # update_video(7,"cover_url","url")
+    update_video_open_id_and_status(8, "BV1Wv4y1y7yj",2)
 
