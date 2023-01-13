@@ -34,6 +34,7 @@ from tools.aliyun_oss import put_object_from_file,get_bucket_list
 from tools.mysql_tools import *
 from tools.my_logging import *
 from tools.bilibili_open_api import *
+from timing_program.bilibili_refresh_access import *
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
@@ -382,6 +383,17 @@ def bilibili_code():
     # # 获取token
     # content = get_access_token(code)
     # access_token = content['data']['access_token']
+
+    return {'message': code}
+
+@app.route('/clip/bilibili_refresh_access',methods=['GET'])
+def bilibili_refresh_access():
+    code = request.args.get("code")
+
+    if env == "test":
+        os.system("python3 /home/mocuili/github/Enjoy/timing_program/bilibili_refresh_access.py --code %s" % code)
+    if env == "prod":
+        os.system("python3 /github/timing_program/bilibili_refresh_access.py --code %s" % code)
 
     return {'message': code}
 
