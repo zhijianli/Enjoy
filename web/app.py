@@ -37,6 +37,8 @@ from tools.my_logging import *
 from tools.bilibili_open_api import *
 from timing_program.bilibili_refresh_access import *
 
+refresh_access_process = None
+
 #创建Flask对象app并初始化
 app = Flask(__name__)
 
@@ -389,13 +391,20 @@ def bilibili_code():
 
 @app.route('/clip/bilibili_refresh_access',methods=['GET'])
 def bilibili_refresh_access():
+    global refresh_access_process
+
     code = request.args.get("code")
 
+    print("refresh_access_process",refresh_access_process)
     # 杀死原先的刷新令牌程序
+    if refresh_access_process is not None and refresh_access_process.is_alive:
+        refresh_access_process.terminate()
+        refresh_access_process.join()
+        print('stop process')
 
     # 启动刷新令牌程序
-    process_with_name = multiprocessing.Process(name='bilibili_refresh_access', target=start_refresh_access(code))
-    process_with_name.start()
+    refresh_access_process = multiprocessing.Process(target=start_refresh_access(code))
+    refresh_access_process.start()
     # os.system("python3 /github/timing_program/bilibili_refresh_access.py --code %s" % code)
 
     return {'message': code}
