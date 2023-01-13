@@ -1,7 +1,10 @@
 import schedule
 import time
 import argparse
+import sys
+import os
 
+sys.path.append(os.path.dirname(sys.path[0]))
 from tools.bilibili_open_api import *
 
 r_token = ''
