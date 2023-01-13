@@ -6,6 +6,7 @@ import xlrd
 from xlutils.copy import copy
 import socket
 import os
+import multiprocessing
 
 # 判断环境
 def get_develop_env():
@@ -390,10 +391,12 @@ def bilibili_code():
 def bilibili_refresh_access():
     code = request.args.get("code")
 
-    if env == "test":
-        os.system("python3 /home/mocuili/github/Enjoy/timing_program/bilibili_refresh_access.py --code %s" % code)
-    if env == "prod":
-        os.system("python3 /github/timing_program/bilibili_refresh_access.py --code %s" % code)
+    # 杀死原先的刷新令牌程序
+
+    # 启动刷新令牌程序
+    process_with_name = multiprocessing.Process(name='bilibili_refresh_access', target=start_refresh_access(code))
+    process_with_name.start()
+    # os.system("python3 /github/timing_program/bilibili_refresh_access.py --code %s" % code)
 
     return {'message': code}
 

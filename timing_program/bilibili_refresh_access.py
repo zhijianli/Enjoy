@@ -39,6 +39,18 @@ def job():
 
    print("投稿定时程序执行结束"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
+def start_refresh_access(code):
+    global r_token
+
+    schedule.every(1).minutes.do(job)
+    print("code", code)
+    content = get_access_token(code)
+    r_token = content['data']['refresh_token']
+
+    while True:
+        schedule.run_pending()  # 运行所有可以运行的任务
+        time.sleep(1)
+
 
 if __name__ == '__main__':
 
