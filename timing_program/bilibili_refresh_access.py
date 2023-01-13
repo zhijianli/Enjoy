@@ -1,9 +1,7 @@
 import schedule
 import time
 import argparse
-from clip.video_clip import generate_video
-from clip.file_operate import copy_file
-from tools.mysql_tools import *
+
 from tools.bilibili_open_api import *
 
 r_token = ''
