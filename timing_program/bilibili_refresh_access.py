@@ -47,6 +47,7 @@ def start_refresh_access(code):
     content = get_access_token(code)
     r_token = content['data']['refresh_token']
 
+    # 要在这里进行异步编程
     while True:
         schedule.run_pending()  # 运行所有可以运行的任务
         time.sleep(1)
