@@ -348,7 +348,6 @@ def bilibili_video_contribute():
     # 获取token
     content = get_access_token(code)
     access_token = content['data']['access_token']
-    message = access_token
 
     # 视频初始化
     upload_token = video_init(access_token)
@@ -374,6 +373,17 @@ def bilibili_video_contribute():
 
     message = contribute_result
     return {'message': message}
+
+
+@app.route('/clip/bilibili_code',methods=['GET'])
+def bilibili_code():
+    code = request.args.get("code")
+
+    # # 获取token
+    # content = get_access_token(code)
+    # access_token = content['data']['access_token']
+
+    return {'message': code}
 
 
 @app.route('/videoList/get_video_list',methods=['GET'])
