@@ -108,6 +108,14 @@ class Video(db.Model):
     open_id = db.Column(db.String(100))
     status = db.Column(db.Integer)
 
+class PlatformToken(db.Model):
+    # 定义表名
+    __tablename__ = 'platform_token'
+    # 定义字段
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    platform = db.Column(db.String(100), unique=True, index=True)
+    refresh_token = db.Column(db.String(200), unique=True, index=True)
+
 def insert_book(wechat_book_id,book_name,type):
     # 插入一条数据
     with app.app_context():
@@ -301,6 +309,17 @@ def update_video_open_id_and_status(id,open_id,status):
         Video.query.filter_by(id=id).update({"open_id":open_id,"status":status})
         db.session.commit()
 
+def update_platform_token(platform,refresh_token):
+    with app.app_context():
+        PlatformToken.query.filter_by(platform=platform).update({"refresh_token":refresh_token})
+        db.session.commit()
+
+def select_refresh_token(platform):
+    with app.app_context():
+        refresh_token_list = PlatformToken.query.filter_by(platform=platform).all()
+
+    return refresh_token_list[0].refresh_token
+
 if __name__ == '__main__':
 
     # 插入一条数据
@@ -391,5 +410,10 @@ if __name__ == '__main__':
     # video = select_video(4)
     # print("video",video.end)
     # update_video(7,"cover_url","url")
-    update_video_open_id_and_status(8, "BV1Wv4y1y7yj",2)
+    # update_video_open_id_and_status(8, "BV1Wv4y1y7yj",2)
+
+    # update_platform_token("bilibili","123")
+
+    r_token = select_refresh_token("bilibili")
+    print("r_token",r_token)
 
