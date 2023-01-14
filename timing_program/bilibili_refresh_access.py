@@ -31,6 +31,7 @@ def job():
    print("r_token", r_token)
    print("number", number)
 
+   # 调用刷新令牌接口
    content = refresh_token(r_token)
    r_token = content['data']['refresh_token']
    access_token = content['data']['access_token']

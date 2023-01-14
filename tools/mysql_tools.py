@@ -300,9 +300,9 @@ def select_video_list():
         video_list = Video.query.filter_by().all()
     return video_list
 
-def update_video(id,cover_url,video_url):
+def update_video(id,cover_url,video_url,description):
     with app.app_context():
-        Video.query.filter_by(id=id).update({"cover_url":cover_url,"video_url": video_url})
+        Video.query.filter_by(id=id).update({"cover_url":cover_url,"video_url": video_url,"description":description})
         db.session.commit()
 
 def update_video_open_id_and_status(id,open_id,status):

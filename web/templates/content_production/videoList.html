@@ -2,21 +2,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>无标题文档</title>
+<title>视频列表</title>
 
 <!-- style -->
 <link type="text/css" rel="stylesheet" href="/static/content_production/css/videoList_style.css">
+<link type="text/css" href="/static/content_production/css/timeselector-jquery-ui-1.8.17.custom.css" rel="stylesheet" />
+<link type="text/css" href="/static/content_production/css/timeselector-jquery-ui-timepicker-addon.css" rel="stylesheet" />
 
 <!-- website behavior /public/ -->
 <script type="text/javascript" src="/static/content_production/js/videoList_jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="/static/content_production/js/videoList_jquery.isotope.js"></script>
 <script type="text/javascript" src="/static/content_production/js/videoList_script.js"></script>
+<script type="text/javascript" src="/static/content_production/js/timeselector-jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/static/content_production/js/timeselector-jquery-ui-1.8.17.custom.min.js"></script>
+<script type="text/javascript" src="/static/content_production/js/timeselector-jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/static/content_production/js/timeselector-jquery-ui-timepicker-zh-CN.js"></script>
 
 </head>
 <body onload="get_video_list()">
 
 
 <!-- main start -->
+
+
+<p><input type="text" name="datetime" class="ui_timepicker" value=""></p>
 
 <div id="yhc_responsive" class="main">
 
@@ -32,7 +41,7 @@
         <ul class="productTab respl-option" data-option-key="filter">
             <li class="select"><a href="#" data-rl_value="*">全部</a></li>
             <li><a href="#" data-rl_value=".category-10">未投稿</a></li>
-            <li><a href="#" data-rl_value=".category-20">定时投稿</a></li>
+            <li><a href="#" data-rl_value=".category-20">已定时</a></li>
             <li><a href="#" data-rl_value=".category-20">已投稿</a></li>
 
         </ul>
@@ -186,11 +195,14 @@
                video_bgm_list = result.video_bgm_list
                video_subtitle_list = result.video_subtitle_list
                video_comment_guide_list = result.video_comment_guide_list
+               video_status_list = result.video_status_list
                for (let i = 0; i < video_title_list.length; ++i) {
 
                     var li = document.createElement("li");
                     var div1 = document.createElement("div");
-                    var p = document.createElement("p");
+                    var p1 = document.createElement("p");
+                    var p2 = document.createElement("p");
+                    var input = document.createElement("input");
                     var a1 = document.createElement("a");
                     var img = document.createElement("img");
                     var h1 = document.createElement("h1");
@@ -202,7 +214,9 @@
                     var div2 = document.createElement("div");
                     var div3 = document.createElement("div");
                     var a3 = document.createElement("a");
-                    var span = document.createElement("span");
+                    var a4 = document.createElement("a");
+                    var span1 = document.createElement("span");
+                    var span2 = document.createElement("span");
                     li.setAttribute("class", "respl-item category-10 isotope-item");
                     var row_num = (i%4)*310
                     var vertical_num = parseInt(i/4)*310
@@ -210,8 +224,12 @@
                     console.log(li_style)
                     li.setAttribute("style", li_style);
                     div1.setAttribute("class", "unit");
-                    p.setAttribute("class", "hoverline");
-                    p.setAttribute("style", "display:block;");
+                    p1.setAttribute("class", "hoverline");
+                    p1.setAttribute("style", "display:block;");
+                    input.setAttribute("type", "text");
+                    //input.setAttribute("name", "datetime");
+                    input.setAttribute("class", "ui_timepicker hasDatepicker");
+                    //input.setAttribute("id", "dp1673689529533");
                     a1.setAttribute("class", "images");
                     a1.setAttribute("href","http://www.17sucai.com/");
                     a1.setAttribute("style","height:160px");
@@ -221,24 +239,27 @@
                     div2.setAttribute("style","bottom:0px");
                     div3.setAttribute("class","left");
                     a3.setAttribute("class","right");
-                    var contribute_href = "http://127.0.0.1:8088/clip/bilibili_video_contribute?video_id="+video_id_list[i]
-                    a3.setAttribute("href",contribute_href);
-                    a3.setAttribute("target","_blank");
+                    a3.setAttribute("onclick","bilibili_video_contribute("+video_id_list[i]+");");
+                    a4.setAttribute("class","right");
                     dd1.innerHTML="副标题："+video_subtitle_list[i];
                     dd2.innerHTML="BGM："+video_bgm_list[i];
                     dd3.innerHTML="评论引导："+video_comment_guide_list[i];
                     a2.innerHTML=video_title_list[i];
-                    div3.innerHTML="39 浏览";
+                    div3.innerHTML=video_status_list[i];
                     a3.innerText = "投稿";
-                    span.innerHTML="&gt;";
+                    a4.innerText = "定时投稿";
+                    span1.innerHTML="&gt;";
+                    span2.innerHTML="&gt;";
 
                     video_list.append(li)
                     li.append(div1)
-                    div1.append(p)
+                    div1.append(p1)
+                    div1.append(p2)
                     div1.append(a1)
                     div1.append(h1)
                     div1.append(dl)
                     div1.append(div2)
+                    p2.append(input)
                     a1.append(img)
                     h1.append(a2)
                     dl.append(dd1)
@@ -246,7 +267,9 @@
                     dl.append(dd3)
                     div2.append(div3)
                     div2.append(a3)
-                    a3.append(span)
+                    div2.append(a4)
+                    a3.append(span1)
+                    a4.append(span2)
 
 
                }
@@ -254,6 +277,31 @@
         });
     }
 
+    function bilibili_video_contribute(video_id) {
+        if (confirm("确认投稿吗？")) {
+            $.ajax({
+                url: "bilibili_video_contribute",
+                type: "GET",  /*采用POST方法提交*/
+                data: { "video_id": video_id},  /*提交的数据（json格式），从输入框中获取*/
+                /*result为后端函数返回的json*/
+                success: function (result) {
+                    alert(result.message)
+                }
+            });
+        }
+    }
+    $(function () {
+            $(".ui_timepicker").datetimepicker({
+               // showOn: "button",
+               // buttonImage: "/static/content_production/img/icon_calendar.gif",
+               // buttonImageOnly: true,
+                showSecond: true,
+                timeFormat: 'hh:mm:ss',
+                stepHour: 1,
+                stepMinute: 1,
+                stepSecond: 1
+            })
+    })
 
 
 </script>

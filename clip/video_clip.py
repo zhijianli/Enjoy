@@ -276,7 +276,7 @@ def generate_video(args):
                                           DATA_ROOT + "video/" + current_time + "/introduction.txt")
 
     # 修改video表视频地址和封面地址
-    update_video(num,"video/" + current_time + "/cover.png","video/" + current_time + "/" + video_name)
+    update_video(num,"video/" + current_time + "/cover.png","video/" + current_time + "/" + video_name,"BGM:" + music_file_name)
 
     info_log("=============视频上传结束！=============")
 
