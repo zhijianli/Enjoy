@@ -26,18 +26,19 @@ def job():
    global number
 
    # 从数据库取最新的refresh_token
-   r_token = select_refresh_token("bilibili")
-
+   platform_token = select_refresh_token("bilibili")
+   r_token = platform_token.refresh_token
    print("r_token", r_token)
    print("number", number)
+
    content = refresh_token(r_token)
    r_token = content['data']['refresh_token']
+   access_token = content['data']['access_token']
 
    # 将更新的refresh_token保存进数据库
-   update_platform_token("bilibili", r_token)
+   update_platform_token("bilibili", r_token,access_token)
 
    if number > 5:
-       access_token = content['data']['access_token']
        user_info = get_user_info(access_token)
        print("user_info",user_info)
 
@@ -51,7 +52,8 @@ def start_refresh_access(code):
     print("code", code)
     content = get_access_token(code)
     r_token = content['data']['refresh_token']
-    update_platform_token("bilibili", r_token)
+    access_token = content['data']['access_token']
+    update_platform_token("bilibili", r_token,access_token)
 
     # 要在这里进行异步编程
     while True:

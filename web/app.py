@@ -344,38 +344,38 @@ def get_log():
 
 @app.route('/clip/bilibili_video_contribute',methods=['GET'])
 def bilibili_video_contribute():
-    code = request.args.get("code")
-    video_id = request.args.get("state")
 
+    video_id = request.args.get("video_id")
     video = select_video(video_id)
 
-    # 获取token
-    content = get_access_token(code)
-    access_token = content['data']['access_token']
+    platform_token = select_refresh_token("bilibili")
+    access_token = platform_token.access_token
 
-    # 视频初始化
-    upload_token = video_init(access_token)
+    message = access_token
 
-    # 上传单个小视频
-    video_upload(upload_token,video.video_url)
-
-    # 上传封面
-    bi_cover_url = cover_upload(access_token,video.cover_url)
-
-    # 投稿
-    title = video.title
-    cover = bi_cover_url
-    tid = video.bilibili_tid
-    desc = video.description
-    tag = video.tag
-    contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
-    print("contribute_result", contribute_result)
-    resource_id = contribute_result['data']['resource_id']
-
-    # 投稿完成之后修改第三方id和投稿状态
-    update_video_open_id_and_status(video_id,resource_id,2)
-
-    message = contribute_result
+    # # 视频初始化
+    # upload_token = video_init(access_token)
+    #
+    # # 上传单个小视频
+    # video_upload(upload_token,video.video_url)
+    #
+    # # 上传封面
+    # bi_cover_url = cover_upload(access_token,video.cover_url)
+    #
+    # # 投稿
+    # title = video.title
+    # cover = bi_cover_url
+    # tid = video.bilibili_tid
+    # desc = video.description
+    # tag = video.tag
+    # contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
+    # print("contribute_result", contribute_result)
+    # resource_id = contribute_result['data']['resource_id']
+    #
+    # # 投稿完成之后修改第三方id和投稿状态
+    # update_video_open_id_and_status(video_id,resource_id,2)
+    #
+    # message = contribute_result
     return {'message': message}
 
 
