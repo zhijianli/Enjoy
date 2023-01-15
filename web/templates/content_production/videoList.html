@@ -25,26 +25,32 @@
 <!-- main start -->
 
 
-<p><input type="text" name="datetime" class="ui_timepicker" value=""></p>
+
 
 <div id="yhc_responsive" class="main">
 
     <div class="allProduct respl-header">
         <ul>
-            <li>
-                <a href="https://passport.bilibili.com/register/pc_oauth2.html#/?client_id=1afc4f32b90641ae&return_url=http://menganhealth.cn/clip/bilibili_code&response_type=code&state=12345" target="_blank"  >获取code</a>
-            </li>
-            <li>
-                <a href="https://passport.bilibili.com/register/pc_oauth2.html#/?client_id=1afc4f32b90641ae&return_url=http://menganhealth.cn/clip/bilibili_refresh_access&response_type=code&state=12345" target="_blank"  >执行令牌更新定时程序</a>
-            </li>
+             <li> <a href="https://passport.bilibili.com/register/pc_oauth2.html#/?client_id=1afc4f32b90641ae&return_url=http://menganhealth.cn/clip/bilibili_refresh_access&response_type=code&state=12345" target="_blank"  >执行令牌更新定时程序</a></li>
+             <br>
+             <li>
+                 <input type="text"  name="datetime" class="ui_timepicker" placeholder="设置投稿时间" value="" style="width:200px;height:20px;font-size:12px">
+
+             </li>
+
         </ul>
+
         <ul class="productTab respl-option" data-option-key="filter">
+
             <li class="select"><a href="#" data-rl_value="*">全部</a></li>
             <li><a href="#" data-rl_value=".category-10">未投稿</a></li>
             <li><a href="#" data-rl_value=".category-20">已定时</a></li>
             <li><a href="#" data-rl_value=".category-20">已投稿</a></li>
 
+
         </ul>
+
+
         <ul id="video_list" class="ProductList respl-items">
 <!--            <li class="respl-item category-10">-->
 <!--                <div class="unit">-->
@@ -163,6 +169,8 @@
 <!--                </div>-->
 <!--            </li>-->
         </ul>
+
+
     </div>
 
 </div>
@@ -196,21 +204,23 @@
                video_subtitle_list = result.video_subtitle_list
                video_comment_guide_list = result.video_comment_guide_list
                video_status_list = result.video_status_list
+               video_contribute_time_list = result.video_contribute_time_list
                for (let i = 0; i < video_title_list.length; ++i) {
 
                     var li = document.createElement("li");
                     var div1 = document.createElement("div");
                     var p1 = document.createElement("p");
-                    var p2 = document.createElement("p");
                     var input = document.createElement("input");
                     var a1 = document.createElement("a");
                     var img = document.createElement("img");
                     var h1 = document.createElement("h1");
                     var a2 = document.createElement("a");
-                    var dl = document.createElement("dl");
+                    var dl1 = document.createElement("dl");
+                    var dl2 = document.createElement("dl");
                     var dd1 = document.createElement("dd");
                     var dd2 = document.createElement("dd");
                     var dd3 = document.createElement("dd");
+                    var dd4 = document.createElement("dd");
                     var div2 = document.createElement("div");
                     var div3 = document.createElement("div");
                     var a3 = document.createElement("a");
@@ -227,9 +237,11 @@
                     p1.setAttribute("class", "hoverline");
                     p1.setAttribute("style", "display:block;");
                     input.setAttribute("type", "text");
-                    //input.setAttribute("name", "datetime");
-                    input.setAttribute("class", "ui_timepicker hasDatepicker");
-                    //input.setAttribute("id", "dp1673689529533");
+                    //input.setAttribute("name", "datetime-"+i);
+                    input.setAttribute("id", "datetime"+i);
+                    input.setAttribute("style", "width:200px;height:20px;font-size:12px");
+                    input.setAttribute("placeholder","设置投稿时间")
+                    input.setAttribute("class", "ui_timepicker");
                     a1.setAttribute("class", "images");
                     a1.setAttribute("href","http://www.17sucai.com/");
                     a1.setAttribute("style","height:160px");
@@ -239,11 +251,12 @@
                     div2.setAttribute("style","bottom:0px");
                     div3.setAttribute("class","left");
                     a3.setAttribute("class","right");
-                    a3.setAttribute("onclick","bilibili_video_contribute("+video_id_list[i]+");");
+                    a3.setAttribute("onclick","bilibili_video_contribute("+video_id_list[i]+","+i+");");
                     a4.setAttribute("class","right");
                     dd1.innerHTML="副标题："+video_subtitle_list[i];
                     dd2.innerHTML="BGM："+video_bgm_list[i];
                     dd3.innerHTML="评论引导："+video_comment_guide_list[i];
+                    dd4.innerHTML="定时时间："+video_contribute_time_list[i];
                     a2.innerHTML=video_title_list[i];
                     div3.innerHTML=video_status_list[i];
                     a3.innerText = "投稿";
@@ -254,35 +267,50 @@
                     video_list.append(li)
                     li.append(div1)
                     div1.append(p1)
-                    div1.append(p2)
                     div1.append(a1)
                     div1.append(h1)
-                    div1.append(dl)
+                    div1.append(dl1)
+                    div1.append(dl2)
                     div1.append(div2)
-                    p2.append(input)
+                    dl2.append(input)
                     a1.append(img)
                     h1.append(a2)
-                    dl.append(dd1)
-                    dl.append(dd2)
-                    dl.append(dd3)
+                    dl1.append(dd1)
+                    dl1.append(dd2)
+                    dl1.append(dd3)
+                    dl1.append(dd4)
                     div2.append(div3)
                     div2.append(a3)
-                    div2.append(a4)
+                    //div2.append(a4)
                     a3.append(span1)
                     a4.append(span2)
 
 
                }
+                //初始化时间插件
+                $(".ui_timepicker").datetimepicker({
+                       // showOn: "button",
+                       // buttonImage: "/static/content_production/img/icon_calendar.gif",
+                       // buttonImageOnly: true,
+                        showSecond: true,
+                        timeFormat: 'hh:mm:ss',
+                        stepHour: 1,
+                        stepMinute: 1,
+                        stepSecond: 1
+                })
             }
         });
     }
 
-    function bilibili_video_contribute(video_id) {
+    function bilibili_video_contribute(video_id,datetime_index) {
+        console.log($("#datetime"+datetime_index).val())
         if (confirm("确认投稿吗？")) {
             $.ajax({
                 url: "bilibili_video_contribute",
                 type: "GET",  /*采用POST方法提交*/
-                data: { "video_id": video_id},  /*提交的数据（json格式），从输入框中获取*/
+                data: { "video_id": video_id,
+                        "datetime":$("#datetime"+datetime_index).val(),
+                },  /*提交的数据（json格式），从输入框中获取*/
                 /*result为后端函数返回的json*/
                 success: function (result) {
                     alert(result.message)
@@ -290,18 +318,6 @@
             });
         }
     }
-    $(function () {
-            $(".ui_timepicker").datetimepicker({
-               // showOn: "button",
-               // buttonImage: "/static/content_production/img/icon_calendar.gif",
-               // buttonImageOnly: true,
-                showSecond: true,
-                timeFormat: 'hh:mm:ss',
-                stepHour: 1,
-                stepMinute: 1,
-                stepSecond: 1
-            })
-    })
 
 
 </script>

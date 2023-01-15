@@ -2,6 +2,7 @@ import requests
 import json
 from urllib import parse
 from tools.aliyun_oss import *
+from tools.mysql_tools import *
 
 client_id = "1afc4f32b90641ae"
 app_secret = "05f76e734610426bb47048cc497d6c35"
@@ -142,6 +143,35 @@ def contribute(access_token,upload_token,title,cover,tid,desc,tag):
     content = json.loads(content)
     return content
 
+
+def contribute_process(video):
+    video_id = video.id
+    platform_token = select_refresh_token("bilibili")
+    access_token = platform_token.access_token
+
+    # 视频初始化
+    upload_token = video_init(access_token)
+
+    # 上传单个小视频
+    video_upload(upload_token, video.video_url)
+
+    # 上传封面
+    bi_cover_url = cover_upload(access_token, video.cover_url)
+
+    # 投稿
+    title = video.title
+    cover = bi_cover_url
+    tid = video.bilibili_tid
+    desc = video.description
+    tag = video.tag
+    contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
+    print("contribute_result", contribute_result)
+    resource_id = contribute_result['data']['resource_id']
+
+    # 投稿完成之后修改第三方id和投稿状态
+    update_video_open_id_and_status(video_id, resource_id, 2)
+
+    return contribute_result
 
 # def upload_video(title,cover,tid,no_reprint,desc,tag,copyright,source):
 #

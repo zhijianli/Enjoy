@@ -107,6 +107,7 @@ class Video(db.Model):
     tag = db.Column(db.String(200))
     open_id = db.Column(db.String(100))
     status = db.Column(db.Integer)
+    contribute_time = db.Column(db.String(30))
 
 class PlatformToken(db.Model):
     # 定义表名
@@ -308,6 +309,11 @@ def update_video(id,cover_url,video_url,description):
 def update_video_open_id_and_status(id,open_id,status):
     with app.app_context():
         Video.query.filter_by(id=id).update({"open_id":open_id,"status":status})
+        db.session.commit()
+
+def update_video_contribute_time_and_status(id,contribute_time,status):
+    with app.app_context():
+        Video.query.filter_by(id=id).update({"contribute_time":contribute_time,"status":status})
         db.session.commit()
 
 def update_platform_token(platform,refresh_token,access_token):

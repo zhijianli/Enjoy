@@ -14,7 +14,7 @@ number = 1
 # 定义你要周期运行的函数
 def job():
 
-   print("投稿定时程序开始执行:"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+   print("刷新令牌定时程序开始执行:"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
    # time.sleep(2)
    # video_list = select_video_list()
@@ -45,7 +45,7 @@ def job():
 
    number = number + 1
 
-   print("投稿定时程序执行结束"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+   print("刷新令牌定时程序执行结束"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
 def start_refresh_access(code):
 

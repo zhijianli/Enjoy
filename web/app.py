@@ -35,6 +35,7 @@ from tools.aliyun_oss import put_object_from_file,get_bucket_list
 from tools.mysql_tools import *
 from tools.my_logging import *
 from tools.bilibili_open_api import *
+from tools.my_time import *
 from timing_program.bilibili_refresh_access import *
 
 refresh_access_process = None
@@ -346,33 +347,26 @@ def bilibili_video_contribute():
 
     video_id = request.args.get("video_id")
     video = select_video(video_id)
+    status = video.status
+    datetime = request.args.get("datetime")
 
-    platform_token = select_refresh_token("bilibili")
-    access_token = platform_token.access_token
+    # 判断一下稿件状态
+    if status == 2:  # 如果状态是＂已投稿＂则返回已投稿信息，
+        return {'message': "投稿已投递，请勿重复投稿"}
+    elif status == 1:  # 如果状态是＂定时投稿＂，则返回定时投稿信息
+        return {'message': "投稿已定时，请勿重复投稿，定时时间为："+datetime}
+    elif status == 0:
+        if datetime is None or len(datetime) == 0: # 如果状态是＂未投稿＂并且时间为空，则立即投稿
+            message = contribute_process(video)
+            return {'message': "恭喜，投稿成功！！！"}
+        if isVaildDate(datetime):# 如果状态是＂未投稿＂并且时间符合格式，则不立即投稿，等待定时程序投稿
+            update_video_contribute_time_and_status(video_id,datetime,1)
+            return {'message': "稿件已完成定时，时间为："+datetime}
+        else:
+            return {'message': "时间格式有问题，请检查"}
+    else:
+        return {'message': "稿件状态有问题，请检查稿件状态"}
 
-    # 视频初始化
-    upload_token = video_init(access_token)
-
-    # 上传单个小视频
-    video_upload(upload_token,video.video_url)
-
-    # 上传封面
-    bi_cover_url = cover_upload(access_token,video.cover_url)
-
-    # 投稿
-    title = video.title
-    cover = bi_cover_url
-    tid = video.bilibili_tid
-    desc = video.description
-    tag = video.tag
-    contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
-    print("contribute_result", contribute_result)
-    resource_id = contribute_result['data']['resource_id']
-
-    # 投稿完成之后修改第三方id和投稿状态
-    update_video_open_id_and_status(video_id,resource_id,2)
-
-    message = contribute_result
     return {'message': "恭喜，投稿成功！！！"}
 
 
@@ -418,6 +412,7 @@ def get_video_list():
     video_subtitle_list = []
     video_comment_guide_list = []
     video_status_list = []
+    video_contribute_time_list = []
     for video in video_list:
         video_id_list.append(video.id)
         video_title_list.append(video.title)
@@ -431,6 +426,7 @@ def get_video_list():
             video_status_list.append("已定时")
         elif video.status == 2:
             video_status_list.append("已投稿")
+        video_contribute_time_list.append(video.contribute_time)
 
     return {'video_id_list':video_id_list,
             'video_title_list': video_title_list,
@@ -438,8 +434,8 @@ def get_video_list():
             'video_bgm_list' : video_bgm_list,
             'video_subtitle_list' : video_subtitle_list,
             'video_comment_guide_list':video_comment_guide_list,
-            'video_status_list':video_status_list}
-
+            'video_status_list':video_status_list,
+            'video_contribute_time_list':video_contribute_time_list}
 
 
 if env == "test":
