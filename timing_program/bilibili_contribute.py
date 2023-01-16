@@ -28,6 +28,8 @@ def job():
 
 if __name__ == '__main__':
 
+    print("投稿定时程序启动成功：" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+
     # 每个小时跑一次
     # schedule.every(1).minutes.do(job)
     schedule.every().hour.do(job)
