@@ -145,6 +145,7 @@ def contribute(access_token,upload_token,title,cover,tid,desc,tag):
 
 
 def contribute_process(video):
+    print("开始投稿："+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     video_id = video.id
     platform_token = select_refresh_token("bilibili")
     access_token = platform_token.access_token
@@ -170,7 +171,7 @@ def contribute_process(video):
 
     # 投稿完成之后修改第三方id和投稿状态
     update_video_open_id_and_status(video_id, resource_id, 2)
-
+    print("结束投稿："+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     return contribute_result
 
 # def upload_video(title,cover,tid,no_reprint,desc,tag,copyright,source):

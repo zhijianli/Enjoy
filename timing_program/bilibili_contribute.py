@@ -19,10 +19,10 @@ def job():
        status = video.status
        if status == 1: #表明视频状态是在定时投稿中
            current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-           if (video.contribute_time >= current_time):
-               print("contribute_time",video.contribute_time)
-               # contribute_process(video)
-   #
+           if (video.contribute_time <= current_time):
+               # print("contribute_time",video.contribute_time)
+               contribute_process(video)
+
    print("投稿定时程序执行结束"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
 

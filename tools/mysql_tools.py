@@ -197,7 +197,7 @@ def select_book_sentence_by_wechat_id(wechat_book_id):
 def select_book_sentence_by_condition(key_words,wechat_book_id,book_id_list):
     with app.app_context():
         book_sentence_list = BookSentence.query.filter(
-                                                    func.length(BookSentence.sentence) < 150,
+                                                    # func.length(BookSentence.sentence) < 150,
                                                     BookSentence.underline_num > 1000,
                                                     BookSentence.sentence.like("%" + key_words + "%" if key_words else '%%'),
                                                     (BookSentence.wechat_book_id == wechat_book_id) if wechat_book_id else 1==1,
