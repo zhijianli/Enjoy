@@ -160,12 +160,12 @@ def contribute_process(video):
     bi_cover_url = cover_upload(access_token, video.cover_url)
 
     # 投稿
-    title = video.bilibili_title
+    bilibili_title = video.bilibili_title
     cover = bi_cover_url
     tid = video.bilibili_tid
     desc = video.description
     tag = video.tag
-    contribute_result = contribute(access_token, upload_token, title, cover, tid, desc, tag)
+    contribute_result = contribute(access_token, upload_token, bilibili_title, cover, tid, desc, tag)
     print("contribute_result", contribute_result)
     resource_id = contribute_result['data']['resource_id']
 
