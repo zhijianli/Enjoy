@@ -94,6 +94,7 @@ class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(30))
     subtitle = db.Column(db.String(50))
+    bilibili_title = db.Column(db.String(100))
     end = db.Column(db.String(100))
     comment_guide = db.Column(db.String(100))
     text = db.Column(db.String(1000))

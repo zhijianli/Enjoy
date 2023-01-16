@@ -160,7 +160,7 @@ def contribute_process(video):
     bi_cover_url = cover_upload(access_token, video.cover_url)
 
     # 投稿
-    title = video.title
+    title = video.bilibili_title
     cover = bi_cover_url
     tid = video.bilibili_tid
     desc = video.description
