@@ -378,6 +378,8 @@
          /*在这里编写submit()事件*/
         function submit_text() {
 
+            console.log($("#bilibiliTitle").val())
+
             log()
 
             sentence_list = document.getElementById('text').getElementsByClassName("item-title")
@@ -398,6 +400,7 @@
                         "text":text,
                         "end":$("#end").val(),
                         "author":$("#author").val(),
+                        "bilibiliTitle":$("#bilibiliTitle").val(),
                         "label":$("#label").val(),
                         "picture":$("#picture").val(),
                         "music":$("#music").val(),

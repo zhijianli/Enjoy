@@ -14,16 +14,20 @@ def job():
 
    print("投稿定时程序开始执行:"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
-   video_list = select_video_list()
-   for video in video_list:
-       status = video.status
-       if status == 1: #表明视频状态是在定时投稿中
-           current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-           if (video.contribute_time <= current_time):
-               # print("contribute_time",video.contribute_time)
-               contribute_process(video)
+   start_contribute_process()
 
    print("投稿定时程序执行结束"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+
+
+def start_contribute_process():
+    video_list = select_video_list()
+    for video in video_list:
+        status = video.status
+        if status == 1:  # 表明视频状态是在定时投稿中
+            current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            if (video.contribute_time <= current_time):
+                # print("contribute_time",video.contribute_time)
+                contribute_process(video)
 
 
 if __name__ == '__main__':

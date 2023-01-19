@@ -37,6 +37,7 @@ from tools.my_logging import *
 from tools.bilibili_open_api import *
 from tools.my_time import *
 from timing_program.bilibili_refresh_access import *
+from timing_program.bilibili_contribute import *
 
 refresh_access_process = None
 
@@ -106,6 +107,7 @@ def submit():
         text = request.form.get("text")
         end = request.form.get("end")
         author = request.form.get("author")
+        bilibiliTitle = request.form.get("bilibiliTitle")
         picture = request.form.get("picture")
         music = request.form.get("music")
         music = music.split("\\")[-1]
@@ -143,7 +145,7 @@ def submit():
 
     result_message = ""
     if operate == "generateVideo":
-        num = insert_video(title, author,end,commentguide, text,
+        num = insert_video(title, author,bilibiliTitle,end,commentguide, text,
                            "https://enjoy-mocuili.oss-cn-hangzhou.aliyuncs.com/picture/"+picture,
                            music, font_cover_ratio, 124,
                            "描述", label, 0)
@@ -400,6 +402,13 @@ def bilibili_refresh_access():
 
     return {'message': code}
 
+
+@app.route('/videoList/start_contribute_timing_process',methods=['GET'])
+def start_contribute_timing_process():
+
+    start_contribute_process()
+
+    return {'message': "success"}
 
 @app.route('/videoList/get_video_list',methods=['GET'])
 def get_video_list():

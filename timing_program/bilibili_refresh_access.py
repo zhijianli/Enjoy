@@ -16,13 +16,6 @@ def job():
 
    print("刷新令牌定时程序开始执行:"+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 
-   # time.sleep(2)
-   # video_list = select_video_list()
-   # for video in video_list:
-   #     status = video.status
-   #     if status == 1: #表明视频状态是在定时投稿中
-   #         print(video.title)
-   #
    global number
 
    # 从数据库取最新的refresh_token

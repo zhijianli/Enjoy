@@ -275,13 +275,13 @@ def insert_author(author_name):
         db.session.commit()
         return author_id
 
-def insert_video(title,subtitle,end,comment_guide,text,
+def insert_video(title,subtitle,bilibiliTitle,end,comment_guide,text,
                  background_url,bgm_name,
                  font_cover_ratio,bilibili_tid,
                  description,tag,status
                  ):
     with app.app_context():
-        video = Video(title=title,subtitle=subtitle,end=end,comment_guide=comment_guide,
+        video = Video(title=title,subtitle=subtitle,bilibili_title=bilibiliTitle,end=end,comment_guide=comment_guide,
                       text=text,background_url=background_url,bgm_name=bgm_name,
                       font_cover_ratio=font_cover_ratio,
                       bilibili_tid=bilibili_tid,description=description,tag=tag,status=status)
