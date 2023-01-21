@@ -75,7 +75,7 @@ def optimi_saying_clip(txt_clip,w,h,duration,text_clip_start,source_clip,comment
     # 在原来的基础上再减去半个字体的宽度，原因是因为每一行字最后都会有标点，而这个标点只有半个字体宽，所以减少半个字体，看上去文字和来源才是对齐的
     source_x = (w - source_w) / 2 - text_font_size/3
     # source_y = (h - color_h)//2 + color_h
-    source_y = txt_y+txt_h+text_font_size*2
+    source_y = txt_y+txt_h+text_font_size*1
     source_clip = source_clip.set_position((source_x,source_y)).set_duration(duration).set_start(text_clip_start).crossfadein(fade_time).crossfadeout(fade_time)
 
     return txt_clip,colorclip,source_clip,comment_clip,colorclip_ori

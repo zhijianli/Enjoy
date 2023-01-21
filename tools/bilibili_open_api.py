@@ -143,21 +143,24 @@ def contribute(access_token,upload_token,title,cover,tid,desc,tag):
     content = json.loads(content)
     return content
 
+def get_bli_access_token():
+    platform_token = select_refresh_token("bilibili")
+    return platform_token.access_token
+
 
 def contribute_process(video):
     print("开始投稿："+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     video_id = video.id
-    platform_token = select_refresh_token("bilibili")
-    access_token = platform_token.access_token
 
+    # 因为在阿里云服务器上传视频的时间太长（可能是网络原因），因此在后续步骤中，每次都需要重新获取access_token
     # 视频初始化
-    upload_token = video_init(access_token)
+    upload_token = video_init(get_bli_access_token())
 
     # 上传单个小视频
     video_upload(upload_token, video.video_url)
 
     # 上传封面
-    bi_cover_url = cover_upload(access_token, video.cover_url)
+    bi_cover_url = cover_upload(get_bli_access_token(), video.cover_url)
 
     # 投稿
     bilibili_title = video.bilibili_title
@@ -165,7 +168,7 @@ def contribute_process(video):
     tid = video.bilibili_tid
     desc = video.description
     tag = video.tag
-    contribute_result = contribute(access_token, upload_token, bilibili_title, cover, tid, desc, tag)
+    contribute_result = contribute(get_bli_access_token(), upload_token, bilibili_title, cover, tid, desc, tag)
     print("contribute_result", contribute_result)
     resource_id = contribute_result['data']['resource_id']
 

@@ -100,7 +100,8 @@ def generate_video(args):
     my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/1.88)
     # my_clip = my_clip.fx(vfx.crop,x1=0, y1=0, x2=w, y2=w/2.35)
     w,h = my_clip.size
-    text_font_size = w*3.6/80
+    # text_font_size = w*3.6/80
+    text_font_size = w * 3 / 80
     start_end_font_size = w/20
 
     all_clip_list = [my_clip]
@@ -358,7 +359,8 @@ def preview(args):
     w, h = my_clip.size
     my_clip = my_clip.fx(vfx.crop, x1=0, y1=0, x2=w, y2=w / 1.88)
     w, h = my_clip.size
-    text_font_size = w*3.6/80
+    # text_font_size = w*3.6/80
+    text_font_size = w * 3 / 80
     start_end_font_size = w/20
     text_clip_start = 0
     title_time = 3
