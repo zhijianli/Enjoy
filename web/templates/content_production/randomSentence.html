@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>随机金句页面</title>
+		<style>
+
+<!--			.box {-->
+<!--			   	background-color:rgb(231, 124, 142)-->
+<!--			}-->
+
+<!--			background-color: rgb(90, 25, 27);-->
+<!--			background-color: rgb(237, 90, 101);-->
+<!--			background-color: rgb(192, 72, 81);-->
+<!--			http://zhongguose.com/#yuhong-->
+		</style>
+	</head>
+	<body style="background-color:rgb(231, 124, 142);" onload="change_color()">
+		<div>
+			<font color="#FFFFFF" style="left:1000px;position:absolute;top:300px;">
+				爱和对爱的病态需要这两者间的差异在于：</br>
+				在真正的d爱中，最首要的是感觉到爱；<br>
+				而在病态的爱中，最首要的是寻求安全感，<br>
+				对爱的错觉只不过排在次要位置。<br><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;－－卡伦·霍妮 《我们时代的神经症人格》
+	        </font>
+		</div>
+		<script type="text/javascript">
+           function change_color(){
+           	  var items = ['rgb(90, 25, 27)','rgb(237, 90, 101)','rgb(192, 72, 81)',
+           	  			   'rgb(249, 233, 205)','rgb(252, 99, 21)','rgb(239, 175, 173)'];
+   			  var item = items[Math.floor(Math.random()*items.length)];
+			  document.body.style.backgroundColor=item
+		   }
+		</script>
+	</body>
+</html>

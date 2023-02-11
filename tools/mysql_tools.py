@@ -97,7 +97,7 @@ class Video(db.Model):
     bilibili_title = db.Column(db.String(100))
     end = db.Column(db.String(100))
     comment_guide = db.Column(db.String(100))
-    text = db.Column(db.String(1000))
+    text = db.Column(db.String(2000))
     background_url = db.Column(db.String(500))
     bgm_name = db.Column(db.String(100))
     cover_url = db.Column(db.String(200))

@@ -57,6 +57,10 @@ def root():
 def videoList():
     return render_template("/content_production/videoList.html")
 
+@app.route("/randomSentence/")
+def randomSentence():
+    return render_template("/content_production/randomSentence.html")
+
 @app.route("/")
 def mengan():
     return render_template("/official_website/index.html")
