@@ -109,6 +109,56 @@ function sendMessage() {
 	messageInput.value = "";
 	messageInput.focus();
 	chatbox.scrollTop = chatbox.scrollHeight;
+
+
+<!--	  发送消息到后台　-->
+<!--    var host = window.location.host-->
+<!--    var xhr = new XMLHttpRequest();-->
+<!--    var url = "http://" + host + "/planning_route"-->
+<!--    xhr.open("POST", url, true);-->
+<!--    xhr.setRequestHeader('content-type', 'application/json');-->
+
+<!--    var sendData = {-->
+<!--      "start" : "[start['lat'], start['lon']]",-->
+<!--      "end" : "[end['lat'], end['lon']]",-->
+<!--      "handler" : "planning_route"-->
+<!--    };-->
+
+<!--    //将用户输入值序列化成字符串-->
+<!--    xhr.send(JSON.stringify(sendData));-->
+
+<!--    //回调-->
+<!--    xhr.onreadystatechange = function() {-->
+<!--            if (xhr.readyState == 4) {-->
+<!--            console.log(xhr.responseText);-->
+
+<!--                //根据服务器的响应内容格式处理响应结果-->
+<!--                if(xhr.getResponseHeader('content-type')==='application/json'){-->
+<!--                    var result = JSON.parse(xhr.responseText);-->
+<!--                    //根据返回结果判断验证码是否正确-->
+<!--                    if(result.status != 'success'){-->
+<!--                        console.log(result.data.desc);-->
+<!--                    }-->
+<!--                    else {-->
+<!--                      var tmp_cameras = result.data;-->
+<!--                      select_camera_routes[route_key] = tmp_cameras;-->
+<!--                      route_links.push(tmp_cameras);-->
+
+<!--                      draw_select_route2(route_links);-->
+<!--                      draw_walk_camera(select_cameras);-->
+<!--                    }-->
+<!--                  }-->
+<!--            }-->
+<!--        }-->
+
+<!--	  把信息显示在聊天窗口　-->
+    var received_message = document.createElement("div");
+	received_message.classList.add("message");
+	received_message.classList.add("received");
+	var received_messageContent = document.createElement("p");
+	received_messageContent.textContent = "chatgpt回复内容";
+	received_message.appendChild(received_messageContent);
+	chatbox.appendChild(received_message);
 }
 </script>
 
