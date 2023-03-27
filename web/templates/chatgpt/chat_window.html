@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能聊天</title>
+    <style>
+        body {
+            background-color: #F5F5F5;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .chatbox {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            overflow-y: scroll;
+            height: 300px;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .message.sent {
+            text-align: right;
+        }
+        .message.received {
+            text-align: left;
+        }
+        .message p {
+            margin: 0;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            max-width: 60%;
+        }
+        .inputbox {
+            margin: 20px auto;
+            max-width: 80%;
+            display: flex;
+        }
+        .inputbox input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+        }
+        .inputbox button {
+            background-color: #ff6347;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 0 30px 30px 0;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI智能聊天</h1>
+    <div class="chatbox" id="chatbox">
+        <div class="message sent">
+            <p>你好，有什么可以帮助你的？</p>
+        </div>
+        <div class="message received">
+            <p>你好，我想了解一下产品的功能。</p>
+        </div>
+        <div class="message sent">
+            <p>我们的产品可以实现......</p>
+        </div>
+        <!-- 其他消息内容 -->
+    </div>
+    <div class="inputbox">
+        <input type="text" placeholder="请输入消息..." id="message">
+        <button class ="send" onclick="sendMessage()">发送</button>
+</div>
+<script>
+function sendMessage() {
+	var messageInput = document.getElementById("message");
+	var messageText = messageInput.value;
+	if (messageText.trim() == "") {
+		return;
+	}
+	var chatbox = document.getElementById("chatbox");
+	var message = document.createElement("div");
+	message.classList.add("message");
+	message.classList.add("sent");
+	var messageContent = document.createElement("p");
+	messageContent.textContent = messageText;
+	message.appendChild(messageContent);
+	chatbox.appendChild(message);
+	messageInput.value = "";
+	messageInput.focus();
+	chatbox.scrollTop = chatbox.scrollHeight;
+}
+</script>
+
+</body>
+</html>

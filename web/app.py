@@ -77,6 +77,12 @@ def news():
 def newsDetail():
     return render_template("/official_website/news-detail.html")
 
+@app.route("/chatWindow/")
+def chatWindow():
+    return render_template("/chatgpt/chat_window.html")
+
+
+
 
 def write_excel(title,start,text,end,author):
     if env == "test":
