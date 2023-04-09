@@ -77,10 +77,17 @@ def news():
 def newsDetail():
     return render_template("/official_website/news-detail.html")
 
-@app.route("/chatWindow/")
-def chatWindow():
-    return render_template("/chatgpt/chat_window.html")
+@app.route("/aiCreateDoc/")
+def aiCreateDoc():
+    return render_template("/chatgpt/ai_create_doc.html")
 
+@app.route("/aiCreateDocH5/")
+def aiCreateDocH5():
+    return render_template("/chatgpt/ai_create_doc_h5.html")
+
+@app.route("/aiCreateTest/")
+def aiCreateTest():
+    return render_template("/chatgpt/ai_create_test.html")
 
 
 
