@@ -467,4 +467,4 @@ def get_video_list():
 if env == "test":
     app.run(host='0.0.0.0', port=8088)
 if env == "prod":
-    app.run(host = '0.0.0.0',port=80)
+    app.run(host = '0.0.0.0',port=8088)
