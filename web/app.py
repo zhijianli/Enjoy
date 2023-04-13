@@ -463,6 +463,26 @@ def get_video_list():
             'video_status_list':video_status_list,
             'video_contribute_time_list':video_contribute_time_list}
 
+@app.route('/chatgpt/test_dns',methods=['GET'])
+def test_dns():
+    flag = False
+    try:
+        api = 'http://ai.menganhealth.cn:5678/api/device_login'
+        data = {
+          "cmd": "device_login",
+          "connection_id": 1
+        }
+
+        response = requests.post(api, json = data, timeout=5)
+        if response.status_code == 200 :
+            response = json.loads(response.text)
+            if response['state'] == 'normal' :
+                flag = True
+
+    except Exception as e:
+        print (f"sms error : {str(e)}")
+
+    return {'flag':flag}
 
 if env == "test":
     app.run(host='0.0.0.0', port=8088)
