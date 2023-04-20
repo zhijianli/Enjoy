@@ -467,7 +467,7 @@ def get_video_list():
 def test_dns():
     flag = False
     try:
-        api = 'http://ai.menganhealth.cn:5678/api/device_login'
+        api = 'https://ai.menganhealth.cn:6789/api/device_login'
         data = {
           "cmd": "device_login",
           "connection_id": 1

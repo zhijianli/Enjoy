@@ -1,0 +1,35 @@
+from alipay.aop.api.AlipayClientConfig import AlipayClientConfig
+from alipay.aop.api.DefaultAlipayClient import DefaultAlipayClient
+from alipay.aop.api.request.AlipayTradeWapPayRequest import AlipayTradeWapPayRequest
+
+# 配置支付宝相关参数
+alipay_config = AlipayClientConfig()
+alipay_config.server_url = 'https://openapi.alipay.com/gateway.do'
+alipay_config.app_id = '2021003188675037'
+alipay_config.app_private_key = 'MIIEowIBAAKCAQEAhONU7n56hkOp4jR0fVTlUs0UrL+TUZzNLkrF9ztDeRIl3bXNhEb9XbcPfPvNImvXrum25GOFGQ+1wGwsOZ19bFGuIEKTesJCMewtaVab3yaCKtqoc4h1J2Mhkoyvrvb6JMqAJKTKPOG6TCUiUdHTbwT3PDEUVCrroS3FyQMIYeaXTGL53BL/Nq6cbuH8ZmI7gud95oC9fb92mFd3IIljZaTntpYgjwNnP+xD2MhalVT3rkK2Vsk6RzOQp9wvFBcvbs64N93N84F38jmlYq0qmoGV10Gw3LVnqpmvkWR9DOd+yQhnS+7DpT2tJ01Gb5NGTzCs7mH4dZPSPYzJl2FuJQIDAQABAoIBACdSofJE6PrMEPxH62Se95Et8H1B31UaIjkdlUEYf1nXPe9CegM3gof1wJaKaGRUJymyLRWeQWduF6lOGTQfX1rrPKx9Juj/jNj6+2EdaNh6q7AEri4p5gj2s5uLF/2dRd4XMh4lyVaEsT0RC/vMLFXA0Ww1Vb+mR72VLt7Rj+xwAA3GtfjLk6jvk8ZqriHXVaW3xn7B08E2Gtw9MKCqYp1tFVf9IohEdBXyhNANGCXdWN+005+d7NjmpUGhPm0GfsmKp+ToAxmU6jHDvVkpybsnrkgd6j0xCvIdLy+6d4CZDOwxnpkokBviKfZiEf72GgpLkC6ScoB95vs3FJwkQAECgYEA7ZsMB/bItuFw8sHnUPNmgB/19uAdBu0c9UlnhuO0FlV8WzYRgWoD1JrBGTXhImCVrO+e6j4k6ks5Tw4xIcREDlSz9QAa694fVGliwMJBHYdszdoEg4rTpKbN77unLA2KRZpDGf7/ZP3zHCvP1nV1cR5y9mi8JDFaf32VwlLdXiUCgYEAjyz0GhJc9Jg0X5ShlaXkXEMSUKT9rbu119WBAIQTrvzqdMDMgWXutgEhJoKdnDOQ2wbncjhvWGiZX+siy1Ta7vBl2vH1H+uyDvV+qJQGXjF2r0D+yT6QzOnJ9psDsvwpjJgk7h0YAs+MtB2B8nBCzshokAOWNjqwDocEPpoO0AECgYAa0lPLWlpR+qTrYmQgSTma4QC8+5OLQpzwO3cKTQ35L3E4QqQ7PaJtD4MYu3JMlSaQPQRtYNJ9+Dvh5rI5I5SjIYCm+XoQgiR7POI+7C65jJ4FpsS3rKYzgfjhRQeb+3NOZBmLB7QAzIHy/icaCGxXdp53nl8OntueZKjRJNWEWQKBgEx/cE0d0py9Vf5bo5oZcNH65CZCgWf6C0auxKZJ61prt7l56cqZc9m68MNqtltnEdZ08eSNUrCh8pDVSVnqlK9lsoYxEQ9lF1X2xR29OUnKk+c/iuJrk2Jo54fjey5+nJSKFfFDiji2PC9gNLYcVRW27mdEA1YmNTsN2K66EYABAoGBAJPGcCocSwlmb6/Kn5IL/F+uMGG6cZPpxTkD4SOXV4WnmYMnIpurlWC3bMOYpfu2ZZx1lUyWm1OnI6qmtu2GZkAVoyTayvyvcAYJRZVqERtPZwwCyrSEDvKc17tp+ItfBM4bx/LqcyRSf+ew+End01vURH9JWgCBCjEm6CIwoVok'
+alipay_config.alipay_public_key = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhf8Iz/0ugTvBBzpCaaRNw3gNpAP7Xpv5t5KILL0ssv+aMsnfm4ctG5UcxzY0U8p3ZL/ZW4kvcN3AiCJkV11B9PMWQZlIwyKZDIF1SM7kK54drhl4BeHhNxBVBBx3mYLgglxCjYK+ikpS1HBCtbLlbpUUgcEkP5wp/phtyxzmC2/4+Qttg2WdsnX3J0bBuO5vTPzOTJO0ROzm+Vg53778VqwSa5PLGVG0Vsp1m+7vgkY3dBJgkdA4dIw0vkvNluPZ5tD/kHM6OfXfoy/tRwY3yw1F6Db2wJ0PUPppKZuy16C+7D2qynm1+Vt7YwG79E+/tL8aYfWw4hAec4/inD0XnwIDAQAB'
+
+# 创建支付宝客户端实例
+client = DefaultAlipayClient(alipay_config)
+
+# 创建手机网站支付请求
+wap_pay_request = AlipayTradeWapPayRequest()
+
+# 设置订单参数
+biz_content = {
+    "subject": "AI创想师",  # 商品名称
+    "out_trade_no": "20150320010101003",  # 商户订单号
+    "total_amount": "0.01",  # 订单总金额
+    "product_code": "QUICK_WAP_WAY",  # 销售产品码
+    "quit_url": "http://chat.menganhealth.cn/",  # 用户付款中途退出返回商户网站的地址
+}
+
+wap_pay_request.return_url="http://chat.menganhealth.cn/"  # 设置支付成功后的同步回调地址
+wap_pay_request.notify_url="https://www.example.com/notify_url"  # 设置异步通知地址
+wap_pay_request.biz_content=biz_content  # 设置业务参数
+
+# 发起支付请求
+response = client.page_execute(wap_pay_request, http_method="GET")
+
+# 将响应内容返回给前端，以便用户在浏览器中进行支付
+print(response)
