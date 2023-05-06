@@ -470,7 +470,9 @@ def test_dns():
         api = 'https://ai.menganhealth.cn:6789/api/device_login'
         data = {
           "cmd": "device_login",
-          "connection_id": 1
+          "connection_id": '-1',
+          "user_id": '116',
+          "share_user_id": '-1'
         }
 
         response = requests.post(api, json = data, timeout=5)
