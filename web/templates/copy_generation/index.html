@@ -64,6 +64,7 @@
                 var socket = io.connect('ws://127.0.0.1:8088/copy_generation/generation_copy');
 
                 socket.emit('message', inputValue);
+
                 socket.on('message', function(data) {
                     console.log('Received message:', data);
 
@@ -73,16 +74,9 @@
                     // Hide the overlay when the request completes
                     overlay.style.display = 'none';
                 });
-<!--                socket.on('echo', function (res) {-->
-<!--                    var data_show = res.data;-->
-<!--                    console.log(data_show)-->
-<!--                    if (data_show) {-->
-<!--                         console.log(data_show)-->
-<!--&lt;!&ndash;                        inputContentBox.value = data_show&ndash;&gt;-->
-<!--                    }-->
-<!--                });-->
 
-<!--                // Create a WebSocket connection to your server-->
+
+                // Create a WebSocket connection to your server
 <!--                var socket = new WebSocket('ws://127.0.0.1:8088/copy_generation/generation_copy');-->
 <!--                // Connection opened-->
 <!--                socket.addEventListener('open', function (event) {-->
@@ -94,9 +88,9 @@
 
 <!--                // Listen for messages from the server-->
 <!--                socket.addEventListener('message', function (event) {-->
+<!--                    console.log(event)-->
 <!--                    var data = JSON.parse(event.data);-->
-<!--                    inputTitleBox.value = data.field1; // Assuming 'field1' and 'field2' are the field names-->
-<!--                    inputContentBox.value = data.field2;-->
+<!--                    inputContentBox.value = data;-->
 <!--                    // Hide the overlay when the request completes-->
 <!--                    overlay.style.display = 'none';-->
 <!--                });-->
@@ -142,6 +136,13 @@
 </head>
 <body>
     <div class="container">
+        <div class="row" >
+           <img src="/static/copy_generation/images/ftslogo.jpg" alt="Description of image" width="50" height="50" style="display: inline-block;">
+           <p style="font-size:35px;display: inline-block;">釜托寺内容生成器</p>
+
+        </div>
+        <br>
+        <br>
         <div class="row" >
             <select id="select1" class = "dropdown">
                 <option>内容选择</option>

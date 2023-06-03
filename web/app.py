@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, send, emit
+from fastapi import FastAPI, WebSocket
 import argparse
 import sys
 import pandas as pd
@@ -43,11 +44,13 @@ from tools.bilibili_open_api import *
 from tools.my_time import *
 from timing_program.bilibili_refresh_access import *
 from timing_program.bilibili_contribute import *
+import threading
 
 refresh_access_process = None
 
 #创建Flask对象app并初始化
 app = Flask(__name__)
+# app = FastAPI()
 
 socketio = SocketIO(app, cors_allowed_origins="*") # Enable CORS
 
@@ -498,52 +501,6 @@ def test_dns():
 
     return {'flag':flag}
 
-# @app.websocket('/copy_generation/generation_copy')
-# @app.route('/copy_generation/generation_copy', methods=['POST'])
-
-def generation_copy():
-
-
-
-    # while True:
-    data = request.get_json()
-    # data = await websocket.receive_text()
-    # 获取字典中的inputValue值
-    input_value = data['inputValue']
-
-    prompt = input_value+"，要求中文，返回结果包括'标题'和'内容'"
-
-    # 创建一个 asyncio 事件循环
-    loop = asyncio.get_event_loop()
-
-    # 创建一个聊天会话
-    session = [{'role': 'system', 'content': '你是一个文案写手.'},
-               {'role': 'user', 'content': prompt}]
-    chat_model = 'gpt-3.5-turbo'
-
-    # 使用事件循环异步调用 create_chat_completion 方法
-    response = loop.run_until_complete(create_chat_completion(session, chat_model))
-
-    # 打印响应
-    print(response)
-
-    response_str = response.choices[0].message.content
-    print(response_str)
-    start_index = response_str.index("内容：")
-    title = response_str[:start_index]
-    content = response_str[start_index:]
-
-    print("标题：",title)
-    print("内容：", content)
-
-        # if response is not None :
-        #     response = json.dumps(response, ensure_ascii=False)
-            # await websocket.send_text(response)
-
-    # 返回JSON数据
-    return jsonify(field1=title, field2=content)
-
-
 @socketio.on('connect', namespace='/copy_generation/generation_copy')
 def test_connect():
     print('Client connected')
@@ -552,12 +509,13 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
-openai.api_key = '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'
-
+openai.api_key = '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'
 
 @socketio.on('message', namespace='/copy_generation/generation_copy')
 def handle_message(data):
     print('received message: ' + data)
+
+    chat_text = ''
 
     prompt = data + "，要求中文，返回结果包括'标题'和'内容'"
 
@@ -566,42 +524,31 @@ def handle_message(data):
                {'role': 'user', 'content': prompt}]
     chat_model = 'gpt-3.5-turbo'
 
+    # sendMessage(chat_text)
+
+
     # 使用事件循环异步调用 main 方法
-    asyncio.run(asynchronous_call(session, chat_model))
+    asyncio.run(asynchronous_call(session, chat_model,chat_text,socketio))
 
 
-
-
-async def asynchronous_call(session, chat_model):
+async def asynchronous_call(session, chat_model,chat_text,socketio):
     loop = asyncio.get_event_loop()
     response = await loop.run_in_executor(None, functools.partial(create_chat_completion, session, chat_model))
-    chat_text = ''
+
     for chunk in response:
         chunk_message = chunk['choices'][0]['delta']  # extract the message
         if 'content' not in chunk_message:
             continue
-        # res['data'] = chunk_message['content']
-        # res['state'] = 'continue'
-        #
-        # data = await self.send(websocket, res)
-        # if data['cmd'] == 'stop':
-        #     # response.clear()
-        #     response = ""
-        #     break
-        #
-        # chat_text += res['data']
         chat_text += chunk_message['content']
+        send(chat_text, broadcast=True)
         print(chat_text)
-        await send(chat_text, broadcast=True)
-
-
 
 
 def create_chat_completion(session, chat_model):
     response = openai.ChatCompletion.create(
         model= chat_model,  # 对话模型的名称
         messages=session,
-        max_tokens=50,
+        max_tokens=20,
         stream=True  # this time, we set stream=True
     )
     return response
