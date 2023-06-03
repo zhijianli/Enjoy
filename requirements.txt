@@ -6,3 +6,4 @@ oss2
 viapi-utils
 alibabacloud_imageseg20191230
 aliyun-python-sdk-viapiutils
+flask-socketio

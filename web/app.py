@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from flask_socketio import SocketIO, send, emit
 import argparse
 import sys
 import pandas as pd
@@ -7,6 +8,10 @@ from xlutils.copy import copy
 import socket
 import os
 import multiprocessing
+import openai
+import asyncio
+import functools
+
 
 # 判断环境
 def get_develop_env():
@@ -44,7 +49,7 @@ refresh_access_process = None
 #创建Flask对象app并初始化
 app = Flask(__name__)
 
-
+socketio = SocketIO(app, cors_allowed_origins="*") # Enable CORS
 
 #通过python装饰器的方法定义路由地址
 @app.route("/clip/")
@@ -77,17 +82,24 @@ def news():
 def newsDetail():
     return render_template("/official_website/news-detail.html")
 
-@app.route("/aiCreateDoc/")
-def aiCreateDoc():
-    return render_template("/chatgpt/ai_create_doc.html")
+@app.route("/copyGeneration/")
+def copyGeneration():
+    return render_template("/copy_generation/index.html")
 
-@app.route("/aiCreateDocH5/")
-def aiCreateDocH5():
-    return render_template("/chatgpt/ai_create_doc_h5.html")
-
-@app.route("/aiCreateTest/")
-def aiCreateTest():
-    return render_template("/chatgpt/ai_create_test.html")
+@app.route("/temple/")
+def temple():
+    return render_template("/copy_generation/temple.html")
+# @app.route("/aiCreateDoc/")
+# def aiCreateDoc():
+#     return render_template("/chatgpt/ai_create_doc.html")
+#
+# @app.route("/aiCreateDocH5/")
+# def aiCreateDocH5():
+#     return render_template("/chatgpt/ai_create_doc_h5.html")
+#
+# @app.route("/aiCreateTest/")
+# def aiCreateTest():
+#     return render_template("/chatgpt/ai_create_test.html")
 
 
 
@@ -486,7 +498,120 @@ def test_dns():
 
     return {'flag':flag}
 
+# @app.websocket('/copy_generation/generation_copy')
+# @app.route('/copy_generation/generation_copy', methods=['POST'])
+
+def generation_copy():
+
+
+
+    # while True:
+    data = request.get_json()
+    # data = await websocket.receive_text()
+    # 获取字典中的inputValue值
+    input_value = data['inputValue']
+
+    prompt = input_value+"，要求中文，返回结果包括'标题'和'内容'"
+
+    # 创建一个 asyncio 事件循环
+    loop = asyncio.get_event_loop()
+
+    # 创建一个聊天会话
+    session = [{'role': 'system', 'content': '你是一个文案写手.'},
+               {'role': 'user', 'content': prompt}]
+    chat_model = 'gpt-3.5-turbo'
+
+    # 使用事件循环异步调用 create_chat_completion 方法
+    response = loop.run_until_complete(create_chat_completion(session, chat_model))
+
+    # 打印响应
+    print(response)
+
+    response_str = response.choices[0].message.content
+    print(response_str)
+    start_index = response_str.index("内容：")
+    title = response_str[:start_index]
+    content = response_str[start_index:]
+
+    print("标题：",title)
+    print("内容：", content)
+
+        # if response is not None :
+        #     response = json.dumps(response, ensure_ascii=False)
+            # await websocket.send_text(response)
+
+    # 返回JSON数据
+    return jsonify(field1=title, field2=content)
+
+
+@socketio.on('connect', namespace='/copy_generation/generation_copy')
+def test_connect():
+    print('Client connected')
+
+@socketio.on('disconnect', namespace='/copy_generation/generation_copy')
+def test_disconnect():
+    print('Client disconnected')
+
+openai.api_key = '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'
+
+
+@socketio.on('message', namespace='/copy_generation/generation_copy')
+def handle_message(data):
+    print('received message: ' + data)
+
+    prompt = data + "，要求中文，返回结果包括'标题'和'内容'"
+
+    # 创建一个聊天会话
+    session = [{'role': 'system', 'content': '你是一个文案写手.'},
+               {'role': 'user', 'content': prompt}]
+    chat_model = 'gpt-3.5-turbo'
+
+    # 使用事件循环异步调用 main 方法
+    asyncio.run(asynchronous_call(session, chat_model))
+
+
+
+
+async def asynchronous_call(session, chat_model):
+    loop = asyncio.get_event_loop()
+    response = await loop.run_in_executor(None, functools.partial(create_chat_completion, session, chat_model))
+    chat_text = ''
+    for chunk in response:
+        chunk_message = chunk['choices'][0]['delta']  # extract the message
+        if 'content' not in chunk_message:
+            continue
+        # res['data'] = chunk_message['content']
+        # res['state'] = 'continue'
+        #
+        # data = await self.send(websocket, res)
+        # if data['cmd'] == 'stop':
+        #     # response.clear()
+        #     response = ""
+        #     break
+        #
+        # chat_text += res['data']
+        chat_text += chunk_message['content']
+        print(chat_text)
+        await send(chat_text, broadcast=True)
+
+
+
+
+def create_chat_completion(session, chat_model):
+    response = openai.ChatCompletion.create(
+        model= chat_model,  # 对话模型的名称
+        messages=session,
+        max_tokens=50,
+        stream=True  # this time, we set stream=True
+    )
+    return response
+
 if env == "test":
-    app.run(host='0.0.0.0', port=8088)
+    # app.run(host='0.0.0.0', port=8088)
+    socketio.run(app, host='0.0.0.0', port=8088)
 if env == "prod":
-    app.run(host = '0.0.0.0',port=80)
+    # app.run(host = '0.0.0.0',port=80)
+    socketio.run(app, host='0.0.0.0', port=80)
+
+
+

@@ -1,0 +1,24 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.container select, .container button, .container input, .container textarea {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.container div {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.container div input[type="radio"] {
+    margin-right: 10px;
+}
