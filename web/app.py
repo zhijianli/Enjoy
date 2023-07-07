@@ -558,7 +558,7 @@ if env == "test":
     socketio.run(app, host='0.0.0.0', port=8088)
 if env == "prod":
     # app.run(host = '0.0.0.0',port=80)
-    socketio.run(app, host='0.0.0.0', port=80)
+    socketio.run(app, host='0.0.0.0', port=80,allow_unsafe_werkzeug=True)
 
 
 
