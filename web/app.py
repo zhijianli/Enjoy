@@ -81,6 +81,11 @@ def about():
 def news():
     return render_template("/official_website/News.html")
 
+@app.route("/privacyPolicy/")
+def privacyPolicy():
+    return render_template("/official_website/privacy-policy.html")
+
+
 @app.route("/newsDetail/")
 def newsDetail():
     return render_template("/official_website/news-detail.html")
